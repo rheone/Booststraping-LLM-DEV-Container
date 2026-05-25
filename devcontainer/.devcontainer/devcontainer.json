@@ -18,19 +18,24 @@
 
 	// Features installed into the container.
 	"features": {
+		"ghcr.io/devcontainer-community/devcontainer-features/delta:1": {},
+		"ghcr.io/devcontainer-community/devcontainer-features/lazygit:1": {},
 		"ghcr.io/devcontainers/features/powershell:2": {},
 		"ghcr.io/devcontainers/features/python:1": {},
 		"ghcr.io/jsburckhardt/devcontainer-features/opencode:1": {},
-		"ghcr.io/nikiforovall/devcontainer-features/dotnet-csharpier:1": {}
+		"ghcr.io/jsburckhardt/devcontainer-features/zoxide:1": {},
+		"ghcr.io/nikiforovall/devcontainer-features/dotnet-csharpier:1": {},
+		"ghcr.io/nils-geistmann/devcontainers-features/zsh:0":{},
+		"ghcr.io/rosstaco/devcontainer-features/ohmyposh:1": {}
 	},
 
 	// Environment variables inside the container.
 	"containerEnv": {
 		"DOTNET_NOLOGO": "1",
 		"DOTNET_CLI_TELEMETRY_OPTOUT": "1",
-		"NUGET_XMLDOC_MODE": "skip"
+		"NUGET_XMLDOC_MODE": "skip",
+		"GIT_CONFIG_GLOBAL": "/home/vscode/.config/git/config"
 	},
-
 
 	// VS Code customizations.
 	"customizations": {
@@ -44,6 +49,7 @@
 				"esbenp.prettier-vscode",
 				"github.vscode-github-actions",
 				"gruntfuggly.todo-tree",
+				"humao.rest-client",
 				"ms-azuretools.vscode-docker",
 				"ms-dotnettools.csdevkit",
 				"ms-dotnettools.csharp",
@@ -61,7 +67,9 @@
 				"files.autoGuessEncoding": false,
 				"files.eol": "\n",
 				"editor.formatOnSave": true,
-				"terminal.integrated.defaultProfile.linux": "bash"
+				// "terminal.integrated.defaultProfile.linux": "bash" // default to bash
+				// "terminal.integrated.defaultProfile.linux": "zsh" // default to bash
+				"terminal.integrated.defaultProfile.linux": "pwsh"	// default to powershell
 			}
 		}
 	},
@@ -76,5 +84,5 @@
 	"remoteUser": "vscode",
 
 	// Sync UID/GID when supported.
-	"updateRemoteUserUID": true
+	"updateRemoteUserUID": true,
 }

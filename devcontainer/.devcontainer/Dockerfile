@@ -16,20 +16,27 @@ RUN apt-get update && apt-get install -y \
     wget \
     vim \
     zip \
+#   zsh \
+    git \
+    unzip \    
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/*
 
 # Create a symbolic link for fd-find to be accessible as 'fd'.
 RUN ln -s $(which fdfind) /usr/local/bin/fd
 
-# Install zoxide for enhanced directory navigation.
-RUN curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
-
 # Enable Git LFS support.
 RUN git lfs install
 
 # Configure PowerShell profile directory.
 RUN mkdir -p /home/vscode/.config/powershell
+
+# Copy custom PowerShell profile into the container.
+COPY .devcontainer/dotfiles/powershell-profile.ps1 /home/vscode/.config/powershell/Microsoft.PowerShell_profile.ps1
+
+# Ensure NuGet config directory exists and is owned by vscode
+RUN mkdir -p /home/vscode/.nuget/NuGet \
+    && chown -R vscode:vscode /home/vscode/.nuget
 
 # Ensure vscode user owns their home directory.
 RUN chown -R vscode:vscode /home/vscode
