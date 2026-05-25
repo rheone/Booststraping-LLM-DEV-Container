@@ -1,0 +1,12 @@
+services:
+  devcontainer:
+    volumes:
+      # Claude configuration and skills.
+      - ${CLAUDE_DIR}:/home/.claude
+
+      # SSH keys for git access.
+      - ${SSH_DIR}:/home/vscode/.ssh:ro
+
+      # Host git configuration.
+      # can be configured with `git config --global user.name "Your Name"` and `git config --global user.email "your.email@example.com"`
+      - ${GITCONFIG_PATH}:/home/vscode/.gitconfig:ro

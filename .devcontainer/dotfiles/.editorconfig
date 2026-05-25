@@ -1,0 +1,24 @@
+# Top-most EditorConfig file.
+root = true
+
+# Global defaults.
+[*]
+charset = utf-8-bom
+end_of_line = crlf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# C# conventions.
+[*.cs]
+indent_style = space
+indent_size = 4
+
+# JSON/YAML/Markdown conventions.
+[*.{json,yml,yaml,md}]
+indent_style = space
+indent_size = 2
+
+# PowerShell conventions.
+[*.ps1]
+indent_style = tab
+indent_size = 4
