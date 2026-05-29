@@ -143,6 +143,14 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+# OpenCode config
+# ---------------------------------------------------------------------------
+
+mkdir -p /home/vscode/.config/opencode
+cp .devcontainer/dotfiles/opencode.jsonc /home/vscode/.config/opencode/opencode.jsonc
+chown vscode:vscode /home/vscode/.config/opencode/opencode.jsonc
+
+# ---------------------------------------------------------------------------
 # Solution restore
 # ---------------------------------------------------------------------------
 
