@@ -1,6 +1,6 @@
 # Bootstrapping LLM Dev Container
 
-A drop-in, reproducible development environment for C# / .NET projects with first-class support for AI-assisted workflows. The repository packages a "_ready-to-use_" `.devcontainer` configuration and a small collection of homegrown skills for use with AI coding agents such as [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) or [Open Code](https://opencode.ai/).
+An opinionated drop-in, reproducible development environment for C# / .NET projects with first-class support for AI-assisted workflows. The repository packages a "_ready-to-use_" `.devcontainer` configuration and a small collection of homegrown skills for use with AI coding agents such as [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) or [Open Code](https://opencode.ai/).
 
 This is a work in progress. Enjoy! Or don't I don't care -[Robert](https://rheone.com)
 
