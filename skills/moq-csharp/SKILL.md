@@ -53,3 +53,8 @@ Assert.Equal("expected", result);
 | Partial mock (call base) | `mock.Setup(x => x.Virtual()).CallBase();` |
 | Argument matcher | `It.IsAny<T>()`, `It.Is<T>(v => ...)` |
 | Strict mock (fail on unsetup) | `new Mock<IFoo>(MockBehavior.Strict)` |
+
+
+## Related Skills
+
+This skill is invoked automatically by [`csharp-test-sweep`](../csharp-test-sweep/SKILL.md) when it detects NSubstitute (or Moq / JustMock / RhinoMocks) in the project file. To run a full test suite sweep that delegates here automatically:

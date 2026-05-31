@@ -1,4 +1,4 @@
-﻿# Project EditorConfig file.
+# Repository Editor Config
 root = true
 
 # Global defaults.
@@ -11,21 +11,21 @@ trim_trailing_whitespace = true
 # C# conventions.
 [*.cs]
 indent_style = space
-indent_size = 4
+indent_size = 3
 
 # JSON/YAML/Markdown conventions.
 [*.{json,jsonc,yml,yaml,md}]
 indent_style = space
-indent_size = 2
+indent_size = 3
 
 # PowerShell — LF works cross-platform.
 [*.ps1]
 indent_style = space
-indent_size = 4
+indent_size = 3
 end_of_line = lf
 
 # Markdown
 [*.md]
 trim_trailing_whitespace = false
 indent_style = space
-indent_size = 2
+indent_size = 3

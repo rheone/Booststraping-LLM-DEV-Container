@@ -84,3 +84,8 @@ Use partial substitutes sparingly — they indicate the design may benefit from 
 | Argument matcher | `Arg.Any<T>()`, `Arg.Is<T>(v => ...)` |
 | Partial substitute | `Substitute.ForPartsOf<ConcreteClass>()` |
 | Suppress base call | `.When(x => x.Method()).DoNotCallBase();` |
+
+
+## Related Skills
+
+This skill is invoked automatically by [`csharp-test-sweep`](../csharp-test-sweep/SKILL.md) when it detects NSubstitute (or Moq / JustMock / RhinoMocks) in the project file. To run a full test suite sweep that delegates here automatically:

@@ -47,3 +47,8 @@ Assert.Equal("expected", result);
 | Verify call (AAA style) | `mock.AssertWasCalled(x => x.Method(arg));` |
 | Verify no call | `mock.AssertWasNotCalled(x => x.Method(Arg<T>.Is.Anything));` |
 | Argument matcher | `Arg<T>.Is.Equal(value)`, `Arg<T>.Is.Anything` |
+
+
+## Related Skills
+
+This skill is invoked automatically by [`csharp-test-sweep`](../csharp-test-sweep/SKILL.md) when it detects NSubstitute (or Moq / JustMock / RhinoMocks) in the project file. To run a full test suite sweep that delegates here automatically:

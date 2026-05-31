@@ -4,3 +4,7 @@ docker-compose.local.yml
 
 # Ignore temporary shell artifacts.
 *.tmp
+
+# logs
+*.post-create.log
+*.post-start.log

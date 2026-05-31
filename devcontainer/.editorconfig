@@ -1,0 +1,40 @@
+# Settings for all files in the devcontainer directory
+root = true
+
+[*]
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Shell scripts — must have LF or bash will fail on Windows hosts
+[*.sh]
+indent_style = space
+indent_size = 4
+
+# JSON / JSONC config files
+[*.{json,jsonc}]
+indent_style = space
+indent_size = 2
+
+# YAML (docker-compose files)
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# Dockerfile
+[Dockerfile]
+indent_style = space
+indent_size = 4
+
+# PowerShell — CRLF is conventional on Windows but LF works cross-platform
+[*.ps1]
+end_of_line = lf
+indent_style = space
+indent_size = 4
+
+# Markdown
+[*.md]
+trim_trailing_whitespace = false
+indent_style = space
+indent_size = 2

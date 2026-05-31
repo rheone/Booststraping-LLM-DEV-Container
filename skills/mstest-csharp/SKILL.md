@@ -19,7 +19,8 @@ version: 0.0.0
 - Each parameterized test covers: happy path, null/empty/whitespace inputs, boundary values
 - Exception tests use `Assert.ThrowsException<T>` — never try/catch
 - No shared static mutable state between tests
-- Never substitute the class under test — use a concrete subclass instead. See the companion mocking skill for the detected library (e.g. [`nsubstitute-csharp`](../nsubstitute-csharp/SKILL.md), [`moq-csharp`](../moq-csharp/SKILL.md)).
+- Never substitute the class under test — use a concrete subclass instead. See the companion mocking skill for the detected library (e.g. [`nsubstitute-csharp`](../nsubstitute-csharp/SKILL.md), [`moq-csharp`](../moq-csharp/SKILL.md)), [`justmock-csharp`](../moq-csharp/SKILL.md)), or 
+[`rhinomock-csharp/SKILL.md))
 
 ## MSTest API Landmarks (to expand on first use)
 
@@ -33,3 +34,7 @@ version: 0.0.0
 | Assertion style | `Assert.AreEqual(expected, actual)` |
 | Exception assertion | `Assert.ThrowsException<T>(() => ...)` |
 | Async test | Returns `Task`; `await Assert.ThrowsExceptionAsync<T>` |
+
+## Related Skills
+
+This skill is invoked automatically by [`csharp-test-sweep`](../csharp-test-sweep/SKILL.md) when it detects MSTest in the project file. To run a full sweep that delegates here automatically

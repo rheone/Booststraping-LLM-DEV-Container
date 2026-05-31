@@ -1,8 +1,16 @@
-* text=auto
+# Force LF line endings for files that must run on Linux
+* text=auto eol=lf
 
-*.cs text eol=crlf
-*.ps1 text eol=crlf
-*.json text eol=lf
-*.yml text eol=lf
-*.yaml text eol=lf
-*.md text eol=lf
+# Windows-only files — keep CRLF
+*.bat           text eol=crlf
+*.cmd           text eol=crlf
+*.cs            text eol=crlf
+*.ps1           text eol=crlf
+
+# Other text files
+*.json  text eol=lf
+*.yaml  text eol=lf
+*.yml   text eol=lf
+
+# Markdown files
+*.md    text eol=lf

@@ -255,17 +255,9 @@ Never add a message that merely restates what the assertion already says.
 ## Mocking
 
 - Use the test project's existing mock library.
-- **Never substitute the class under test** — substitutes are for dependencies. If the method under test is on an abstract base class, use a concrete subclass that inherits the implementation without overriding it. See the [`nsubstitute-csharp` skill](../nsubstitute-csharp/SKILL.md) for the full pattern and the correct use of `Substitute.ForPartsOf<T>()`.
-- Always use specific, realistic values in mock setup and verification.
-- `Arg.Any<T>()` is permitted **only** in these cases:
-    1. The argument is a `CancellationToken` and cancellation behavior is not the subject of the test
-    2. The argument is a complex object whose exact value is verified via a separate assertion
-    3. The test is explicitly verifying call-count or call-ordering, not argument values
-- Only verify mock interactions that are central to the test's intent:
-    ```csharp
-    dependency.Received(1).Process(expectedPayload);
-    dependency.DidNotReceive().Fallback();
-    ```
+- **Never substitute the class under test** — substitutes are for dependencies. If the method under test is on an abstract base class, use a concrete subclass that inherits the implementation without overriding it.
+- See the companion mocking skill for the detected library (e.g. [`nsubstitute-csharp`](../nsubstitute-csharp/SKILL.md), [`moq-csharp`](../moq-csharp/SKILL.md)), [`justmock-csharp`](../moq-csharp/SKILL.md)), or 
+[`rhinomock-csharp/SKILL.md))
 - Mock verification belongs in the Assert section.
 
 ## String Input Coverage
@@ -424,3 +416,8 @@ dotnet test {project}
 - If tests fail, fix them before reporting the task complete.
 - **Default behavior: fix failures automatically.** Surface them to the user only if the fix requires a design decision.
 - Do not report success without a passing test run.
+
+
+## Related Skills
+
+This skill is invoked automatically by [`csharp-test-sweep`](../csharp-test-sweep/SKILL.md) when it detects xUnit in the project file. To run a full sweep that delegates here automatically

@@ -50,3 +50,8 @@ Assert.Equal("expected", result);
 | Verify no call | `Mock.Assert(() => mock.Method(Arg.AnyString), Occurs.Never());` |
 | Argument matcher | `Arg.IsAny<T>()`, `Arg.Matches<T>(v => ...)` |
 | Behavior mode | `Mock.Create<IFoo>(Behavior.Strict)` |
+
+
+## Related Skills
+
+This skill is invoked automatically by [`csharp-test-sweep`](../csharp-test-sweep/SKILL.md) when it detects NSubstitute (or Moq / JustMock / RhinoMocks) in the project file. To run a full test suite sweep that delegates here automatically:
