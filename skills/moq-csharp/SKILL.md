@@ -2,7 +2,7 @@
 name: moq-csharp
 description: Write, update, and improve Moq mock setups in C# test projects. Covers the abstract-class interception trap, argument matchers, and call verification. Use when writing or reviewing Moq usage in any C# test project regardless of test framework.
 author: Robert Engelhardt <rheone@gmail.com>
-version: 0.0.0
+version: 1.0.0
 ---
 
 # Moq C# Mocking Skill

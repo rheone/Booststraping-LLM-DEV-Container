@@ -1,4 +1,4 @@
-# split-type-to-partials — Organization Guide
+﻿# split-type-to-partials — Organization Guide
 
 ## Why split into partials?
 
@@ -7,7 +7,9 @@ The partial-file pattern makes large and small types equally navigable:
 - Each file has a single, named responsibility — you always know where to look
 - Co-located private helpers eliminate "where does this live?" — helpers live next to the code that calls them
 - IDE file nesting via `DependentUpon` keeps the project tree clean
+- All overloads of a method should grouped together
 - Test partials mirror source partials exactly — a reader finds tests for any grouping instantly
+- All test methods and their datasources should grouped together
 
 ## Threshold — when to split {#threshold}
 

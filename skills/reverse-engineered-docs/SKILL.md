@@ -2,7 +2,7 @@
 name: reverse-engineered-docs
 description: Reverse-engineers an existing project from source code, producing structured markdown docs: project overview, DDD domains and update (diff-and-patch) modes. Use when a user asks to document, reverse-engineer, or analyze a codebase; generate technical docs from source; map domains or features of an existing project; or update existing reverse-engineered-docs docs. Trigger phrases: "document this project", "what does this codebase do", "reverse engineer this", "generate docs from source", "map the domains", "document features".
 author: Robert Engelhardt <rheone@gmail.com>
-version: 1.0.0
+version: 1.0.1
 ---
 
 # Reverse Engineer

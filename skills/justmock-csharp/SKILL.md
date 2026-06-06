@@ -2,7 +2,7 @@
 name: justmock-csharp
 description: Write, update, and improve Telerik JustMock mock setups in C# test projects. Covers the abstract-class interception trap, free vs elevated mode, and call verification. Use when writing or reviewing JustMock usage in any C# test project regardless of test framework.
 author: Robert Engelhardt <rheone@gmail.com>
-version: 0.0.0
+version: 1.0.0
 ---
 
 # Telerik JustMock C# Mocking Skill

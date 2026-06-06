@@ -2,7 +2,7 @@
 name: mstest-csharp
 description: Write, update, and improve MSTest unit tests in C# projects. Covers naming conventions, AAA structure, parameterized tests, mocking, coverage gap detection, fixture patterns, and MSTest-specific patterns. Use when writing or reviewing C# unit tests in MSTest projects.
 author: Robert Engelhardt <rheone@gmail.com>
-version: 0.0.0
+version: 1.0.0
 ---
 
 # MSTest C# Testing Skill

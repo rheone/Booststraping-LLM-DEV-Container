@@ -1,8 +1,8 @@
----
+﻿---
 name: csharp-test-sweep
 description: Systematically sweeps C# test classes one at a time, reviewing and improving them against quality standards. Detects the test framework and mocking library from the project file and delegates to companion skills. Handles multi-target-framework projects (net4x, netstandard, modern .NET) with conditional compilation awareness and .NET Framework environment gating. Supports targeted invocation by test, class, namespace, or full project. Use when asked to sweep, audit, review, or improve a test suite; when tests need a quality pass; or when adding coverage to an existing project.
 author: Robert Engelhardt <rheone@gmail.com>
-version: 1.0.0
+version: 1.0.1
 ---
 
 # C# Test Sweep
@@ -11,13 +11,13 @@ version: 1.0.0
 
 Scope is inferred from invocation arguments. Default is **full sweep**.
 
-| Scope | Invocation | Behavior |
-|-------|------------|----------|
-| Single test | `/csharp-test-sweep ClassName.Method_Test` | One test method |
-| Region/group | `/csharp-test-sweep ClassName#MemberName` | One `#region` block |
-| Class | `/csharp-test-sweep ClassName` | Full test class |
-| Namespace | `/csharp-test-sweep My.Namespace` | All classes in that namespace/directory |
-| Full sweep | `/csharp-test-sweep` | All test projects |
+| Scope        | Invocation                                 | Behavior                                |
+| ------------ | ------------------------------------------ | --------------------------------------- |
+| Single test  | `/csharp-test-sweep ClassName.Method_Test` | One test method                         |
+| Region/group | `/csharp-test-sweep ClassName#MemberName`  | One `#region` block                     |
+| Class        | `/csharp-test-sweep ClassName`             | Full test class                         |
+| Namespace    | `/csharp-test-sweep My.Namespace`          | All classes in that namespace/directory |
+| Full sweep   | `/csharp-test-sweep`                       | All test projects                       |
 
 - Narrower than class scope: skip sub-agent parallelization and the project-selection dialog
 - Update mode applies at all scopes — improve existing tests, not just add missing ones
@@ -29,13 +29,13 @@ Ask these questions before starting. Skip those that don't apply to the scope or
 **Always ask:**
 
 1. _(Full / namespace scope only / class scope)_ "I found these test projects: [list]. Which should I include?"
-2. "Auto-fill coverage gaps, or pause for approval per class? [auto / pause / no]" 
-   - If user chooses to fill gaps automatically warn that the tests will reflect the code as it currently exists, not necessarily the intended behavior; flag any gaps filled this way with `// Auto Generated, verify expected behavior:`
+2. "Auto-fill coverage gaps, or pause for approval per class? [auto / pause / no]"
+    - If user chooses to fill gaps automatically warn that the tests will reflect the code as it currently exists, not necessarily the intended behavior; flag any gaps filled this way with `// Auto Generated, verify expected behavior:`
 3. "Auto-fix quality violations, or flag only? [auto / flag]"
 4. "Should I test `[Obsolete]`-marked members? [yes / no]"
 5. "Do any tests in this project require real infrastructure (database, file system, network)? [yes / no]"
 
-**Only when test project `<TargetFrameworks>` /<TargetFramework>` contains `net4x`**
+**Only when test project `<TargetFrameworks>` /<TargetFramework>`contains`net4x`**
 
 6. "Is a working .NET Framework test runner available in this environment? [yes / no]"
 
@@ -74,20 +74,20 @@ For each class:
 
 1. **Dispatch to companion skills** — look up the companion skill for the detected test framework and mocking library. If no companion skill exists for a detected framework or library, inform the user: "No skill exists for [framework/library]. Continue with general quality rules only, or skip this project?" Apply all rules from each companion skill that is available.
 
-   | Test framework | Companion skill |
-   |----------------|----------------|
-   | xUnit | `xunit-csharp` |
-   | NUnit | `nunit-csharp` |
-   | MSTest | `mstest-csharp` |
-   | Unknown | No skill — inform user |
+    | Test framework | Companion skill        |
+    | -------------- | ---------------------- |
+    | xUnit          | `xunit-csharp`         |
+    | NUnit          | `nunit-csharp`         |
+    | MSTest         | `mstest-csharp`        |
+    | Unknown        | No skill — inform user |
 
-   | Mocking library | Companion skill |
-   |-----------------|----------------|
-   | NSubstitute | `nsubstitute-csharp` |
-   | Moq | `moq-csharp` |
-   | RhinoMocks | `rhinomocks-csharp` |
-   | JustMock | `justmock-csharp` |
-   | Unknown | No skill — inform user |
+    | Mocking library | Companion skill        |
+    | --------------- | ---------------------- |
+    | NSubstitute     | `nsubstitute-csharp`   |
+    | Moq             | `moq-csharp`           |
+    | RhinoMocks      | `rhinomocks-csharp`    |
+    | JustMock        | `justmock-csharp`      |
+    | Unknown         | No skill — inform user |
 
 2. **Apply general rules** — apply the [General Quality Checklist](references/quality-checklist.md) at every class regardless of framework. Check specifically: any test that mocks the class under test is broken — the mock intercepts the method under test and returns the type default instead of running real logic. See the detected mocking library's companion skill for the framework-specific pattern and fix.
 
@@ -111,26 +111,25 @@ For each class:
 
 **Test framework skills:**
 
-| Skill | Status |
-|-------|--------|
-| [../xunit-csharp/SKILL.md](../xunit-csharp/SKILL.md) | Full |
-| [../nunit-csharp/SKILL.md](../nunit-csharp/SKILL.md) | Stub — expand on first use |
+| Skill                                                  | Status                     |
+| ------------------------------------------------------ | -------------------------- |
+| [../xunit-csharp/SKILL.md](../xunit-csharp/SKILL.md)   | Full                       |
+| [../nunit-csharp/SKILL.md](../nunit-csharp/SKILL.md)   | Stub — expand on first use |
 | [../mstest-csharp/SKILL.md](../mstest-csharp/SKILL.md) | Stub — expand on first use |
 
 **Mocking framework skills:**
 
-| Skill | Status |
-|-------|--------|
-| [../nsubstitute-csharp/SKILL.md](../nsubstitute-csharp/SKILL.md) | Full |
-| [../moq-csharp/SKILL.md](../moq-csharp/SKILL.md) | Stub — expand on first use |
-| [../rhinomocks-csharp/SKILL.md](../rhinomocks-csharp/SKILL.md) | Stub — expand on first use |
-| [../justmock-csharp/SKILL.md](../justmock-csharp/SKILL.md) | Stub — expand on first use |
+| Skill                                                            | Status                     |
+| ---------------------------------------------------------------- | -------------------------- |
+| [../nsubstitute-csharp/SKILL.md](../nsubstitute-csharp/SKILL.md) | Full                       |
+| [../moq-csharp/SKILL.md](../moq-csharp/SKILL.md)                 | Stub — expand on first use |
+| [../rhinomocks-csharp/SKILL.md](../rhinomocks-csharp/SKILL.md)   | Stub — expand on first use |
+| [../justmock-csharp/SKILL.md](../justmock-csharp/SKILL.md)       | Stub — expand on first use |
 
 **Reference files:**
 
-| Reference | Contents |
-|-----------|----------|
-| [references/quality-checklist.md](references/quality-checklist.md) | General quality rules applied at every class |
-| [references/multiframework.md](references/multiframework.md) | Conditional compilation, `#if` patterns, net48 batching, C# language version table |
-| [agents/subagents.md](agents/subagents.md) | Sub-agent briefing template and sweep state tracking |
-
+| Reference                                                          | Contents                                                                           |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| [references/quality-checklist.md](references/quality-checklist.md) | General quality rules applied at every class                                       |
+| [references/multiframework.md](references/multiframework.md)       | Conditional compilation, `#if` patterns, net48 batching, C# language version table |
+| [agents/subagents.md](agents/subagents.md)                         | Sub-agent briefing template and sweep state tracking                               |

@@ -1,6 +1,8 @@
 ---
 name: nunit-csharp
 description: Write, update, and improve NUnit unit tests in C# projects. Covers naming conventions, AAA structure, parameterized tests, mocking, coverage gap detection, fixture patterns, and NUnit-specific patterns. Use when writing or reviewing C# unit tests in NUnit projects.
+author: Robert Engelhardt <rheone@gmail.com>
+version: 1.0.0
 ---
 
 # NUnit C# Testing Skill

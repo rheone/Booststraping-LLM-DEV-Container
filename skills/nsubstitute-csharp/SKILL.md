@@ -1,6 +1,8 @@
 ---
 name: nsubstitute-csharp
 description: Write, update, and improve NSubstitute mock setups in C# test projects. Covers the abstract-class interception trap, partial substitutes, argument matchers, and call verification. Use when writing or reviewing NSubstitute usage in any C# test project regardless of test framework.
+author: Robert Engelhardt <rheone@gmail.com>
+version: 1.0.0
 ---
 
 # NSubstitute C# Mocking Skill

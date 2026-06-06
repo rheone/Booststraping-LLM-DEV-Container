@@ -1,14 +1,14 @@
-# Sub-Agent Coordination
+﻿# Sub-Agent Coordination
 
 ## Briefing Template
 
 Every sub-agent writing or modifying a test class must receive all of the following in its prompt. Do not omit any item — omissions caused the most expensive recoveries in practice.
 
-Sub-agent spawn thresholds (production class has ≥5 public members OR projected test file length >300 lines) are defined in the detected test framework skill see - 
+Sub-agent spawn thresholds (production class has ≥5 public members OR projected test file length >300 lines) are defined in the detected test framework skill see -
 
 - [../xunit-csharp/SKILL.md](../xunit-csharp/SKILL.md) for xUnit projects.
 - [../nunit-csharp/SKILL.md](../nunit-csharp/SKILL.md) for nUnit projects.
-- [../xunit-mstest/SKILL.md](../xunit-csharp/SKILL.md) for mstest projects.
+- [../xunit-mstest/SKILL.md](../mstest-csharp/SKILL.md) for MSTest projects.
 
 1. **The production class** under test (full source or path)
 2. **The gap report** from Discovery for that class
