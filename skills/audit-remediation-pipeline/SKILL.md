@@ -1,8 +1,11 @@
 ---
 name: audit-remediation-pipeline
 description: Systematic code audit remediation using a multi-agent review pipeline. Resolve findings from audits, static analysis, or code reviews with specialized sub-agents (pedantic dev, tech writer, auditor) in a structured pipeline. Supports batching, parallelism, headless mode, and user-grilling for context. Use when fixing audit findings, remediating code quality issues, addressing code review comments, or systematically improving codebase standards from static analysis.
-author: Robert Engelhardt <rheone@gmail.com>
-version: 0.0.0
+license: Apache-2.0
+user-invocable: true
+metadata:
+  author: Robert Engelhardt <rheone@gmail.com>
+  version: 1.0.1
 ---
 
 # Audit Remediation Pipeline

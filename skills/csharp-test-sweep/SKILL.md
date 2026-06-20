@@ -1,8 +1,11 @@
 ﻿---
 name: csharp-test-sweep
 description: Systematically sweeps C# test classes one at a time, reviewing and improving them against quality standards. Detects the test framework and mocking library from the project file and delegates to companion skills. Handles multi-target-framework projects (net4x, netstandard, modern .NET) with conditional compilation awareness and .NET Framework environment gating. Supports targeted invocation by test, class, namespace, or full project. Use when asked to sweep, audit, review, or improve a test suite; when tests need a quality pass; or when adding coverage to an existing project.
-author: Robert Engelhardt <rheone@gmail.com>
-version: 1.0.1
+license: Apache-2.0
+user-invocable: true
+metadata:
+  author: Robert Engelhardt <rheone@gmail.com>
+  version: 2.0.0
 ---
 
 # C# Test Sweep
@@ -55,10 +58,14 @@ Run once before the sweep loop. Skip for single-test and region scope.
 6. **Audit theory serializers** _(xUnit only)_ — find all `TheoryData<T>` usages; for each non-primitive type check whether `[assembly: RegisterXunitSerializer(...)]` is registered; list any gaps
 7. **Check InternalsVisibleTo** — for each production/test project pair, confirm `[assembly: InternalsVisibleTo]` covers the test project if `internal` members are under test; prefer public API
 8. **Flag missing test files** — for each production class in scope, check whether a corresponding test file exists. List any production classes with no test file; present to user before sweep starts. Do not create files without user confirmation.
-9. **Run baseline build** — `dotnet build {test-project}` for each selected test project; if it fails, ask question 7 above
-10. **Detect duplicate test IDs** — run `dotnet test {project} --list-tests 2>&1 | sort | uniq -d` against each test project. Any output line is a duplicate display name that xUnit will silently skip. Present results as a table: `| File | Data source | Example duplicate display name |`. Treat each flagged data source as a required fix before the sweep touches that class.
-11. **Audit skipped tests** — grep for `[Fact(Skip` and `[Theory(Skip` across all test files. Present as a table: `| Class | Test | Skip reason | Has ticket ref? |`. Flag any without a ticket reference as a required fix before the sweep touches that class.
-12. **Audit assertion anti-patterns** — grep across all test files for: `Assert\.True\(.*==`, `Assert\.True\(.*!=`, `Assert\.Equal\(true,`, `Assert\.Equal\(false,`, `Assert\.Equal\(null,`, `Assert\.NotEqual\(null,`. Present a summary count by file. Not a blocker, but surfaces scope before the sweep starts.
+9. **Generate skeleton test classes** — for each production class confirmed for creation, generate a test file with one test method per public member as a placeholder marked `// TODO: implement`. Follow the detected framework's attributes (`[Fact]`, `[Test]`, `[TestMethod]`). Respect auto/pause from upfront config.
+10. **Run baseline build** — `dotnet build {test-project}` for each selected test project; if it fails, ask question 7 above
+11. **Detect duplicate test IDs** — run `dotnet test {project} --list-tests 2>&1 | sort | uniq -d` against each test project. Any output line is a duplicate display name that xUnit will silently skip. Present results as a table: `| File | Data source | Example duplicate display name |`. Treat each flagged data source as a required fix before the sweep touches that class.
+12. **Audit skipped tests** — grep for `[Fact(Skip` and `[Theory(Skip` across all test files. Present as a table: `| Class | Test | Skip reason | Has ticket ref? |`. Flag any without a ticket reference as a required fix before the sweep touches that class.
+13. **Audit assertion anti-patterns** — grep across all test files for: `Assert\.True\(.*==`, `Assert\.True\(.*!=`, `Assert\.Equal\(true,`, `Assert\.Equal\(false,`, `Assert\.Equal\(null,`, `Assert\.NotEqual\(null,`. Present a summary count by file. Not a blocker, but surfaces scope before the sweep starts.
+14. **Audit `async void` tests** — grep for `async void` in test files. Present as a table: `| File | Method |`. Flag each as a required fix — `async void` tests crash the process on failure instead of reporting a test failure.
+15. **Audit test project hygiene** — for each test `.csproj`, check: `<IsPackable>false</IsPackable>` is present; no references to outdated framework versions (xUnit v1/v2, MSTest v1/v2); analyzer packages present per detected framework. Present as a table: `| Project | Issue |`.
+16. **Detect duplicate test patterns** — within each test class, group `[Fact]`/`[Test]`/`[TestMethod]` methods whose bodies differ only by literal values. List candidates for parameterized refactoring. Not a blocker, but surfaces scope before the sweep loop.
 
 Present all discovery findings before starting the sweep loop.
 
@@ -89,7 +96,9 @@ For each class:
     | JustMock        | `justmock-csharp`      |
     | Unknown         | No skill — inform user |
 
-2. **Apply general rules** — apply the [General Quality Checklist](references/quality-checklist.md) at every class regardless of framework. Check specifically: any test that mocks the class under test is broken — the mock intercepts the method under test and returns the type default instead of running real logic. See the detected mocking library's companion skill for the framework-specific pattern and fix.
+2. **Apply general rules** — apply the [General Quality Checklist](references/quality-checklist.md) and the detected sub-skill's [QUALITY-CHECKLIST.md](skills/{detected-framework}/QUALITY-CHECKLIST.md) at every class regardless of framework. Check specifically: any test that mocks the class under test is broken — the mock intercepts the method under test and returns the type default instead of running real logic. See the detected mocking library's companion skill for the framework-specific pattern and fix.
+
+2a. **Refactor duplicate tests to parameterized** — for methods flagged in discovery step 16, collapse literal-only-different methods into a single parameterized test (`[Theory]`/`[TestCase]`/`[DataRow]`). Follow the detected framework's theory data pattern from the companion skill. Respect auto/pause from upfront config.
 
 3. **Sub-agents** — spawn a sub-agent per the thresholds defined in the detected test framework skill. Follow the [Sub-Agent Briefing Template](agents/subagents.md) exactly.
 
@@ -113,23 +122,32 @@ For each class:
 
 | Skill                                                  | Status                     |
 | ------------------------------------------------------ | -------------------------- |
-| [../xunit-csharp/SKILL.md](../xunit-csharp/SKILL.md)   | Full                       |
-| [../nunit-csharp/SKILL.md](../nunit-csharp/SKILL.md)   | Stub — expand on first use |
-| [../mstest-csharp/SKILL.md](../mstest-csharp/SKILL.md) | Stub — expand on first use |
+| [skills/xunit-csharp/SKILL.md](skills/xunit-csharp/SKILL.md)   | Full                       |
+| [skills/nunit-csharp/SKILL.md](skills/nunit-csharp/SKILL.md)   | Stub — expand on first use |
+| [skills/mstest-csharp/SKILL.md](skills/mstest-csharp/SKILL.md) | Stub — expand on first use |
 
 **Mocking framework skills:**
 
-| Skill                                                            | Status                     |
-| ---------------------------------------------------------------- | -------------------------- |
-| [../nsubstitute-csharp/SKILL.md](../nsubstitute-csharp/SKILL.md) | Full                       |
-| [../moq-csharp/SKILL.md](../moq-csharp/SKILL.md)                 | Stub — expand on first use |
-| [../rhinomocks-csharp/SKILL.md](../rhinomocks-csharp/SKILL.md)   | Stub — expand on first use |
-| [../justmock-csharp/SKILL.md](../justmock-csharp/SKILL.md)       | Stub — expand on first use |
+| Skill                                                                | Status                     |
+| -------------------------------------------------------------------- | -------------------------- |
+| [skills/nsubstitute-csharp/SKILL.md](skills/nsubstitute-csharp/SKILL.md) | Full                       |
+| [skills/moq-csharp/SKILL.md](skills/moq-csharp/SKILL.md)                 | Stub — expand on first use |
+| [skills/rhinomocks-csharp/SKILL.md](skills/rhinomocks-csharp/SKILL.md)   | Stub — expand on first use |
+| [skills/justmock-csharp/SKILL.md](skills/justmock-csharp/SKILL.md)       | Stub — expand on first use |
 
 **Reference files:**
 
-| Reference                                                          | Contents                                                                           |
-| ------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
-| [references/quality-checklist.md](references/quality-checklist.md) | General quality rules applied at every class                                       |
-| [references/multiframework.md](references/multiframework.md)       | Conditional compilation, `#if` patterns, net48 batching, C# language version table |
-| [agents/subagents.md](agents/subagents.md)                         | Sub-agent briefing template and sweep state tracking                               |
+| Reference                                                                         | Contents                                                                           |
+| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [references/quality-checklist.md](references/quality-checklist.md)                | General quality rules applied at every class                                       |
+| [references/multiframework.md](references/multiframework.md)                      | Conditional compilation, `#if` patterns, net48 batching, C# language version table |
+| [agents/subagents.md](agents/subagents.md)                                        | Sub-agent briefing template and sweep state tracking                               |
+| [skills/xunit-csharp/REFERENCE.md](skills/xunit-csharp/REFERENCE.md)              | xUnit API reference tables                                                         |
+| [skills/xunit-csharp/EXAMPLES.md](skills/xunit-csharp/EXAMPLES.md)                | xUnit worked examples                                                              |
+| [skills/xunit-csharp/ANTI-PATTERNS.md](skills/xunit-csharp/ANTI-PATTERNS.md)      | xUnit framework-specific pitfalls — see also `references/*.md` in that skill       |
+| [skills/nunit-csharp/REFERENCE.md](skills/nunit-csharp/REFERENCE.md)              | NUnit API reference tables                                                         |
+| [skills/nunit-csharp/EXAMPLES.md](skills/nunit-csharp/EXAMPLES.md)                | NUnit worked examples                                                              |
+| [skills/nunit-csharp/ANTI-PATTERNS.md](skills/nunit-csharp/ANTI-PATTERNS.md)      | NUnit framework-specific pitfalls                                                  |
+| [skills/mstest-csharp/REFERENCE.md](skills/mstest-csharp/REFERENCE.md)            | MSTest API reference tables                                                        |
+| [skills/mstest-csharp/EXAMPLES.md](skills/mstest-csharp/EXAMPLES.md)              | MSTest worked examples                                                             |
+| [skills/mstest-csharp/ANTI-PATTERNS.md](skills/mstest-csharp/ANTI-PATTERNS.md)    | MSTest framework-specific pitfalls                                                 |

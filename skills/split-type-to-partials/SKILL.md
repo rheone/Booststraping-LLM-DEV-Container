@@ -1,8 +1,11 @@
 ---
 name: split-type-to-partials
 description: Refactors a C# type (class, record, struct) into partial files split by interface, abstract base class, and functional groupings (Factory, Operators, Events, Delegates, nested types). Co-locates private/internal helpers with the grouping that uses them. Mirrors the split in the corresponding test file. Updates the .csproj with DependentUpon nesting for all partials. Use when asked to "split into partials", "refactor by interface", "break up type", or "add partial files" for a C#/.NET type.
-author: Robert Engelhardt <rheone@gmail.com>
-version: 2.0.0
+license: Apache-2.0
+user-invocable: true
+metadata:
+  author: Robert Engelhardt <rheone@gmail.com>
+  version: 2.0.1
 ---
 
 # split-type-to-partials

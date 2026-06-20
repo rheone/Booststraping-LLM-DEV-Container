@@ -1,9 +1,11 @@
 ---
 name: gen-dotnet-docs-comments
 description: Add and improve XML documentation and comments in C# code. Use when asked to document C#, improve docs, add XML comments, audit documentation, doc warnings, or improve code comments in .NET projects.
-argument-hint: "[TypeName | Namespace.TypeName | TypeName::MemberName] (optional — if omitted, prompts for scope)"
-author: Robert Engelhardt <rheone@gmail.com>
-version: 1.0.0
+license: Apache-2.0
+user-invocable: true
+metadata:
+  author: Robert Engelhardt <rheone@gmail.com>
+  version: 1.0.1
 ---
 
 # gen-dotnet-docs-comments
@@ -17,7 +19,7 @@ For full standards see `./REFERENCE.md`.
 ---
 
 ## Phase 0 — Argument Parsing
--*
+
 If the skill is invoked with an argument, infer scope from the pattern before asking questions:
 
 | Pattern | Interpretation |

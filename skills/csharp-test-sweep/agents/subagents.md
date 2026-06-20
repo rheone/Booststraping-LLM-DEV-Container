@@ -6,9 +6,9 @@ Every sub-agent writing or modifying a test class must receive all of the follow
 
 Sub-agent spawn thresholds (production class has ≥5 public members OR projected test file length >300 lines) are defined in the detected test framework skill see -
 
-- [../xunit-csharp/SKILL.md](../xunit-csharp/SKILL.md) for xUnit projects.
-- [../nunit-csharp/SKILL.md](../nunit-csharp/SKILL.md) for nUnit projects.
-- [../xunit-mstest/SKILL.md](../mstest-csharp/SKILL.md) for MSTest projects.
+- [skills/xunit-csharp/SKILL.md](../skills/xunit-csharp/SKILL.md) for xUnit projects.
+- [skills/nunit-csharp/SKILL.md](../skills/nunit-csharp/SKILL.md) for nUnit projects.
+- [skills/mstest-csharp/SKILL.md](../skills/mstest-csharp/SKILL.md) for MSTest projects.
 
 1. **The production class** under test (full source or path)
 2. **The gap report** from Discovery for that class

@@ -147,7 +147,7 @@ Extensions are installed into the VS Code Server inside the container via the `c
 | `eamodio.gitlens` | Git blame, history, and repository insights |
 | `gruntfuggly.todo-tree` | Aggregates TODO, FIXME, HACK, NOTE comments |
 | `humao.rest-client` | REST API testing via `.http` files |
-| `oderwat.indent-rainbow` | Alternating indentation colours |
+| `oderwat.indent-rainbow` | Alternating indentation colors |
 | `tyriar.sort-lines` | Alphabetically sort selected lines |
 | `yzhang.markdown-all-in-one` | Markdown shortcuts and TOC generation |
 

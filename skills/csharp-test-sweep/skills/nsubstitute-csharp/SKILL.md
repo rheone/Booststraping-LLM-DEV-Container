@@ -1,11 +1,26 @@
 ---
 name: nsubstitute-csharp
 description: Write, update, and improve NSubstitute mock setups in C# test projects. Covers the abstract-class interception trap, partial substitutes, argument matchers, and call verification. Use when writing or reviewing NSubstitute usage in any C# test project regardless of test framework.
-author: Robert Engelhardt <rheone@gmail.com>
-version: 1.0.0
+license: Apache-2.0
+user-invocable: true
+metadata:
+  author: Robert Engelhardt <rheone@gmail.com>
+  version: 2.0.0
 ---
 
 # NSubstitute C# Mocking Skill
+
+## Framework Checklist
+
+Apply these NSubstitute-specific checks during every sweep, after the [General Quality Checklist](../../references/quality-checklist.md).
+
+- [ ] `Substitute.For<T>()` used only for dependencies, not the class under test
+- [ ] Concrete subclass used instead of substitute when testing abstract class methods
+- [ ] `Received` / `DidNotReceive` verification placed in Assert section
+- [ ] `Arg.Any<T>` used sparingly — `CancellationToken` or irrelevant args only
+- [ ] `Arg.Is<T>(predicate)` used when argument value matters for correctness
+- [ ] `Substitute.ForPartsOf<T>` used sparingly (indicates design should be improved)
+- [ ] NSubstitute.Analyzers NuGet package added to the test project
 
 ## Core Rules
 
@@ -17,30 +32,21 @@ version: 1.0.0
 
 ## Anti-Pattern: Substituting the Class Under Test
 
-**Never use `Substitute.For<T>()` when `T` is the class whose behavior you are testing.**
-
-NSubstitute intercepts all virtual method calls on a substitute, including the method under test, and returns the type default instead of executing the real implementation. This produces tests that always pass vacuously — the method under test never runs.
-
-**Broken:**
+**Never use `Substitute.For<T>()` when `T` is the class whose behavior you are testing.** NSubstitute intercepts all virtual methods and returns the type default — the real implementation never runs, producing vacuously passing tests.
 
 ```csharp
-// AbstractIPAddressRange.ToString(format, provider) is virtual.
-// NSubstitute intercepts it and returns "" — the real implementation never executes.
+// BROKEN: NSubstitute intercepts virtual ToString → returns ""; test passes vacuously
 var range = Substitute.For<AbstractIPAddressRange>(head, tail);
 var result = range.ToString("G", CultureInfo.CurrentCulture); // always ""
-Assert.Equal("192.168.1.1 - 192.168.1.42", result);          // always fails
-```
+Assert.Equal("192.168.1.1 - 192.168.1.42", result);
 
-**Fixed — use a concrete subclass that inherits the implementation without overriding it:**
-
-```csharp
-// IPAddressRange inherits AbstractIPAddressRange.ToString without overriding it.
+// FIXED: concrete subclass inherits the implementation
 var range = new IPAddressRange(head, tail);
 var result = range.ToString("G", CultureInfo.CurrentCulture); // real implementation runs
 Assert.Equal("192.168.1.1 - 192.168.1.42", result);
 ```
 
-**Rule**: when the method under test lives on an abstract base class and is `virtual`, instantiate a concrete subclass rather than substituting the abstract type. Substitutes are for *dependencies*, not for the *subject under test*.
+See [`ANTI-PATTERNS.md`](ANTI-PATTERNS.md) for this and 6 other framework-specific pitfalls.
 
 ## When `Substitute.For<AbstractClass>` Is Correct
 
@@ -90,4 +96,4 @@ Use partial substitutes sparingly — they indicate the design may benefit from 
 
 ## Related Skills
 
-This skill is invoked automatically by [`csharp-test-sweep`](../csharp-test-sweep/SKILL.md) when it detects NSubstitute (or Moq / JustMock / RhinoMocks) in the project file. To run a full test suite sweep that delegates here automatically:
+This skill is invoked automatically by [`csharp-test-sweep`](../../SKILL.md) when it detects NSubstitute in the project file.

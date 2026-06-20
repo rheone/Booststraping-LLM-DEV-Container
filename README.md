@@ -38,45 +38,66 @@ A fully configured development container built around modern .NET development. I
 
 ### `skills/`
 
-A set of homegrown skills for AI coding agents. Skills are reusable instruction sets that guide an AI agent's behaviour for specific tasks — composable building blocks that live alongside your project. The skills in this repository are tailored to the C# / .NET development workflow the dev container supports.
+A set of homegrown skills for AI coding agents. Skills are reusable instruction sets that guide an AI agent's behavior for specific tasks — composable building blocks that live alongside your project. The skills in this repository are tailored to the C# / .NET development workflow the dev container supports.
+
+Each skill is invoked by its slash command (shown in parentheses) and lives under `skills/{skill-name}/`. Skill files follow a consistent layout: `SKILL.md` (rules), `REFERENCE.md` (API tables), `EXAMPLES.md` (worked examples), `ANTI-PATTERNS.md` (pitfalls), and `QUALITY-CHECKLIST.md` (design judgment).
 
 #### Orchestration
 
-| Skill | Description |
-|---|---|
-| `csharp-test-sweep` | Systematically sweeps C# test projects one class at a time, reviewing and improving tests against quality standards. Auto-detects the test framework and mocking library from the project file and delegates to the appropriate companion skill. Supports scoped invocation by method, region, class, namespace, or full project. |
+##### `csharp-test-sweep` (`/csharp-test-sweep`)
+
+Orchestrates project-wide test suite improvement. Discovers test projects, detects the test framework (xUnit, NUnit, MSTest) and mocking library (Moq, NSubstitute, RhinoMocks, JustMock), then dispatches to the appropriate companion skills. Runs a 16-step discovery phase — baseline build, theory serializer audit, duplicate test ID detection, skipped-test audit, assertion anti-pattern audit, `async void` audit, project hygiene checks, and duplicate pattern detection for parameterized refactoring. Then iterates each test class with quality checklist application, sub-agent parallelization for large files, ambiguity annotation, and build+test verification per class. Supports scoped targeting: `/csharp-test-sweep` (full project), `/csharp-test-sweep ClassName` (single class), or `/csharp-test-sweep ClassName.Method_Test` (single method).
 
 #### Testing — Frameworks
 
-| Skill | Description |
-|---|---|
-| `xunit-csharp` | Write, update, and improve xUnit v3 unit and integration tests. Covers naming conventions, AAA structure, `[Theory]`/`[Fact]` patterns, `TheoryData<T>`, `IXunitSerializer`, Object Mother, and fixture patterns. |
-| `nunit-csharp` | Write, update, and improve NUnit tests. Stub that expands with NUnit-specific patterns (`[TestCase]`, `[TestCaseSource]`, constraint model) on first use against an NUnit project. |
-| `mstest-csharp` | Write, update, and improve MSTest tests. Stub that expands with MSTest-specific patterns (`[DataTestMethod]`, `[DataRow]`, `[DynamicData]`) on first use. |
+##### `xunit-csharp` (`/csharp-test-sweep` dispatches automatically; standalone: `/xunit-csharp`)
+
+Provides xUnit v3 rules for writing and reviewing tests: `[Fact]` vs `[Theory]` decisions, strongly-typed `TheoryData<T>` with equivalence partitioning, `Assert.Equivalent` for structural comparison, `Assert.Multiple` for batched independent assertions, `ITestOutputHelper` guidance, exception message verification, fixture patterns (`IClassFixture<T>`, `IAsyncLifetime`, `ICollectionFixture<T>`), Object Mother pattern, coverage gap detection, and v1/v2→v3 migration guidance. Includes per-file reference tables, worked examples, framework-specific anti-patterns, and a quality checklist for design judgment.
+
+##### `nunit-csharp` (`/csharp-test-sweep` dispatches automatically; standalone: `/nunit-csharp`)
+
+Provides NUnit v5 rules with constraint-based assertion style (`Assert.That(actual, Is.EqualTo(expected))`), composable constraints (`&`, `|`, `Does`, `Has`, `Throws`), `Assert.Multiple` for batched failures, `[TestCase]`/`[TestCaseSource]`, fixture lifecycle (`[SetUp]`, `[OneTimeSetUp]`), parallelization (`[Parallelizable]`, `[NonParallelizable]`), `[Retry]` for flaky infrastructure, and `[TestFixture]` guidance for base class patterns and constructor injection.
+
+##### `mstest-csharp` (`/csharp-test-sweep` dispatches automatically; standalone: `/mstest-csharp`)
+
+Provides MSTest v4 rules with classic assertion style (`Assert.AreEqual(expected, actual)`), `[DataRow]`/`[DynamicData]` parameterized tests, `CollectionAssert` and `StringAssert` for specialized comparisons, lifecycle attributes (`[TestInitialize]` through `[AssemblyCleanup]`), execution control (`[Timeout]`, `[Retry]`, `[STATestMethod]`), `[DiscoverInternals]` for internal test discovery, metadata and work-item tracing (`[WorkItem]`, `[GitHubWorkItem]`), and `Assert.Multiple` for batched independent assertions.
 
 #### Testing — Mocking Libraries
 
-| Skill | Description |
-|---|---|
-| `nsubstitute-csharp` | Write, update, and improve NSubstitute mock setups. Covers the abstract-class interception trap, partial substitutes, argument matchers, and call verification. |
-| `moq-csharp` | Write, update, and improve Moq mock setups. Stub that expands with Moq-specific patterns (`MockBehavior`, `SetupProperty`, `Capture`, `InSequence`) on first use. |
-| `justmock-csharp` | Write, update, and improve Telerik JustMock mock setups. Covers free vs elevated/profiler mode, `Mock.Arrange`, `Mock.Assert`, and `Behavior` modes. |
-| `rhinomocks-csharp` | Write, update, and improve RhinoMocks mock setups. Stub that expands with RhinoMocks AAA patterns on first use. Flags migration opportunities to NSubstitute or Moq — RhinoMocks is largely unmaintained. |
+##### `moq-csharp` (`/csharp-test-sweep` dispatches automatically; standalone: `/moq-csharp`)
+
+Provides Moq 4.x rules covering the full 80% practical API surface: mock creation with `MockBehavior` (Loose/Strict), `.Setup()`, `.Returns()`/`.ReturnsAsync()`, `.Throws()`, argument matchers (`It.Is<T>`, `It.IsAny<T>`, `It.IsInRange<T>`), verification with `Times`, `SetupSequence` for ordered returns, `Callback` for argument capture, `Capture.In` for collection capture, `SetupProperty` for auto-stubbed properties, `Mock.Of<T>()` for LINQ-to-mocks, and `.Invocations.Clear()` for call-history reset between tests.
+
+##### `nsubstitute-csharp` (`/csharp-test-sweep` dispatches automatically; standalone: `/nsubstitute-csharp`)
+
+Provides NSubstitute rules: `Substitute.For<T>()` for dependency substitution, `.Returns()`/`.ReturnsAsync()` for stubbing, `Arg.Any<T>()` and `Arg.Is<T>()` matchers, `Received()`/`DidNotReceive()` for verification, `Substitute.ForPartsOf<T>()` for partial substitutes with `.When().DoNotCallBase()`, callbacks with computed returns, and `.ClearReceivedCalls()` for call-history reset.
+
+##### `justmock-csharp` (`/csharp-test-sweep` dispatches automatically; standalone: `/justmock-csharp`)
+
+Provides Telerik JustMock rules with explicit free-vs-elevated mode split. Free mode (open-source, virtual-only interception, same constraints as Moq/NSubstitute) is the default for all examples. Elevated mode (commercial license + profiler, can intercept non-virtual/static/sealed members) is documented in a separate section. Covers `Mock.Create<T>()`, `Mock.Arrange()`, `Mock.Assert()` with `Occurs`, `Mock.CreateLike()` for auto-stubbed properties, `Behavior.Strict`/`Loose`, and `DoInstead()` callbacks. Elevated-only: static method mocking, sealed class interception, `DateTime.Now` interception.
+
+##### `rhinomocks-csharp` (`/csharp-test-sweep` dispatches automatically; standalone: `/rhinomocks-csharp`)
+
+Provides RhinoMocks rules for maintaining legacy test suites. AAA style (`MockRepository.GenerateMock<T>()`, `.Stub().Return()`, `.AssertWasCalled()`) is the recommended pattern. Record/replay model is documented but flagged as deprecated. Covers `StructureMap.AutoMocking`/`RhinoAutoMocker` for auto-mocking containers, `GenerateStub<T>()` for property behavior, `GeneratePartialMock<T>()` for partial overrides, and `Arg<T>.Is.Equal()`/`Arg<T>.Is.Anything` matchers. Includes a migration pathway table mapping RhinoMocks APIs to NSubstitute and Moq equivalents. **Not recommended for new projects** — NSubstitute or Moq should be used instead.
 
 #### Documentation
 
-| Skill | Description |
-|---|---|
-| `gen-dotnet-docs-comments` | Add and improve XML documentation comments (`///`) and inline comments (`//`) in C# codebases. Scoped by type, member, or namespace. Writes for senior developer consumers — context, constraints, and domain concepts, not narrative repetition of signatures. |
-| `reverse-engineered-docs` | Reverse-engineers an existing project from source code and produces structured markdown documentation: project overview, DDD domain breakdown, and per-feature docs. Supports interactive and batch modes. |
+##### `gen-dotnet-docs-comments` (`/gen-dotnet-docs-comments`)
+
+Adds and improves XML documentation comments (`///`) and inline comments (`//`) in C# codebases. Targets senior-developer consumers: explains context, constraints, exceptions, and side effects rather than narrating signatures. Supports scoped invocation by type, member, or namespace. Includes reference tables for common XML doc tags and best practices for non-obvious documentation.
+
+##### `reverse-engineered-docs` (`/reverse-engineered-docs`)
+
+Reverse-engineers an existing project from source code and produces structured markdown documentation: project overview, inferred DDD domain boundaries, per-domain feature descriptions, glossary, open questions, and confidence annotations. Every claim is sourced to a file location; test files are used as behavioral evidence. Supports interactive, batch (unattended + sub-agents), and update (diff-and-patch) modes.
 
 #### Refactoring
 
-| Skill | Description |
-|---|---|
-| `split-type-to-partials` | Refactors a C# type into partial files split by implemented interface and functional grouping (Factory, Operators). Mirrors the split in the corresponding test file and updates the `.csproj` with `DependentUpon` nesting. |
+##### `split-type-to-partials` (`/split-type-to-partials`)
 
-> **Note on stubs:** Several mocking and framework skills (`moq-csharp`, `mstest-csharp`, `nunit-csharp`, `rhinomocks-csharp`) ship as stubs. They contain universal rules pre-applied to the library's API but expand automatically with library-specific patterns the first time `csharp-test-sweep` runs against a project using that library.
+Refactors a C# type (class, record, struct) into partial files split by implemented interface and functional grouping (Factory, Operators). Mirrors the split in the corresponding xUnit test file and updates the `.csproj` with `DependentUpon` nesting for all partials. Only valid when the type directly implements or extends more than one type.
+
+---
+
 
 ---
 
