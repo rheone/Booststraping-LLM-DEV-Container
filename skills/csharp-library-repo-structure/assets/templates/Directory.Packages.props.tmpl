@@ -1,0 +1,16 @@
+<Project>
+
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
+  <!--
+    Add one <PackageVersion Include="..." Version="..." /> per dependency
+    used anywhere in the solution. Individual .csproj files reference
+    packages with <PackageReference Include="..." /> -- no Version attribute,
+    it's resolved from here. This is the single source of truth for "what
+    version of X are we on" across every project in the solution.
+  -->
+
+</Project>
