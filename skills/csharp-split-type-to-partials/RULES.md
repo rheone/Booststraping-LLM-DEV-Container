@@ -1,4 +1,4 @@
-# split-type-to-partials — Rules
+# csharp-split-type-to-partials — Rules
 
 ## Member classification {#member-classification}
 

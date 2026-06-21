@@ -1,5 +1,5 @@
 ---
-name: gen-dotnet-docs-comments
+name: csharp-docs-and-comments
 description: Add and improve XML documentation and comments in C# code. Use when asked to document C#, improve docs, add XML comments, audit documentation, doc warnings, or improve code comments in .NET projects.
 license: Apache-2.0
 user-invocable: true
@@ -8,7 +8,7 @@ metadata:
   version: 1.0.1
 ---
 
-# gen-dotnet-docs-comments
+# csharp-docs-and-comments
 
 Adds and improves XML documentation comments (`///`) and inline code comments (`//`) in C# codebases.
 
@@ -79,7 +79,7 @@ Ask all applicable questions together in one `AskUserQuestion` call.
 Before making any edits, confirm a git repo is present and create an isolated branch:
 
 ```bash
-git checkout -b "docs/gen-dotnet-docs-$(echo '<scope>' | tr '.' '-' | tr '[:upper:]' '[:lower:]')-$(date +%Y%m%d%H%M)"
+git checkout -b "docs/csharp-docs-and-comments-$(echo '<scope>' | tr '.' '-' | tr '[:upper:]' '[:lower:]')-$(date +%Y%m%d%H%M)"
 ```
 
 All edits land on this branch. Report the branch name at the end with review instructions.
@@ -108,7 +108,7 @@ For each sub-agent batch, compose this prompt (fill in bracketed values):
 You are a C# documentation specialist for a .NET codebase.
 
 STEP 1 — Read the standards:
-  Read the file at: gen-dotnet-docs-comments/./REFERENCE.md
+  Read the file at: csharp-docs-and-comments/./REFERENCE.md
   Follow every rule in it. Pay particular attention to the Quality Checklist (last section).
 
 STEP 2 — Understand the task:

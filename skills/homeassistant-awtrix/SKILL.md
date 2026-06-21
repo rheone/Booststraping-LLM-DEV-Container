@@ -1,5 +1,5 @@
 ---
-name: home-assistant-awtrix
+name: homeassistant-awtrix
 description: >-
   Control AWTRIX 3 custom firmware on Ulanzi TC001 Smart Pixel Clocks via Home
   Assistant. Sends notifications, manages custom apps, adjusts display settings,

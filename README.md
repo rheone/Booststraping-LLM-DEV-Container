@@ -82,7 +82,7 @@ Provides RhinoMocks rules for maintaining legacy test suites. AAA style (`MockRe
 
 #### Documentation
 
-##### `gen-dotnet-docs-comments` (`/gen-dotnet-docs-comments`)
+##### `csharp-docs-and-comments` (`/csharp-docs-and-comments`)
 
 Adds and improves XML documentation comments (`///`) and inline comments (`//`) in C# codebases. Targets senior-developer consumers: explains context, constraints, exceptions, and side effects rather than narrating signatures. Supports scoped invocation by type, member, or namespace. Includes reference tables for common XML doc tags and best practices for non-obvious documentation.
 
@@ -92,7 +92,7 @@ Reverse-engineers an existing project from source code and produces structured m
 
 #### Refactoring
 
-##### `split-type-to-partials` (`/split-type-to-partials`)
+##### `csharp-split-type-to-partials` (`/csharp-split-type-to-partials`)
 
 Refactors a C# type (class, record, struct) into partial files split by implemented interface and functional grouping (Factory, Operators). Mirrors the split in the corresponding xUnit test file and updates the `.csproj` with `DependentUpon` nesting for all partials. Only valid when the type directly implements or extends more than one type.
 

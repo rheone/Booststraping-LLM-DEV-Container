@@ -1,4 +1,4 @@
-﻿# split-type-to-partials — Organization Guide
+﻿# csharp-split-type-to-partials — Organization Guide
 
 ## Why split into partials?
 

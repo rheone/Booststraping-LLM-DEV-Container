@@ -1,5 +1,5 @@
 ---
-name: home-assistant-pixoo64
+name: homeassistant-pixoo64
 description: >-
   Control Divoom Pixoo 64 displays via Home Assistant. Sends page data
   (components, clock, GIF, visualizer, fuel, PV, progress bar), manages

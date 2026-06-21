@@ -1,6 +1,6 @@
 # C# Documentation Specialist Reference
 
-This file is the authoritative standards reference for the `gen-dotnet-docs-comments` skill.
+This file is the authoritative standards reference for the `csharp-docs-and-comments` skill.
 Sub-agents: read this file in full before editing any C# code.
 
 ---

@@ -1,4 +1,4 @@
-# split-type-to-partials — Testing Guide
+# csharp-split-type-to-partials — Testing Guide
 
 ## Test partial template {#test-partial-template}
 
