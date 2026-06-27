@@ -160,6 +160,8 @@ Installed by `post-create.sh` via `dotnet tool install -g`. Idempotent — updat
 | Tool | Purpose |
 |---|---|
 | `dotnet-ef` | Entity Framework Core migrations and scaffolding |
+| `dotnet-format` | Opinionated C# code style and analyzer fixer |
+| `dotnet-monitor` | Production diagnostics — captures traces, dumps, GC info from running processes |
 | `dotnet-outdated-tool` | Identifies outdated NuGet package references |
 | `dotnet-script` | Run C# scripts (`.csx`) directly from the terminal |
 | `dotnet-trace` | Collect runtime performance traces |
@@ -203,6 +205,40 @@ LSP servers start lazily when a matching file is opened.
 
 ---
 
+## Pre-commit Hooks
+
+The container installs the [pre-commit](https://pre-commit.com) framework and deploys a `.pre-commit-config.yaml` to the workspace root. To activate:
+
+```bash
+cd /workspace && pre-commit install
+```
+
+Once installed, the following hooks run on every `git commit`:
+
+| Hook | What it checks | Configuration |
+|---|---|---|
+| `trailing-whitespace` | Removes trailing whitespace from all files | — |
+| `end-of-file-fixer` | Ensures files end with a trailing newline | — |
+| `check-yaml` | Validates YAML syntax | — |
+| `check-added-large-files` | Rejects files >512 KB | `maxkb: 512` |
+| `codespell` | Spots common misspellings in source code | Ignore list in config |
+| `markdownlint` | Lints Markdown files | Disables `MD013` (line length) |
+| `csharpier` | Re-formats C# files with CSharpier | System-installed `dotnet csharpier` |
+
+To update hook versions to the latest available:
+
+```bash
+pre-commit autoupdate
+```
+
+To run on all files without committing (useful for CI or first-time setup):
+
+```bash
+pre-commit run --all-files
+```
+
+---
+
 ## Lifecycle Scripts
 
 ### `post-create.sh`
@@ -212,13 +248,15 @@ Runs once after the container is first created. Responsibilities:
 - Configures the git config directory
 - Installs Oh My Zsh and sets Zsh as the default shell
 - Configures Oh My Posh for Zsh and appends to `.zshrc`
-- Installs .NET global tools (`dotnet-ef`, `dotnet-script`, `dotnet-trace`, `dotnet-counters`, `dotnet-dump`, `dotnet-outdated`, `csharp-ls`)
+- Installs .NET global tools (`dotnet-ef`, `dotnet-format`, `dotnet-monitor`, `dotnet-script`, `dotnet-trace`, `dotnet-counters`, `dotnet-dump`, `dotnet-outdated`, `csharp-ls`)
 - Installs the Python language server (`pyright`) via npm
 - Creates and chowns the `claude-data` and `claude-runtime` volume directories
 - Redirects volatile Claude state (plugins, marketplaces, cache) via symlinks into the `claude-runtime` volume
 - Copies workspace `.claude-skills` into the `claude-data` volume (no-clobber)
 - Registers the official Anthropic plugin marketplace and installs `csharp-lsp` and `pyright-lsp`
 - Deploys `opencode.jsonc` to `~/.config/opencode/`
+- Configures Zsh completions (dotnet, git) and shell aliases
+- Installs `pre-commit` framework and deploys `.pre-commit-config.yaml` to the workspace
 - Restores NuGet packages for any `.sln` files found in the workspace
 - Configures the PowerShell profile with Oh My Posh
 
@@ -486,6 +524,17 @@ After the failure, open `.devcontainer/post-create.log` in VS Code for a clean o
 ### Line Endings
 
 Line endings are standardized through a combination of `.editorconfig` (per-directory), VS Code settings (`files.eol: "\n"`), `.gitattributes` (per-repository), and `git config core.autocrlf false` (set in `post-start.sh`). Shell scripts must have LF endings — CRLF causes bash to fail with `$'\r': command not found`.
+
+### `devcontainer-lock.json` — Pinning Feature Versions
+
+The lock file pins exact versions of all devcontainer features for reproducible builds. To update pinned versions (e.g. after a new SDK release), delete the lock file and rebuild:
+
+```bash
+rm .devcontainer/devcontainer-lock.json
+# Then: Dev Containers: Rebuild and Reopen in Container
+```
+
+The lock file is auto-regenerated on rebuild. Check it in to keep builds deterministic.
 
 ### Non-root User
 

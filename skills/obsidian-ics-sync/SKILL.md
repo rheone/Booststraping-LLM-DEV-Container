@@ -1,11 +1,11 @@
 ---
 name: obsidian-ics-sync
-description: Extracts non-recurring calendar events from an ICS file and writes them into Obsidian daily notes. Creates missing daily notes from a template, preserves existing content, and creates wikilinks for known entities (people, pets, places, businesses). Use when the user mentions syncing a calendar to Obsidian, importing ICS/iCal events, populating daily notes from a calendar, or merging calendar data into a vault. Depends on: calendar skill (ICS parsing), obsidian-markdown skill (wikilinks). Python 3.6+ required.
+description: Extracts non-recurring calendar events from an ICS file and writes them into Obsidian daily notes. Creates missing daily notes from a template, preserves existing content, and creates wikilinks for known entities (people, pets, places, businesses). Use when the user mentions syncing a calendar to Obsidian, importing ICS/iCal events, populating daily notes from a calendar, or merging calendar data into a vault. Depends on: calendar skill (ICS parsing), obsidian skill (wikilinks). If missing, install obsidian from https://github.com/kepano/obsidian-skills via `npx skills add git@github.com:kepano/obsidian-skills.git` and calendar from https://github.com/aisa-group/skill-inject. Python 3.6+ required.
 license: Apache-2.0
 user-invocable: true
 metadata:
   author: Robert Engelhardt <rheone@gmail.com>
-  version: 1.0.1
+  version: 1.1.0
 ---
 
 # Obsidian ICS-to-Daily-Notes Sync

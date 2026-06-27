@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+# /init — Scaffold a new .NET project in an empty workspace.
+#
+# Usage:
+#   /init                  Interactive prompt
+#   /init webapi           dotnet new webapi
+#   /init webapp           dotnet new blazor
+#   /init classlib         dotnet new classlib
+#   /init xunit            dotnet new xunit
+#   /init mstest           dotnet new mstest
+#   /init sln <name>       dotnet new sln + nested projects (interactive)
+#
+# Run from the workspace root (/workspace).
+
+set -euo pipefail
+
+TEMPLATE="${1:-}"
+
+scaffold() {
+	local template="$1"
+	local name="$2"
+	dotnet new "$template" -n "$name" -o "$name" --no-restore
+	echo "Created ./$name/"
+}
+
+if [ -n "$TEMPLATE" ]; then
+	case "$TEMPLATE" in
+		webapi)
+			scaffold webapi "Api"
+			;;
+		webapp|blazor)
+			scaffold blazor "WebApp"
+			;;
+		classlib)
+			scaffold classlib "Library"
+			;;
+		xunit)
+			scaffold xunit "Tests"
+			;;
+		mstest)
+			scaffold mstest "Tests"
+			;;
+		sln)
+			echo "Interactive solution scaffolding not yet implemented."
+			echo "Usage: dotnet new sln -n MySolution"
+			exit 1
+			;;
+		*)
+			echo "Unknown template '$TEMPLATE'."
+			echo "Available: webapi, webapp, classlib, xunit, mstest, sln"
+			exit 1
+			;;
+	esac
+
+	dotnet restore
+	echo "Done."
+	exit 0
+fi
+
+# Interactive mode.
+echo "Scaffold a new .NET project"
+echo "---------------------------"
+echo "1) webapi   — ASP.NET Core Web API"
+echo "2) blazor   — Blazor Web App"
+echo "3) classlib — Class Library"
+echo "4) xunit    — xUnit Test Project"
+echo "5) mstest   — MSTest Test Project"
+echo ""
+read -rp "Choose [1-5]: " choice
+
+case "$choice" in
+	1) scaffold webapi "Api" ;;
+	2) scaffold blazor "WebApp" ;;
+	3) scaffold classlib "Library" ;;
+	4) scaffold xunit "Tests" ;;
+	5) scaffold mstest "Tests" ;;
+	*) echo "Invalid choice."; exit 1 ;;
+esac
+
+dotnet restore
+echo "Done."

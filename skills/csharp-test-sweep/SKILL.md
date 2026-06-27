@@ -5,7 +5,7 @@ license: Apache-2.0
 user-invocable: true
 metadata:
   author: Robert Engelhardt <rheone@gmail.com>
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 # C# Test Sweep
@@ -96,7 +96,7 @@ For each class:
     | JustMock        | `justmock-csharp`      |
     | Unknown         | No skill — inform user |
 
-2. **Apply general rules** — apply the [General Quality Checklist](references/quality-checklist.md) and the detected sub-skill's [QUALITY-CHECKLIST.md](skills/{detected-framework}/QUALITY-CHECKLIST.md) at every class regardless of framework. Check specifically: any test that mocks the class under test is broken — the mock intercepts the method under test and returns the type default instead of running real logic. See the detected mocking library's companion skill for the framework-specific pattern and fix.
+2. **Apply general rules** — apply the [General Quality Checklist](references/quality-checklist.md) and the detected sub-skill's `skills/{detected-framework}/QUALITY-CHECKLIST.md` at every class regardless of framework. Check specifically: any test that mocks the class under test is broken — the mock intercepts the method under test and returns the type default instead of running real logic. See the detected mocking library's companion skill for the framework-specific pattern and fix.
 
 2a. **Refactor duplicate tests to parameterized** — for methods flagged in discovery step 16, collapse literal-only-different methods into a single parameterized test (`[Theory]`/`[TestCase]`/`[DataRow]`). Follow the detected framework's theory data pattern from the companion skill. Respect auto/pause from upfront config.
 

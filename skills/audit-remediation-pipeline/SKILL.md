@@ -5,7 +5,7 @@ license: Apache-2.0
 user-invocable: true
 metadata:
   author: Robert Engelhardt <rheone@gmail.com>
-  version: 1.0.1
+  version: 1.1.0
 ---
 
 # Audit Remediation Pipeline
@@ -29,7 +29,7 @@ Two formats accepted.
 
 ### Phase 1b: Context (grill-me)
 
-Before starting, if available, load the `grill-me` skill and establish:
+Before starting, if available, load the `grill-me` skill (install via `npx skills@latest add mattpocock/skills`) and establish:
 
 1. **Priorities**: Confirm severity ranking. Must-fix items?
 2. **Constraints**: Language, framework, target versions, SDK compatibility
@@ -53,7 +53,7 @@ For each batch, process findings in the sub-agent pipeline:
 
 | Step | Agent (file) | Responsibility |
 |------|-------------|----------------|
-| 1 | **Research** (`@explore`) | Read affected files, understand context, identify all sites |
+| 1 | **Research** (`@explore`, see [agents/](agents/)) | Read affected files, understand context, identify all sites |
 | 2 | **Pedantic dev** ([`pedantic-dev.md`](agents/pedantic-dev.md)) | Review code correctness, edge cases, security, performance |
 | 3 | **Tech writer** ([`tech-writer.md`](agents/tech-writer.md)) | Review doc comments, code comments, typos, grammar, terminology |
 | 4 | **Auditor** ([`auditor.md`](agents/auditor.md)) | Verify fix matches the finding; check for regressions; approve/reject |

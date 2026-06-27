@@ -1,6 +1,7 @@
 ---
 name: csharp-library-repo-structure
 description: Bootstraps, audits, and refactors the file/folder layout of a .NET (C#) library repo meant for NuGet distribution. Use whenever the user wants to scaffold a new .NET library repo (asks setup questions like project name, license, target framework); wants an existing .NET repo's structure reviewed, audited, or "cleaned up" to match a consistent layout; mentions stray/committed build artifacts (bin/, obj/, .vs/, TestResults/, crash dumps) cluttering a repo; is missing files or wants broken relative paths fixed in .csproj, sln, slnx, nuget.config. Also trigger for "set up a new C# library like my other repos" or making multiple .NET repos structurally consistent.
+license: Apache-2.0
 user-invocable: true
 metadata:
   author: Robert Engelhardt <rheone@gmail.com>

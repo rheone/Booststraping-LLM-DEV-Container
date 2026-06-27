@@ -11,7 +11,7 @@ trim_trailing_whitespace = true
 # C# conventions.
 [*.cs]
 indent_style = space
-indent_size = 3
+indent_size = 4
 
 # JSON/YAML/Markdown conventions.
 [*.{json,jsonc,yml,yaml,md}]

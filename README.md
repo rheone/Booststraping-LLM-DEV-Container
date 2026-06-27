@@ -40,63 +40,101 @@ A fully configured development container built around modern .NET development. I
 
 A set of homegrown skills for AI coding agents. Skills are reusable instruction sets that guide an AI agent's behavior for specific tasks — composable building blocks that live alongside your project. The skills in this repository are tailored to the C# / .NET development workflow the dev container supports.
 
-Each skill is invoked by its slash command (shown in parentheses) and lives under `skills/{skill-name}/`. Skill files follow a consistent layout: `SKILL.md` (rules), `REFERENCE.md` (API tables), `EXAMPLES.md` (worked examples), `ANTI-PATTERNS.md` (pitfalls), and `QUALITY-CHECKLIST.md` (design judgment).
+Each skill lives under `skills/{skill-name}/`. All skills have `SKILL.md` (rules). Optional companion files include `REFERENCE.md` (API tables), `EXAMPLES.md` (worked examples), `ANTI-PATTERNS.md` (pitfalls), and `QUALITY-CHECKLIST.md` (design judgment) — usage varies by skill.
 
-#### Orchestration
+#### Installing
 
-##### `csharp-test-sweep` (`/csharp-test-sweep`)
+Install all skills in this repository with a single command:
 
-Orchestrates project-wide test suite improvement. Discovers test projects, detects the test framework (xUnit, NUnit, MSTest) and mocking library (Moq, NSubstitute, RhinoMocks, JustMock), then dispatches to the appropriate companion skills. Runs a 16-step discovery phase — baseline build, theory serializer audit, duplicate test ID detection, skipped-test audit, assertion anti-pattern audit, `async void` audit, project hygiene checks, and duplicate pattern detection for parameterized refactoring. Then iterates each test class with quality checklist application, sub-agent parallelization for large files, ambiguity annotation, and build+test verification per class. Supports scoped targeting: `/csharp-test-sweep` (full project), `/csharp-test-sweep ClassName` (single class), or `/csharp-test-sweep ClassName.Method_Test` (single method).
+```bash
+npx skills add rheone/Booststraping-LLM-DEV-Container
+```
 
-#### Testing — Frameworks
+The CLI auto-discovers every `SKILL.md` under the `skills/` directory — no configuration required.
 
-##### `xunit-csharp` (`/csharp-test-sweep` dispatches automatically; standalone: `/xunit-csharp`)
+Or install from a local path:
 
-Provides xUnit v3 rules for writing and reviewing tests: `[Fact]` vs `[Theory]` decisions, strongly-typed `TheoryData<T>` with equivalence partitioning, `Assert.Equivalent` for structural comparison, `Assert.Multiple` for batched independent assertions, `ITestOutputHelper` guidance, exception message verification, fixture patterns (`IClassFixture<T>`, `IAsyncLifetime`, `ICollectionFixture<T>`), Object Mother pattern, coverage gap detection, and v1/v2→v3 migration guidance. Includes per-file reference tables, worked examples, framework-specific anti-patterns, and a quality checklist for design judgment.
+```bash
+npx skills add /path/to/llm-dev-container
+```
 
-##### `nunit-csharp` (`/csharp-test-sweep` dispatches automatically; standalone: `/nunit-csharp`)
+**Install specific skills** using the `--skill` flag:
 
-Provides NUnit v5 rules with constraint-based assertion style (`Assert.That(actual, Is.EqualTo(expected))`), composable constraints (`&`, `|`, `Does`, `Has`, `Throws`), `Assert.Multiple` for batched failures, `[TestCase]`/`[TestCaseSource]`, fixture lifecycle (`[SetUp]`, `[OneTimeSetUp]`), parallelization (`[Parallelizable]`, `[NonParallelizable]`), `[Retry]` for flaky infrastructure, and `[TestFixture]` guidance for base class patterns and constructor injection.
+```bash
+# Install just the test sweep and xUnit companion
+npx skills add rheone/Booststraping-LLM-DEV-Container --skill csharp-test-sweep --skill xunit-csharp
 
-##### `mstest-csharp` (`/csharp-test-sweep` dispatches automatically; standalone: `/mstest-csharp`)
+# Install documentation and refactoring skills
+npx skills add rheone/Booststraping-LLM-DEV-Container --skill reverse-engineered-docs --skill csharp-split-type-to-partials
+```
 
-Provides MSTest v4 rules with classic assertion style (`Assert.AreEqual(expected, actual)`), `[DataRow]`/`[DynamicData]` parameterized tests, `CollectionAssert` and `StringAssert` for specialized comparisons, lifecycle attributes (`[TestInitialize]` through `[AssemblyCleanup]`), execution control (`[Timeout]`, `[Retry]`, `[STATestMethod]`), `[DiscoverInternals]` for internal test discovery, metadata and work-item tracing (`[WorkItem]`, `[GitHubWorkItem]`), and `Assert.Multiple` for batched independent assertions.
+After installing all skills, selectively enable/disable what you need:
 
-#### Testing — Mocking Libraries
+```bash
+npx skills enable csharp-test-sweep reverse-engineered-docs
+npx skills disable homeassistant-awtrix homeassistant-pixoo64
+```
 
-##### `moq-csharp` (`/csharp-test-sweep` dispatches automatically; standalone: `/moq-csharp`)
+To see what's installed and which are active:
 
-Provides Moq 4.x rules covering the full 80% practical API surface: mock creation with `MockBehavior` (Loose/Strict), `.Setup()`, `.Returns()`/`.ReturnsAsync()`, `.Throws()`, argument matchers (`It.Is<T>`, `It.IsAny<T>`, `It.IsInRange<T>`), verification with `Times`, `SetupSequence` for ordered returns, `Callback` for argument capture, `Capture.In` for collection capture, `SetupProperty` for auto-stubbed properties, `Mock.Of<T>()` for LINQ-to-mocks, and `.Invocations.Clear()` for call-history reset between tests.
+```bash
+npx skills list
+```
 
-##### `nsubstitute-csharp` (`/csharp-test-sweep` dispatches automatically; standalone: `/nsubstitute-csharp`)
+#### Skills
 
-Provides NSubstitute rules: `Substitute.For<T>()` for dependency substitution, `.Returns()`/`.ReturnsAsync()` for stubbing, `Arg.Any<T>()` and `Arg.Is<T>()` matchers, `Received()`/`DidNotReceive()` for verification, `Substitute.ForPartsOf<T>()` for partial substitutes with `.When().DoNotCallBase()`, callbacks with computed returns, and `.ClearReceivedCalls()` for call-history reset.
+##### Application Lifecycle & Automation
 
-##### `justmock-csharp` (`/csharp-test-sweep` dispatches automatically; standalone: `/justmock-csharp`)
+| Skill | Description |
+|-------|-------------|
+| [`homeassistant-awtrix`](/homeassistant-awtrix) | Control AWTRIX 3 on Ulanzi TC001 pixel clocks — notifications, custom apps, RTTTL sounds, display settings |
+| [`homeassistant-pixoo64`](/homeassistant-pixoo64) | Control Divoom Pixoo 64 displays — 8 page types, wake-notify-sleep, push notifications |
+| [`obsidian-ics-sync`](/obsidian-ics-sync) | Sync ICS calendar events into Obsidian daily notes with wikilink entity matching |
 
-Provides Telerik JustMock rules with explicit free-vs-elevated mode split. Free mode (open-source, virtual-only interception, same constraints as Moq/NSubstitute) is the default for all examples. Elevated mode (commercial license + profiler, can intercept non-virtual/static/sealed members) is documented in a separate section. Covers `Mock.Create<T>()`, `Mock.Arrange()`, `Mock.Assert()` with `Occurs`, `Mock.CreateLike()` for auto-stubbed properties, `Behavior.Strict`/`Loose`, and `DoInstead()` callbacks. Elevated-only: static method mocking, sealed class interception, `DateTime.Now` interception.
+##### Code Review & Remediation
 
-##### `rhinomocks-csharp` (`/csharp-test-sweep` dispatches automatically; standalone: `/rhinomocks-csharp`)
+| Skill | Description |
+|-------|-------------|
+| [`audit-remediation-pipeline`](/audit-remediation-pipeline) | Systematic multi-agent pipeline for audit findings — research → pedantic review → tech writer → auditor → implement → verify |
 
-Provides RhinoMocks rules for maintaining legacy test suites. AAA style (`MockRepository.GenerateMock<T>()`, `.Stub().Return()`, `.AssertWasCalled()`) is the recommended pattern. Record/replay model is documented but flagged as deprecated. Covers `StructureMap.AutoMocking`/`RhinoAutoMocker` for auto-mocking containers, `GenerateStub<T>()` for property behavior, `GeneratePartialMock<T>()` for partial overrides, and `Arg<T>.Is.Equal()`/`Arg<T>.Is.Anything` matchers. Includes a migration pathway table mapping RhinoMocks APIs to NSubstitute and Moq equivalents. **Not recommended for new projects** — NSubstitute or Moq should be used instead.
+##### Documentation
 
-#### Documentation
+| Skill | Description |
+|-------|-------------|
+| [`csharp-docs-and-comments`](/csharp-docs-and-comments) | Add/improve XML doc comments and inline comments in C# codebases |
+| [`reverse-engineered-docs`](/reverse-engineered-docs) | Reverse-engineer source code into structured markdown docs with confidence annotations |
 
-##### `csharp-docs-and-comments` (`/csharp-docs-and-comments`)
+##### Refactoring
 
-Adds and improves XML documentation comments (`///`) and inline comments (`//`) in C# codebases. Targets senior-developer consumers: explains context, constraints, exceptions, and side effects rather than narrating signatures. Supports scoped invocation by type, member, or namespace. Includes reference tables for common XML doc tags and best practices for non-obvious documentation.
+| Skill | Description |
+|-------|-------------|
+| [`csharp-split-type-to-partials`](/csharp-split-type-to-partials) | Split C# types into partial files by interface/functional grouping |
+| [`csharp-library-repo-structure`](/csharp-library-repo-structure) | Bootstrap, audit, and refactor .NET library repo layout for NuGet distribution |
 
-##### `reverse-engineered-docs` (`/reverse-engineered-docs`)
+##### Test Suite Sweep (Orchestrator)
 
-Reverse-engineers an existing project from source code and produces structured markdown documentation: project overview, inferred DDD domain boundaries, per-domain feature descriptions, glossary, open questions, and confidence annotations. Every claim is sourced to a file location; test files are used as behavioral evidence. Supports interactive, batch (unattended + sub-agents), and update (diff-and-patch) modes.
+| Skill | Description |
+|-------|-------------|
+| [`csharp-test-sweep`](/csharp-test-sweep) | Orchestrates project-wide test suite improvement — detects framework/mocking library, runs 16-step discovery, dispatches to companion skills, iterates each class with verification |
 
-#### Refactoring
+##### Test Frameworks (Companion)
 
-##### `csharp-split-type-to-partials` (`/csharp-split-type-to-partials`)
+| Skill | Description |
+|-------|-------------|
+| [`xunit-csharp`](/xunit-csharp) | xUnit v3 rules — `[Fact]`/`[Theory]`, `TheoryData<T>`, `Assert.Equivalent`, fixtures |
+| [`nunit-csharp`](/nunit-csharp) | NUnit v5 rules — constraint-based assertions, `[TestCase]`, `[Retry]`, parallelization |
+| [`mstest-csharp`](/mstest-csharp) | MSTest v4 rules — `[DataRow]`/`[DynamicData]`, `CollectionAssert`, lifecycle attributes |
 
-Refactors a C# type (class, record, struct) into partial files split by implemented interface and functional grouping (Factory, Operators). Mirrors the split in the corresponding xUnit test file and updates the `.csproj` with `DependentUpon` nesting for all partials. Only valid when the type directly implements or extends more than one type.
+##### Mocking Libraries (Companion)
 
----
+| Skill | Description |
+|-------|-------------|
+| [`moq-csharp`](/moq-csharp) | Moq 4.x — `MockBehavior`, `.Setup().Returns()`, argument matchers, verification |
+| [`nsubstitute-csharp`](/nsubstitute-csharp) | NSubstitute — `Substitute.For<T>()`, `Arg.Is<T>()`, `Received()` verification |
+| [`justmock-csharp`](/justmock-csharp) | Telerik JustMock — free/elevated mode, non-virtual/static interception in elevated |
+| [`rhinomocks-csharp`](/rhinomocks-csharp) | RhinoMocks — legacy suite maintenance, AAA style, migration pathway to NSubstitute/Moq |
+
+The 7 **companion** skills (test frameworks + mocking libraries) live under `skills/csharp-test-sweep/skills/`. They are invoked automatically by `csharp-test-sweep` and can also be used standalone via their skill name.
 
 
 ---
