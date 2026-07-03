@@ -43,11 +43,14 @@ def load_manifest():
 
 def detect_library_name(repo_root: Path) -> str | None:
     src = repo_root / "src"
-    if not src.is_dir():
-        return None
-    sln_candidates = list(src.glob("*.sln"))
+    # Check repo root first (modern convention), then src/
+    sln_candidates = (list(repo_root.glob("*.slnx")) + list(repo_root.glob("*.sln"))
+                      + (list(src.glob("*.slnx")) + list(src.glob("*.sln")) if src.is_dir() else []))
+    sln_candidates = [p for p in sln_candidates if p.is_file()]
     if sln_candidates:
         return sln_candidates[0].stem
+    if not src.is_dir():
+        return None
     # fall back to the first PascalCase dir under src/ that isn't a known suffix dir
     for child in sorted(src.iterdir()):
         if child.is_dir() and not any(
@@ -149,7 +152,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("repo_root", type=Path)
     ap.add_argument("--library-name", default=None)
-    ap.add_argument("--groups", default="", help="comma-separated optional groups to also expect, e.g. benchmarks,smoketests,husky,devcontainer,agent_files")
+    ap.add_argument("--groups", default="", help="comma-separated optional groups to also expect, e.g. benchmarks,smoketests,husky,pre_commit,agent_files")
     args = ap.parse_args()
 
     repo_root = args.repo_root.resolve()
@@ -158,9 +161,7 @@ def main():
 
     active_groups = {g.strip() for g in args.groups.split(",") if g.strip()}
     # auto-detect groups already present so a refactor run doesn't flag e.g.
-    # an existing devcontainer as "optional and absent" when it's right there
-    if (repo_root / ".devcontainer").is_dir():
-        active_groups.add("devcontainer")
+    # existing files as "optional and absent" when they're right there
     if (repo_root / ".husky").is_dir():
         active_groups.add("husky")
     if (repo_root / "AGENTS.md").exists() or (repo_root / "CLAUDE.md").exists():
@@ -169,6 +170,8 @@ def main():
         active_groups.add("benchmarks")
     if (repo_root / "smoketests").is_dir() or list(repo_root.glob("*SmokeTests")):
         active_groups.add("smoketests")
+    if (repo_root / ".pre-commit-config.yaml").exists():
+        active_groups.add("pre_commit")
 
     missing, present = diff_against_manifest(repo_root, manifest, library_name, active_groups)
 

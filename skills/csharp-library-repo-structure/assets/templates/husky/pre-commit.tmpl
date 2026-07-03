@@ -1,9 +1,3 @@
-#!/usr/bin/env sh
+#!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
-
-cd src
-dotnet format --no-restore --verify-no-changes || {
-  echo "Formatting issues found -- running 'dotnet format' to fix them. Re-stage and commit again."
-  dotnet format --no-restore
-  exit 1
-}
+dotnet husky run

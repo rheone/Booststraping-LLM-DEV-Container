@@ -1,10 +1,22 @@
 {
-  "version": "0.1",
   "tasks": [
     {
-      "id": "format",
-      "command": "dotnet format --no-restore",
-      "cwd": "src"
+      "name": "style",
+      "command": "dotnet",
+      "args": ["format", "style", "--no-restore", "--include", "${staged}"],
+      "include": ["src/**/*.cs", "smoketests/**/*.cs"]
+    },
+    {
+      "name": "analyzers",
+      "command": "dotnet",
+      "args": ["format", "analyzers", "--no-restore", "--include", "${staged}"],
+      "include": ["src/**/*.cs", "smoketests/**/*.cs"]
+    },
+    {
+      "name": "csharpier",
+      "command": "dotnet",
+      "args": ["csharpier", "format", "--config-path", "./.csharpierrc.json", "${staged}"],
+      "include": ["src/**/*.cs", "smoketests/**/*.cs"]
     }
   ]
 }

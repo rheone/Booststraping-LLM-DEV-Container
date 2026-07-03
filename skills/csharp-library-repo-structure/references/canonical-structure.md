@@ -12,12 +12,16 @@ change the other.
 ├── CONTRIBUTING.md
 ├── CODE_OF_CONDUCT.md
 ├── CHANGELOG.md
+├── HUMANS.md
 │
 ├── AGENTS.md                          # [agent_files] canonical agent instructions
 ├── CLAUDE.md                          # [agent_files] thin pointer to AGENTS.md only
-├── .claude/                           # claude [agent_files] gitignored, machine-local
-├── .opencode/                         # opencode [agent_files] gitignored, machine-local
-├── .agents/                           # generic [agent_files] gitignored, machine-local
+├── .claude/                           # [agent_files] gitignored, machine-local
+├── .opencode/                         # [agent_files] gitignored, machine-local
+├── .agents/                           # [agent_files] gitignored, machine-local
+│
+├── {Lib}.slnx                         # solution file at repo root
+├── global.json                        # pinned SDK version
 │
 ├── docs/
 │   └── design/
@@ -25,8 +29,6 @@ change the other.
 │       ├── ROADMAP.md
 │       └── adr/
 │           └── 0001-record-architecture-decisions.md
-│   (published user-facing docs, if any, also live under docs/ -- see
-│    "Docs are project-specific" below)
 │
 ├── .github/
 │   ├── dependabot.yml
@@ -35,19 +37,20 @@ change the other.
 │   ├── ISSUE_TEMPLATE/
 │   │   ├── bug_report.md
 │   │   └── feature_request.md
+│   ├── codeql/
+│   │   └── codeql-config.yml
 │   └── workflows/
 │       ├── build.yml
 │       ├── codeql.yml
-│       └── publish.yml
-│
-├── .devcontainer/                     # [devcontainer]
-│   ├── devcontainer.json
-│   ├── Dockerfile
-│   └── post-create.sh
+│       ├── publish.yml
+│       └── dependency-review.yml
 │
 ├── .husky/                            # [husky]
 │   ├── pre-commit
 │   └── task-runner.json
+│
+├── .pre-commit-config.yaml            # [pre_commit] codespell, markdownlint
+├── dictionary.dic                     # [pre_commit] codespell custom words
 │
 ├── .config/
 │   └── dotnet-tools.json
@@ -55,13 +58,13 @@ change the other.
 ├── .editorconfig
 ├── .gitattributes
 ├── .gitignore
+├── .csharpierrc.json
+├── stylecop.json
 │
 ├── src/
-│   ├── {Lib}.sln
 │   ├── Directory.Build.props
 │   ├── Directory.Build.targets
 │   ├── Directory.Packages.props
-│   ├── global.json
 │   ├── {Lib}/
 │   │   ├── {Lib}.csproj
 │   │   ├── packages.lock.json
@@ -79,6 +82,7 @@ change the other.
 │
 └── smoketests/                        # [smoketests]
     └── {Lib}.SmokeTests/
+        ├── README.md
         ├── nuget.config
         ├── run-smoke-tests.sh
         ├── run-smoke-tests.ps1
@@ -97,31 +101,24 @@ change the other.
   breaks the "find a project by its name" mental model and most IDEs assume
   folder-name == project-name anyway.
 - This is the one rule most existing repos drift on (mixing
-  `Arcus.SmokeTests/` at root with lowercase `src/docs`), so it's worth treating
+  `{Lib}.SmokeTests/` at root with lowercase `src/`), so it's worth treating
   as non-negotiable across projects you want to look "the same."
 
 ## Why generated files are `template: null`
 
-`.sln`, `.csproj`, and `packages.lock.json` are deliberately **not** stubbed
+`.slnx`, `.csproj`, and `packages.lock.json` are deliberately **not** stubbed
 from static templates in this skill. Hand-authored XML for these drifts from
 whatever the installed SDK actually expects (project SDK versions, GUIDs,
 target framework monikers) and is a common source of "this won't open in
 Visual Studio" bugs. Always generate these with the `dotnet` CLI
-(`dotnet new classlib`, `dotnet new sln`, `dotnet sln add`,
+(`dotnet new classlib`, `dotnet new slnx`, `dotnet sln add`,
 `dotnet restore --use-lock-file`) and only hand-edit narrow, well-understood
 pieces afterward (e.g. adding a `<ProjectReference>`).
-
-## Docs are project-specific
-
-Whether published docs use Sphinx (`conf.py`, `.rst`, `requirements.txt`,
-`.readthedocs.yaml`), DocFX (`docfx.json`, `.md` + YAML), or nothing at all is
-a per-project choice this skill asks about rather than assumes. Only
-`docs/design/` (maintainer-facing PRD/ADRs/roadmap) is treated as universal.
 
 ## What "optional" actually means
 
 Every entry tagged with a `group` in `canonical-structure.json`
-(`benchmarks`, `smoketests`, `docs_sphinx`, `devcontainer`, `husky`,
+(`benchmarks`, `smoketests`, `husky`, `pre_commit`,
 `agent_files`, `multi_project`) is opt-in. Don't stamp every group into every
 repo "for consistency" -- a 200-line utility library doesn't need
 BenchmarkDotNet, and not every internal tool needs a CODE_OF_CONDUCT aimed at

@@ -4,10 +4,8 @@
   "optional_groups": {
     "benchmarks": "BenchmarkDotNet project under src/",
     "smoketests": "Package-consumption smoke tests under smoketests/",
-    "docs_sphinx": "Sphinx-based published docs under docs/ (alternative: docs_docfx or none)",
-    "docs_docfx": "DocFX-based published docs under docs/ (alternative: docs_sphinx or none)",
-    "devcontainer": ".devcontainer/ for Codespaces / VS Code remote dev",
     "husky": ".husky/ pre-commit hooks (dotnet format, lint)",
+    "pre_commit": ".pre-commit-config.yaml + dictionary.dic (codespell, markdownlint, trailing-whitespace)",
     "agent_files": "AGENTS.md / CLAUDE.md and related agent-tooling conventions",
     "multi_project": "Split library into LibraryName + LibraryName.Abstractions"
   },
@@ -19,6 +17,7 @@
     { "path": "CONTRIBUTING.md", "type": "file", "group": null, "template": "CONTRIBUTING.md.tmpl" },
     { "path": "CODE_OF_CONDUCT.md", "type": "file", "group": null, "template": "CODE_OF_CONDUCT.md.tmpl" },
     { "path": "CHANGELOG.md", "type": "file", "group": null, "template": "CHANGELOG.md.tmpl" },
+    { "path": "HUMANS.md", "type": "file", "group": null, "template": "HUMANS.md.tmpl" },
 
     { "path": "AGENTS.md", "type": "file", "group": "agent_files", "template": "AGENTS.md.tmpl" },
     { "path": "CLAUDE.md", "type": "file", "group": "agent_files", "template": "CLAUDE.md.tmpl", "note": "Must stay a thin pointer to AGENTS.md, never a forked duplicate." },
@@ -38,24 +37,27 @@
     { "path": ".github/workflows/build.yml", "type": "file", "group": null, "template": "workflows/build.yml.tmpl" },
     { "path": ".github/workflows/codeql.yml", "type": "file", "group": null, "template": "workflows/codeql.yml.tmpl" },
     { "path": ".github/workflows/publish.yml", "type": "file", "group": null, "template": "workflows/publish.yml.tmpl" },
-
-    { "path": ".devcontainer/devcontainer.json", "type": "file", "group": "devcontainer", "template": "devcontainer/devcontainer.json.tmpl" },
-    { "path": ".devcontainer/Dockerfile", "type": "file", "group": "devcontainer", "template": "devcontainer/Dockerfile.tmpl" },
-    { "path": ".devcontainer/post-create.sh", "type": "file", "group": "devcontainer", "template": "devcontainer/post-create.sh.tmpl" },
+    { "path": ".github/workflows/dependency-review.yml", "type": "file", "group": null, "template": "workflows/dependency-review.yml.tmpl" },
+    { "path": ".github/codeql/codeql-config.yml", "type": "file", "group": null, "template": "codeql/codeql-config.yml.tmpl" },
 
     { "path": ".husky/pre-commit", "type": "file", "group": "husky", "template": "husky/pre-commit.tmpl" },
     { "path": ".husky/task-runner.json", "type": "file", "group": "husky", "template": "husky/task-runner.json.tmpl" },
+
+    { "path": ".pre-commit-config.yaml", "type": "file", "group": "pre_commit", "template": "pre-commit-config.yaml.tmpl" },
+    { "path": "dictionary.dic", "type": "file", "group": "pre_commit", "template": "dictionary.dic.tmpl" },
 
     { "path": ".config/dotnet-tools.json", "type": "file", "group": null, "template": "dotnet-tools.json.tmpl" },
     { "path": ".editorconfig", "type": "file", "group": null, "template": "editorconfig.tmpl" },
     { "path": ".gitattributes", "type": "file", "group": null, "template": "gitattributes.tmpl" },
     { "path": ".gitignore", "type": "file", "group": null, "template": "gitignore.tmpl" },
+    { "path": ".csharpierrc.json", "type": "file", "group": null, "template": "csharpierrc.json.tmpl" },
+    { "path": "stylecop.json", "type": "file", "group": null, "template": "stylecop.json.tmpl" },
 
-    { "path": "src/{{LibraryName}}.sln", "type": "file", "group": null, "template": null, "note": "Generate with `dotnet new sln` + `dotnet sln add`, never hand-author. See SKILL.md." },
+    { "path": "{{LibraryName}}.slnx", "type": "file", "group": null, "template": null, "note": "Generate with `dotnet new slnx` + `dotnet sln add`, never hand-author. See SKILL.md." },
+    { "path": "global.json", "type": "file", "group": null, "template": "global.json.tmpl" },
     { "path": "src/Directory.Build.props", "type": "file", "group": null, "template": "Directory.Build.props.tmpl" },
     { "path": "src/Directory.Build.targets", "type": "file", "group": null, "template": "Directory.Build.targets.tmpl" },
     { "path": "src/Directory.Packages.props", "type": "file", "group": null, "template": "Directory.Packages.props.tmpl" },
-    { "path": "src/global.json", "type": "file", "group": null, "template": "global.json.tmpl" },
     { "path": "src/.editorconfig", "type": "file", "group": null, "template": null, "note": "Only needed if source-level rules genuinely differ from root .editorconfig; otherwise omit (don't create a near-duplicate)." },
 
     { "path": "src/{{LibraryName}}/{{LibraryName}}.csproj", "type": "file", "group": null, "template": null, "note": "Generate with `dotnet new classlib`, never hand-author." },
@@ -70,6 +72,7 @@
     { "path": "src/{{LibraryName}}.Benchmarks/run-benchmarks.sh", "type": "file", "group": "benchmarks", "template": "run-benchmarks.sh.tmpl" },
     { "path": "src/{{LibraryName}}.Benchmarks/run-benchmarks.ps1", "type": "file", "group": "benchmarks", "template": "run-benchmarks.ps1.tmpl" },
 
+    { "path": "smoketests/{{LibraryName}}.SmokeTests/README.md", "type": "file", "group": "smoketests", "template": "smoketests.README.md.tmpl" },
     { "path": "smoketests/{{LibraryName}}.SmokeTests/nuget.config", "type": "file", "group": "smoketests", "template": "smoketests.nuget.config.tmpl" },
     { "path": "smoketests/{{LibraryName}}.SmokeTests/run-smoke-tests.sh", "type": "file", "group": "smoketests", "template": "run-smoke-tests.sh.tmpl" },
     { "path": "smoketests/{{LibraryName}}.SmokeTests/run-smoke-tests.ps1", "type": "file", "group": "smoketests", "template": "run-smoke-tests.ps1.tmpl" },
@@ -83,7 +86,7 @@
     "*.nupkg", "*.snupkg",
     "mono_crash.*.json", "*.dmp",
     "smoketests/**/feed/",
-    ".claude/", "devcontainer-lock.json"
+    ".claude/", ".opencode/", ".agents/"
   ],
 
   "casing_rule": "Repo-management wrapper folders (src, docs, smoketests, scripts, references) are lowercase. Actual .NET project folders and their namespaces are PascalCase and match the .csproj/assembly name exactly (e.g. src/{{LibraryName}}.Tests, not src/tests).",

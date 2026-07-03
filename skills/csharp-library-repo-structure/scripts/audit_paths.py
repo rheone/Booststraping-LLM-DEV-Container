@@ -2,8 +2,8 @@
 """
 audit_paths.py -- Find and optionally fix broken or suspicious path references
 across a .NET repo: .csproj/.sln project references, Directory.Build.props
-imports, nuget.config feeds, devcontainer/Dockerfile/compose paths, GitHub
-Actions workflow paths, shell/ps1 scripts, and docs/conf.py.
+imports, nuget.config feeds, GitHub Actions workflow paths, shell/ps1 scripts,
+and docs configuration files.
 
 Report mode (default, always safe):
     python3 audit_paths.py <repo-root>
@@ -87,16 +87,12 @@ HANDLERS = [
     Handler("sln", "*.sln", [
         re.compile(r'=\s*"[^"]+",\s*"([^"]+\.csproj)"'),
     ]),
+    Handler("slnx", "*.slnx", [
+        re.compile(r'<Project\s+Path="([^"]+)"'),
+        re.compile(r'<File\s+Path="([^"]+)"'),
+    ]),
     Handler("nuget.config", "nuget.config", [
         re.compile(r'<add\s+key="[^"]+"\s+value="(\.[^"]*)"'),
-    ]),
-    Handler("devcontainer.json", "devcontainer.json", [
-        re.compile(r'"dockerFile"\s*:\s*"([^"]+)"'),
-        re.compile(r'"dockerComposeFile"\s*:\s*"([^"]+)"'),
-    ]),
-    Handler("docker-compose", "docker-compose*.yml", [
-        re.compile(r'context:\s*(\S+)'),
-        re.compile(r'dockerfile:\s*(\S+)'),
     ]),
     Handler("github workflow", "*.yml", [
         re.compile(r'working-directory:\s*([./][\S]*)'),

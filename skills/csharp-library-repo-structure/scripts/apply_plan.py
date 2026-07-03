@@ -24,6 +24,7 @@ human reviewing it understands *why* before approving --execute.
 """
 import argparse
 import json
+import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -126,7 +127,8 @@ def do_run(repo_root, action, execute, log, errors, global_vars):
     log.append(f"$ ({cwd.relative_to(repo_root) or '.'}) {command}")
     if not execute:
         return
-    result = subprocess.run(command, shell=True, cwd=cwd, capture_output=True, text=True)
+    parts = shlex.split(command)
+    result = subprocess.run(parts, cwd=cwd, capture_output=True, text=True)
     if result.returncode != 0:
         errors.append(f"command failed [{command}]: {result.stderr.strip()[:500]}")
 

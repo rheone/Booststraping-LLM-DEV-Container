@@ -17,7 +17,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v4
         with:
-          global-json-file: src/global.json
+          global-json-file: global.json
 
       - name: Restore
         run: dotnet restore --locked-mode
@@ -44,7 +44,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v4
         with:
-          global-json-file: src/global.json
+          global-json-file: global.json
 
       - name: Pack
         working-directory: src
