@@ -56,6 +56,18 @@ npx skills disable audit-remediation-pipeline
 | [`csharp-docs-and-comments`](skills/csharp-docs-and-comments) | Add/improve XML doc comments and inline comments in C# codebases | `--skill csharp-docs-and-comments` |
 | [`reverse-engineered-docs`](skills/reverse-engineered-docs) | Reverse-engineer source code into structured markdown docs with confidence annotations | `--skill reverse-engineered-docs` |
 
+### Diagrams / Documentation
+
+| Skill | Description | Install |
+|-------|-------------|---------|
+| [`mermaid-diagram-generator`](skills/mermaid-diagram-generator) | Generates any Mermaid diagram type (flowchart, sequence, class, ER, Gantt, C4, and 25+ more) as `.mermaid`/`.mmd` files or markdown-embedded blocks, with per-type stable/beta/experimental status | `--skill mermaid-diagram-generator` |
+
+### Legacy Modernization
+
+| Skill | Description | Install |
+|-------|-------------|---------|
+| [`legacy-dotnet-feature-mapper`](skills/legacy-dotnet-feature-mapper) | Reverse-engineer a legacy .NET Framework 4.8 / .NET 5 WebForms + TSQL app into a citable, feature-by-feature map (business rules, permissions, DB behavior) via static analysis only, ahead of a rewrite | `--skill legacy-dotnet-feature-mapper` |
+
 ### Refactoring
 
 | Skill | Description | Install |
