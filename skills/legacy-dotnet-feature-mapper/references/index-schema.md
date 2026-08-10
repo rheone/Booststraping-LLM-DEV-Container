@@ -2,54 +2,102 @@
 
 ## index.md
 
-The master, resumable status tracker. One row per discovered feature. Format:
+The master, resumable status tracker and the authority on scope, coverage, and
+what has actually been produced. Skeleton: `templates/index.md`.
 
 ```markdown
 ---
-last_updated: <date>
-in_scope_csprojs:
-  - <csproj path>
+last_updated: 2026-08-09
+schema_version: 2
+discovery_complete: true
+output_root: "C:/src/acme/docs/legacy-map"
+roots:
+  - src/Web
+  - src/Billing
+scope_ledger:
+  - path: src/Web
+    role: root
+    files: 412
+  - path: src/Acme.Core
+    role: transitive-dep
+    files: 94
+  - path: src/Legacy.Reporting
+    role: excluded
+    reason: "user excluded at kickoff 2026-08-09"
+    files: 380
+  - path: Newtonsoft.Json 9.0.1
+    role: boundary
+    reason: "third-party, no source available"
+    files: 0
+scan_ledger:
+  - path: src/Web
+    files_total: 412
+    files_scanned: 412
+    state: complete
+sql_definitions_path: "db/definitions"
 feature_counts:
-  not_started: <count>
-  in_progress: <count>
-  documented: <count>
-  candidate_orphan_unconfirmed: <count>
+  not_started: 5
+  in_progress: 0
+  documented: 34
+  documented_open_questions: 4
+  verification_failed: 2
+  candidate_orphan_unconfirmed: 1
 ---
 # Feature Index
 
-Last updated: <date>
-In-scope projects: <list of csproj paths currently covered by this index>
+Last updated: 2026-08-09
+Output root: `C:/src/acme/docs/legacy-map`
+Discovery complete: yes
 
-| Feature | Entry Point(s) | Status | Doc | Last Updated | Notes |
-|---|---|---|---|---|---|
-| Order Approval Workflow | `Billing/OrderApproval.aspx.cs` (btnApprove_Click, btnReject_Click) | documented | [features/order-approval-workflow.md](features/order-approval-workflow.md) | 2026-08-08 | |
-| Customer Search | `Search/CustomerSearch.aspx.cs` | not started | - | - | Possibly related to Order Lookup - confirm during deep-dive |
-| Order Lookup | `Search/OrderLookup.aspx.cs` | not started | - | - | |
+| ID | Feature | Entry Point(s) | Size | Status | Doc | Last Updated | Verified | Notes |
+|---|---|---|---|---|---|---|---|---|
+| feat-0001 | Order Approval | `Billing/OrderApproval.aspx.cs` (btnApprove_Click) | M | documented | [features/order-approval.md](features/order-approval.md) | 2026-08-09 | pass 2026-08-09T14:22:07Z | |
+| feat-0002 | Customer Search | `Search/CustomerSearch.aspx.cs` | S | not started | - | - | - | Possibly related to feat-0003 |
 ```
 
-**Status values**: `not started` | `in progress` | `documented` | `candidate orphan/scheduled proc, unconfirmed` (a stored procedure with no traceable in-code caller - needs user confirmation of its actual trigger, typically a SQL Agent job, before it can move to `in progress`)
+**Column order matters** - the validator reads by position:
+`ID | Feature | Entry Point(s) | Size | Status | Doc | Last Updated | Verified | Notes`
 
-Rules:
+**Status values:**
 
-- This file's feat-XXXX IDs are the canonical source of stable feature IDs - assign the next unused number whenever Discovery finds a feature not already in the index, and never reuse or renumber an existing one, even if that feature is later merged/split/renamed
-- Never remove a row or downgrade its status just because a later discovery pass re-scans the same code - only update entry points/notes, never regress status.
-- Add new rows as new entry points are discovered (broader scope in a later session, or a feature found during a deep-dive that wasn't caught in Discovery).
-- Keep the "In-scope projects" line current - if a session covers new csproj files, add them to this list.
+```
+not started
+in progress
+documented
+documented (open questions)      # verified, but a blocking question is open
+verification failed              # written, failed the gate twice
+candidate orphan/scheduled proc, unconfirmed
+```
+
+### Rules
+
+- `feat-XXXX` IDs are canonical and stable: assigned once at Discovery, never
+  reused or renumbered - even on rename, merge, or split.
+- **A row may only claim `documented` / `documented (open questions)` /
+  `verification failed` if the linked doc exists on disk.** The validator
+  enforces this; it is the ghost-completion check.
+- The `Verified` column records the last verification result:
+  `pass <ISO-8601>`, `fail <ISO-8601>`, `manual <ISO-8601>` (script could not
+  run), or `- (pre-v2, unverified)` for migrated v1 rows.
+- Never remove a row or regress a status because a later Discovery re-scanned
+  the same code. Update entry points, size, and notes only.
+- `Size` is never blank. Unsure -> `M` with a note.
+- `feature_counts` must match the rows. Recount whenever a status changes.
+- Keep `scope_ledger` and `scan_ledger` current as scope widens or scanning
+  progresses.
+- `discovery_complete: true` only when every `scan_ledger` entry is `complete`.
 
 ## system-overview.md
 
-App-wide narrative map, kept in sync as features are documented (not written once and forgotten). Structure:
+App-wide narrative map, kept in sync as features are documented.
 
 ```markdown
 ---
 last_updated: <date>
-in_scope_csprojs:
-  - <csproj path>
-feature_counts:
-  not_started: <count>
-  in_progress: <count>
-  documented: <count>
-  candidate_orphan_unconfirmed: <count>
+schema_version: 2
+coverage:
+  documented: 34
+  total_known: 41
 ---
 # System Overview
 
@@ -57,19 +105,25 @@ Last updated: <date>
 
 ## What this application does
 
-Short plain-language summary of the overall app's purpose, built up from documented features so far (this will be incomplete early on - say so).
+Plain-language summary built up from documented features so far. Say plainly
+when this is still incomplete.
 
 ## Feature map
 
-A Mermaid diagram (typically a flowchart or graph) showing how documented features relate - which features feed into which, shared workflows, major modules/areas. Update incrementally; it's fine for this to only reflect features documented so far, with a note on what's not yet covered.
+A Mermaid diagram showing how documented features relate - what feeds into
+what, shared workflows, major modules. Update incrementally; reflecting only
+what is documented so far is fine, with a note on what is not yet covered.
 
 ## Major shared components
 
-Bullet list of the most-depended-on shared-components/ docs (e.g., referenced by 3+ features), since these represent the highest-blast-radius pieces of the old system.
+The most-depended-on `shared-components/` docs (referenced by 3+ features) -
+the highest-blast-radius pieces of the old system.
 
 ## Coverage
 
-X of Y known features documented. Link to index.md for full status.
+34 of 41 known features documented. 4 have open questions, 2 failed
+verification. See index.md for full status.
 ```
 
-Update `system-overview.md` at the end of any deep-dive session that documents at least one new feature - don't let it drift stale.
+Update at the end of any batch that documented at least one new feature. Do not
+let it drift stale.

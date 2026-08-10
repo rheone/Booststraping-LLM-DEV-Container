@@ -1,0 +1,28 @@
+{
+  "$comment": "Copy to <repo-root>/.feature-mapper.json. Paths are repo-relative so the file is portable and reviewable; they are resolved to absolute paths at load time. Committed on purpose, so a teammate (or a second concurrent run) picks up the same configuration.",
+  "schemaVersion": 2,
+  "outputRoot": "docs/legacy-map",
+  "roots": [
+    "src/Billing",
+    "src/Web"
+  ],
+  "sqlDefinitionsPath": "db/definitions",
+  "scope": {
+    "followTransitiveProjectRefs": true,
+    "excluded": [
+      { "path": "src/Legacy.Reporting", "reason": "user excluded at kickoff 2026-08-09" }
+    ]
+  },
+  "batching": {
+    "slotBudget": 3,
+    "slotCost": { "S": 1, "M": 2, "L": 3 }
+  },
+  "afk": {
+    "consecutiveVerificationFailureLimit": 3
+  },
+  "lastSession": {
+    "endedUtc": "2026-08-09T21:04:11Z",
+    "phase": "deep-dive",
+    "lastFeature": "feat-0012"
+  }
+}

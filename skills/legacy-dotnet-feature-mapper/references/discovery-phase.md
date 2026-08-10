@@ -1,54 +1,130 @@
 # Phase 1: Discovery
 
-Goal: build/update `index.md` with every discoverable "feature" in the in-scope projects, each tied to its entry point(s). This phase does NOT write full feature docs - it's a map of what exists and where to start, so deep-dive work can be planned and tracked.
+Goal: build/update `index.md` with every discoverable feature in scope, each
+tied to its entry point(s) **and sized**, so deep-dive work can be batched,
+tracked, and resumed. This phase writes no feature docs.
+
+Discovery must **finish** before deep-dive work is trusted. An incomplete
+discovery produces a false map, and a deep-dive over a false map is confidently
+wrong - which is worse than being obviously unfinished.
 
 ## What counts as an entry point
 
-Search the in-scope `.csproj` files' project directories (and their referenced local dependencies if those are also in scope - do not follow references into out-of-scope projects), plus the DB definitions folder for DB-side entry points. Look for:
+Search everything at or below the roots, plus transitive first-party project
+references per the scope ledger, plus the SQL definitions folder for DB-side
+entry points. Look for:
 
-- **WebForms pages**: `.aspx` files and their code-behind (`.aspx.cs`/`.aspx.vb`), especially `Page_Load`, button/control event handlers, and post-back logic
-- **User controls**: `.ascx` with meaningful independent behavior (skip pure presentational controls with no logic)
-- **MVC/Web API controllers**: public action methods (if the solution mixes WebForms with MVC/Web API, which is common in .NET 4.8/5 migrations)
-- **HTTP handlers**: `.ashx` files, custom `IHttpHandler` implementations
-- **Web services**: `.asmx`, WCF service contracts (`.svc`, `[ServiceContract]`/`[OperationContract]`)
-- **Webhooks**: any controller action/handler that receives inbound calls from an external system. Tag these explicitly as `webhook` in the doc. Unlike normal entry points, their "predecessor" is external, not another feature - record it as `external system: <name/URL if known>`. Always document the authentication mechanism (API key, HMAC signature, IP allow-list, none found).
-- **Console applications / batch jobs**: every in-scope `.exe`-type csproj's `Main()` method, treated as an entry point automatically, same as any web-facing one - even though it's invoked externally (Task Scheduler, a wrapper script, etc.) rather than by a user.
-- **Scheduled/background jobs**: Windows Services, `HangFire`/`Quartz`-style jobs, and any other explicit scheduler present in scope
-- **In-process scheduled work**: timers or background threads started from `Global.asax` (`Application_Start`) or similar app-lifecycle hooks - e.g. a `System.Timers.Timer` - which never appear as a real Windows Service but function as one
-- **Message queue consumers**: MSMQ, RabbitMQ, Azure/AWS Service Bus listeners, or any other queue-polling/subscriber code
-- **DB-side entry points (SQL Agent jobs)**: a stored procedure invoked purely on a schedule from SQL Server Agent, with no C# caller at all. These aren't discoverable from `.csproj` code or reliably from a typical schema-dump folder (job config usually lives in `msdb`, not the definitions folder). Do not assume a proc is SQL Agent-invoked. Instead: **if a stored procedure appears to have no traceable caller anywhere in the in-scope code**, flag it as a *candidate orphan/scheduled proc, unconfirmed* - its own index row, status noted as needing user confirmation - rather than guessing at its trigger.
+- **WebForms pages**: `.aspx` and code-behind (`.aspx.cs`/`.aspx.vb`) -
+  `Page_Load`, control event handlers, post-back logic
+- **User controls**: `.ascx` with meaningful independent behavior (skip purely
+  presentational ones)
+- **MVC/Web API controllers**: public action methods
+- **HTTP handlers**: `.ashx`, custom `IHttpHandler`
+- **Web services**: `.asmx`, WCF (`.svc`, `[ServiceContract]`/`[OperationContract]`)
+- **Webhooks**: any action/handler receiving inbound external calls. Tag as
+  `webhook`; predecessor is `external system: <name/URL>`, not a feature.
+  Always document the authentication mechanism (API key, HMAC, IP allow-list,
+  or none found).
+- **Console applications / batch jobs**: every in-scope `.exe`-type project's
+  `Main()`, treated as an entry point like any other
+- **Scheduled/background jobs**: Windows Services, HangFire/Quartz jobs
+- **In-process scheduled work**: timers or background threads started from
+  `Global.asax` (`Application_Start`) - never a real service, functions as one
+- **Message queue consumers**: MSMQ, RabbitMQ, Service Bus listeners, any
+  queue-polling or subscriber code
+- **DB-side entry points**: a stored procedure with **no traceable caller
+  anywhere in scope**. Do not assume it is SQL Agent-invoked - job config lives
+  in `msdb`, not a definitions folder. Give it its own index row with status
+  `candidate orphan/scheduled proc, unconfirmed` and file a `qst-XXXX` asking
+  the user what triggers it.
 
-For each entry point found, do a quick (not deep) read to understand its rough purpose - enough to name the feature and identify what business capability it serves. Do not trace into the database or fully resolve business rules yet - that's Phase 2.
+Read each entry point enough to name the feature and state its rough purpose.
+Do not trace into the database or resolve business rules - that is Phase 2.
+
+## Parallelizing the sweep
+
+Use `Explore` subagents to fan out - one per root or per major folder, each
+prompted with the Session Contract and a specific area to sweep. `Explore` is
+read-only, which is right for this phase: it returns locations, and cannot
+write anything by accident.
+
+The orchestrator merges the results and is the only writer of `index.md`.
+
+## Sizing
+
+Assign every feature an `S`/`M`/`L` in the `Size` column using the table in
+`batching-and-agents.md`. Never leave it blank - an unsized feature cannot be
+batched. If unsure, mark `M` and say why in Notes.
 
 ## Grouping entry points into features
 
-Remember: a feature is a business capability/use case, which may span multiple pages/entry points/workflows (e.g., "Order Approval Workflow" might involve a list page, a detail page, and an approve/reject post-back handler - that's one feature, not three). Use judgment based on:
+A feature is a business capability, which may span several pages or handlers
+("Order Approval" = a list page, a detail page, and an approve/reject
+post-back - one feature, not three). Group on:
 
-- Shared navigation flow (pages that link to each other in sequence)
+- Shared navigation flow
 - Shared underlying data/business object
-- Naming/folder conventions in the app (a `/Billing/` folder likely groups a related set)
+- Folder and naming conventions (`/Billing/` likely groups a set)
 
-When genuinely unsure whether two entry points are one feature or two, list them as separate index rows but note the possible relationship - don't force a merge you're not confident about. This can be resolved during deep-dive.
+When genuinely unsure whether two entry points are one feature or two, keep
+them as separate rows, note the possible relationship, and **file a
+non-blocking question**. Do not force a merge you are not confident about.
 
-## Building/updating index.md
+## The scan ledger - tracking partial completeness
 
-Format is defined in `index-schema.md`. For a first-time discovery run, create the file. For a subsequent run (more of the codebase now in scope, or re-scanning), add new rows and update entry-point info for existing ones - do not remove or overwrite `status` for features already `documented` or `in progress` just because they were re-discovered.
+This is what makes an interrupted Discovery visible instead of invisible.
+
+Maintain `scan_ledger` in the index frontmatter, one entry per project/folder:
+
+```yaml
+scan_ledger:
+  - path: src/Web
+    files_total: 412
+    files_scanned: 412
+    state: complete
+  - path: src/Acme.Data
+    files_total: 131
+    files_scanned: 38
+    state: partial
+```
+
+Rules:
+
+- Update it **as you go**, not at the end. An interrupted run must leave an
+  accurate ledger behind.
+- `discovery_complete: true` only when every entry is `complete`. Anything else
+  is `false`.
+- If Discovery ends with any `partial` or `not-scanned` entry, **say so
+  explicitly** in the report, name the areas, and give the user the choice to
+  continue scanning or proceed anyway.
+- Phase 2 warns and names the unscanned areas before starting when
+  `discovery_complete: false`. AFK mode finishes Discovery first, always.
 
 ## Assigning feature IDs
 
-Every new row added to `index.md` gets a stable `feat-XXXX` ID at the moment it's first added - this is the *only* time a feature ID is assigned. Rules:
+Every new row gets a stable `feat-XXXX` at the moment it is first added - the
+only time an ID is assigned.
 
-- IDs are sequential (`feat-0001`, `feat-0002`, ...) based on the highest existing ID already in `index.md`, not on row position or alphabetical order.
-- Never reassign, reuse, or renumber an ID - even if the feature is later renamed, merged with another, or split into two. If a feature is split during deep-dive, the original ID stays with whichever half is the closer match, and the new half gets the next unused ID.
-- The ID belongs to the feature concept, not the doc file - if `features/<slug>.md` is later renamed (slug changes), the `id` field inside its frontmatter does not change.
-- If you're unsure whether something newly found is a genuinely new feature or an already-indexed one under a different name, don't assign a new ID speculatively - flag it as a possible duplicate in the index Notes column instead, and resolve it before assigning.
+- Sequential from the highest existing ID in `index.md`, not row position.
+- Never reassigned, reused, or renumbered - even if the feature is later
+  renamed, merged, or split. On a split, the original ID stays with the closer
+  match; the new half takes the next unused ID.
+- The ID belongs to the feature concept, not the file. Renaming the slug does
+  not change the ID.
+- Unsure whether something is new or an already-indexed feature under another
+  name? Do not assign speculatively - flag it as a possible duplicate in Notes
+  and resolve it first.
 
-## What NOT to do in this phase
+## Not in this phase
 
-- Don't write anything to `features/` or `shared-components/` yet.
-- Don't trace into stored procedures or SQL definitions yet.
-- Don't resolve business rules, permissions, or edge cases in depth - a one-line "what this looks like it does" is enough for the index; full rigor is Phase 2's job.
+- No writes to `features/` or `shared-components/`
+- No tracing into stored procedures
+- No in-depth business rules, permissions, or edge cases - one line per feature
+  is enough
 
 ## Output of this phase
 
-Report back to the user: how many entry points found, how many candidate features grouped, and the updated `index.md`. Suggest logical next batches for deep-dive if asked.
+Report: entry points found, features grouped, size distribution, scan ledger
+state (**explicitly flagging anything partial**), and the suggested first
+batches per `batching-and-agents.md`. Append a Discovery entry to `run-log.md`
+and run `Test-MapperOutput.ps1 -Mode Index` before handing back.

@@ -1,65 +1,55 @@
 # Shared Components
 
-A shared component is any class, method, stored procedure, view, function, or trigger used by more than one feature (or clearly generic/reusable even if you've only seen one caller so far - e.g. a `DataAccessHelper` base class). Document it once; link to it from every feature that depends on it.
+A shared component is any class, method, stored procedure, view, function, or
+trigger used by more than one feature - or clearly generic/reusable even if
+only one caller has been seen so far (a `DataAccessHelper` base class, say).
+Document it once; link to it from every feature that depends on it.
 
 ## When to create one
 
-- While tracing a feature in Phase 2, you hit code/SQL that's clearly not feature-specific (naming like `Utils`, `Helpers`, `Base*`, or a stored proc called from multiple distinct call sites you've observed)
-- The user tells you something is shared
+- While tracing in Phase 2, you hit code or SQL that is clearly not
+  feature-specific (`Utils`, `Helpers`, `Base*`, or a proc called from several
+  distinct call sites)
+- A stored procedure carrying significant business logic, even if currently
+  called from one place - better documented once at the right rigor than
+  inlined and lost
+- The user says something is shared
 
-Don't preemptively document everything in a `Common`/`Shared` folder just because it exists - only create a doc when a feature you're actively documenting actually depends on it. This keeps effort proportional to what's in use.
+Do not preemptively document everything in a `Common`/`Shared` folder just
+because it exists. Create a doc when a feature you are actively documenting
+actually depends on it, so effort stays proportional to what is in use.
 
-## Template
+## The template
 
-Save as `shared-components/<component-slug>.md`:
+Copy `templates/shared-component-doc.md` verbatim to
+`<output-root>/shared-components/<component-slug>.md`, then fill it. The
+enforced contract is in `doc-manifest.md`; it is validated in Phase 3 exactly
+like a feature doc.
 
-```markdown
----
-id: comp-0001
-slug: <component-slug>
-name: <Component Name>
-component_type: class   # class | stored-procedure | view | function | trigger | utility-method
-location: "<path/to/file.cs or sql/procs/usp_Something.sql>"
-domain: <inferred from folder/namespace, e.g. billing>
-last_updated: <date>
-source_snapshot: "<git commit hash if available, otherwise 'file mtimes as of <date>'>"
-confidence_summary:
-  verified: <count>
-  inferred: <count>
-  unverified: <count>
-used_by:
-  - <feature id(s) that depend on this component>
-open_questions_count: <count>
----
-# <Component Name>
+Required sections: `What it does`, `Inputs / Outputs`,
+`Business rules embedded here`, `Side effects`, `Confidence / Open Questions`.
 
-**Type:** Class | Stored Procedure | View | Function | Trigger | Utility Method
-**Location:** `path/to/file.cs` or `sql/procs/usp_Something.sql`
-**Used by:** [feature-a](../features/feature-a.md), [feature-b](../features/feature-b.md)  <!-- keep updated as more features reference it; also update the `used_by` id list above -->
+`Business rules embedded here` gets the same rigor as a feature doc - citation
+plus confidence tag on every bullet. For procs and triggers this is usually
+where the real logic lives, so it is not a footnote.
 
-## What it does
+`Side effects` matters most for triggers and procs: what does this touch that
+its name does not suggest? A trigger on `Orders` that also writes an audit row
+to `OrderHistory` and updates `Customers.LastOrderDate` is exactly the kind of
+behavior a rewrite silently loses.
 
-Plain description of behavior, cited.
+## IDs
 
-## Inputs / Outputs
+`comp-XXXX`, same rules as `feat-XXXX`: assigned once on first documentation,
+sequential from the highest existing, never reused or renumbered even if the
+component is renamed or moved. If a doc already exists, reuse its id - never
+mint a second one for the same component.
 
-Parameters, return values, or (for DB objects) result sets / side effects (e.g. rows written, triggers fired downstream).
+## Maintaining `used_by`
 
-## Business rules embedded here
+Every time a feature links to a shared component, add that feature's id to the
+component's `used_by` frontmatter list and its link list, if not already there.
 
-Same citation + confidence-tag format as feature docs - this is often where core logic actually lives (especially for stored procs/triggers), so treat it with the same rigor as a feature doc, not as a footnote.
-
-## Side effects
-
-For triggers/procs especially: what else does this touch that isn't obvious from its name (e.g. a trigger on `Orders` that also writes an audit row to `OrderHistory` and updates a `Customers.LastOrderDate` column).
-
-## Confidence / Open Questions
-
-Same format as feature docs.
-```
-
-## Maintaining the "Used by" list
-
-Every time a feature deep-dive links to an existing shared component, add that feature to the component's "Used by" list if it's not already there. This makes shared-components/ doubly useful: a full map of blast radius if the rewrite team changes shared logic.
-
-Note: comp-XXXX IDs follow the same rule as feat-XXXX - assigned once, never reused or renumbered.
+This is what makes `shared-components/` doubly useful: it becomes a blast-radius
+map for the rewrite team - change this proc, and here is every feature that
+feels it.

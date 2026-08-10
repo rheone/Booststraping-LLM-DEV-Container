@@ -1,64 +1,140 @@
 # Phase 2: Deep-dive
 
-Goal: fully document one feature (or a small batch, per user instruction) to the standard in `feature-doc-template.md`. This is the rigorous pass - every business rule, permission check, failure state, and DB interaction should be found and cited.
+Fully document a batch of features to the standard in `doc-manifest.md`. This
+is the rigorous pass - every business rule, permission check, failure state,
+and DB interaction found and cited.
 
-## Before starting
+Nothing here is complete until Phase 3 says so. A written doc is a claim; a
+verified doc is a result.
 
-- Confirm the feature exists in `index.md` (or add it if the user is pointing at a specific entry point not yet in the index - that's fine, just also add the index row).
-- If a doc already exists for this feature at `features/<slug>.md`: **ask the user whether to fully regenerate or incrementally update** (unless running in AFK mode - see `afk-mode.md` for that default). Don't guess.
-- Set the feature's index status to `in progress` before starting, `documented` when the doc passes the completeness check below.
+## Before starting a batch
 
-## Tracing process
+1. Print the **Session Contract** (`session-state.md`). Absolute output root
+   included, every batch, no exceptions.
+2. Check `discovery_complete` in `index.md`. If `false`, warn and name the
+   unscanned areas before proceeding.
+3. Confirm each target feature exists in `index.md` (add a row if the user
+   pointed at an entry point that was never indexed - assign the next unused
+   `feat-XXXX`).
+4. If a doc already exists: **ask whether to fully regenerate or incrementally
+   update** - every time, never carrying forward a prior answer. In AFK mode,
+   default to incremental and log the decision.
+5. Set each target's index status to `in progress`.
 
-1. **Start at the entry point(s)** identified in Discovery. Read the actual code - `Page_Load`, event handlers, action methods - in full.
-2. **Follow every call path** from the entry point through business/service-layer classes to wherever data access happens. Note every conditional branch that represents a business rule (validation, eligibility checks, calculated values, workflow gating).
-3. **Identify DB touchpoints**: every stored proc call, inline SQL (parameterized or, if found, dynamically built - flag dynamic SQL explicitly since it limits static traceability), ORM query, or direct table access. Hand these off to the TSQL analysis process (`tsql-analysis.md`) using the DB definitions folder given at kickoff.
-4. **Identify permission/role checks**: `User.IsInRole`, custom authorization attributes, membership/role provider calls, or DB-driven permission lookups. If no check is found guarding an action that looks like it should have one, say so explicitly as a finding - don't silently omit it.
-5. **Identify predecessors/successors**: what feature(s) typically lead into this one (e.g., a list page before a detail page), and what this one leads to (e.g., approval triggers a notification feature). Base this on actual navigation/redirect code (`Response.Redirect`, post-back targets, workflow status transitions), not assumption - cite it.
-6. **Identify failure states**: validation failures, exception handling, what the user sees/what happens to data when something goes wrong. Read `try`/`catch` blocks, validation control logic, and any custom error-handling middleware in scope.
-7. **Note anything unresolvable by static analysis** (dynamic SQL, reflection-based dispatch, config values only known at runtime, feature flags) with the `unverified assumption` tag and a one-line reason.
+## Dispatching writers
+
+One `general-purpose` subagent per feature, within the 3-slot budget from
+`batching-and-agents.md`. Each prompt must contain:
+
+- The Session Contract verbatim
+- The feature's id, name, entry points, and index row
+- The absolute path it must write to: `<output-root>/features/<slug>.md`
+- The instruction to copy `templates/feature-doc.md` and fill it
+- The rule that **temp/scratch paths are prohibited for deliverables**
+- The structured result it must return - and nothing more
+
+The orchestrator, never a writer, updates `index.md`, `run-log.md`, and
+`questions-for-user.md`.
+
+## Tracing process (what each writer does)
+
+1. **Start at the entry point(s)**. Read the actual code in full -
+   `Page_Load`, event handlers, action methods.
+2. **Follow every call path** through business/service classes to data access.
+   Note every conditional branch that encodes a business rule - validation,
+   eligibility, calculated values, workflow gating.
+3. **Identify DB touchpoints**: stored proc calls, inline SQL (flag dynamic SQL
+   explicitly - it limits static traceability), ORM queries, direct table
+   access. Trace them per `tsql-analysis.md`.
+4. **Identify permission/role checks**: `User.IsInRole`, authorization
+   attributes, membership/role providers, DB-driven permission lookups. If no
+   check guards an action that looks like it needs one, **say so explicitly** -
+   that absence is a finding, and `verified in code` once you have read the
+   whole handler.
+5. **Identify predecessors/successors** from actual navigation code -
+   `Response.Redirect`, post-back targets, status transitions - and cite them.
+   Never from assumption.
+6. **Identify failure states**: validation failures, `try`/`catch` behavior,
+   what the user sees and what happens to the data.
+7. **Note anything unresolvable statically** - dynamic SQL, reflection, runtime
+   config, feature flags - with `unverified assumption` and a one-line reason.
+8. **Cross a scope boundary?** If the trail leads into a project marked
+   `boundary` or `excluded` in the scope ledger, document the crossing
+   (what was called, with what, expected effect) and file a question. Do not
+   silently expand scope, and do not silently stop.
+
+## Writing the doc
+
+Copy `templates/feature-doc.md` verbatim, then fill it. Do not compose freehand.
+
+Hard requirements, all machine-checked in Phase 3:
+
+- Every Business Rules bullet carries **both** a `file:line` citation and a
+  confidence tag
+- `confidence_summary` counts match the tags actually in the body
+- `open_questions_count` matches the bullets actually in that section
+- `has_diagram` matches reality; if there is no diagram, the section says
+  `No diagram - <reason>`
+- The `Authentication` section exists **iff** `trigger_type: webhook`
+- No template placeholder text survives
 
 ## Shared code and DB objects
 
-While tracing, if you hit a class, method, stored proc, view, function, or trigger that's clearly generic/reusable (not feature-specific) or that you can see is called from more than one place, don't inline its full behavior into the feature doc. Instead:
+When you hit a class, method, proc, view, function, or trigger that is
+generic/reusable or called from more than one place, do not inline it:
 
-- Create or update its doc in `shared-components/<slug>.md` (see `shared-components.md`)
-- Link to it from the feature doc with a one-line summary of what it does and why this feature depends on it
-- **If this is the first time the component is being documented**, assign it the next unused `comp-XXXX` ID (same rule as `feat-XXXX` in `discovery-phase.md`: sequential, assigned once, never reused or renumbered even if the component is later renamed). If it already has a doc, reuse its existing `id` - don't assign a new one.
-- Either way, add this feature's `id` to the component doc's `used_by` frontmatter list if it isn't already there.
+- Create or update `shared-components/<slug>.md` (see `shared-components.md`)
+- Link it from the feature doc with a one-line reason for the dependency
+- First time documented: assign the next unused `comp-XXXX` - same rules as
+  `feat-XXXX`, assigned once, never reused or renumbered. Already documented:
+  reuse its existing id.
+- Add this feature's id to the component's `used_by` list
 
-## Maintaining frontmatter on every write
+## Frontmatter is maintained on every write
 
-Whenever a feature or shared-component doc is created, fully regenerated, or incrementally updated, the frontmatter must be kept in sync with the body - this isn't a one-time setup step:
+Not a one-time setup step. On create, regenerate, **and** incremental update:
 
-- `confidence_summary` counts (`verified`/`inferred`/`unverified`) must match the actual tags used in the body at the end of this session, not whatever they were before the update.
-- `last_updated` and `source_snapshot` are refreshed to reflect this session's work.
-- `db_objects`, `predecessors`, `successors`, `related_shared_components` (or `used_by`, for shared components) are updated to reflect anything added or removed this session - use IDs, not names.
-- `open_questions_count` matches the actual number of items in the Open Questions section.
-- `id` and `slug`-derived filename are the only fields that should *not* change on an update.
+- `confidence_summary` recounted from the finished body
+- `last_updated` and `source_snapshot` refreshed for this session
+- `db_objects`, `predecessors`, `successors`, `related_shared_components` /
+  `used_by` updated to reflect this session's findings - by id, not name
+- `open_questions_count` matched to the actual section
+
+`id` and the slug-derived filename are the only fields that must not change.
 
 ## Diagrams
 
-Add a Mermaid diagram only where it adds real clarity beyond prose - typically:
+Only where they add real clarity beyond prose:
 
-- A multi-state workflow (state diagram) - e.g., an approval process with statuses and transitions
+- A multi-state workflow (state diagram) - e.g. an approval process
 - A non-obvious multi-hop call chain across layers (flowchart)
-- Time-ordered interaction across several components/DB calls where order matters (sequence diagram)
+- Time-ordered interaction across components/DB calls where order matters
+  (sequence diagram)
 
-Skip diagrams for simple single-path CRUD features - a diagram of "load page → save to one table" adds nothing.
+Skip for single-path CRUD. "Load page -> save one table" as a diagram adds
+nothing. Whichever way you go, `has_diagram` must agree with the body.
 
-## Completeness check before marking `documented`
+## Completing a feature
 
-- [ ] Entry point(s) and purpose stated
-- [ ] Happy path fully traced to its DB or file writes/reads
-- [ ] Failure states documented (validation, exceptions, edge cases found in code)
-- [ ] Business rules listed, each cited with file/line + confidence tag
-- [ ] Permissions/roles documented (or explicitly noted as "none found")
-- [ ] Predecessors/successors noted (or explicitly "none found / standalone")
-- [ ] DB interactions documented, traced per `tsql-analysis.md`
-- [ ] Shared components linked, not in-lined
-- [ ] Open/unverifiable items listed in their own section, not buried
-- [ ] Diagram included only if it adds value
-- [ ] Frontmatter (`confidence_summary`, `last_updated`, `source_snapshot`, relationship lists, `open_questions_count`) matches the finished body
+1. Writer returns its structured result.
+2. Orchestrator **reads the file from disk itself** - the writer's report is a
+   pointer, never evidence.
+3. Run Phase 3 verification (`verification-phase.md`).
+4. On pass: set status `documented` (or `documented (open questions)` if a
+   blocking question is filed against it), fill the `Verified` column, append
+   the `run-log.md` entry, emit the status line.
+5. On fail: one retry with the failures fed back verbatim; then
+   `verification failed` plus a question. Never loop.
+6. Update `system-overview.md` at the end of any batch that documented at least
+   one new feature.
 
-If any box can't be checked because static analysis genuinely couldn't resolve it, that's fine - document it as an open item rather than blocking completion indefinitely.
+## What blocks marking a feature documented
+
+- No file on disk at the expected path
+- Validation failures outstanding
+- A required section missing or still holding template text
+- A citation that does not resolve to a real file and line
+
+An item that static analysis genuinely could not resolve does **not** block
+completion - it belongs in Open Questions with an `unverified assumption` tag.
+Unresolvable is fine and expected; unverified-but-claimed is not.

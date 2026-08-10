@@ -1,109 +1,48 @@
 # Feature Doc Template
 
-Save as `features/<feature-slug>.md`. Use kebab-case slugs derived from the feature name. Copy this structure; omit a section only if genuinely not applicable (state that explicitly rather than deleting silently, e.g. "No diagram - single linear path").
+The template is a **file to copy**, not a description to imitate:
 
-```markdown
----
-id: feat-0001
-slug: <feature-slug>
-title: <Feature Name>
-status: documented   # not started | in progress | documented | candidate orphan/scheduled proc, unconfirmed
-trigger_type: user-initiated   # user-initiated | webhook | scheduled | queue-consumer | console/batch | db-scheduled (unconfirmed) |
-domain: <inferred from folder/namespace, e.g. billing>
-entry_points:
-  - "<file path : method/page>"
-csprojs:
-  - <csproj file(s) this feature's code lives in>
-last_updated: <date>
-source_snapshot: "<git commit hash if available, otherwise 'file mtimes as of <date>'>"
-confidence_summary:
-  verified: <count>
-  inferred: <count>
-  unverified: <count>
-db_objects:
-   - <schema.table or proc/view/function names touched>
-predecessors:
-  - <feature id(s), or omit key if none>
-successors:
-  - <feature id(s), or omit key if none>
-related_shared_components:
-  - <shared-component id(s), or omit key if none>
-has_diagram: true   # or false
-open_questions_count: <count>
----
-# <Feature Name>
+> `templates/feature-doc.md`
 
-**Status:** documented | in progress
-**Last updated:** <date>
-**Entry point(s):** <file path(s) : method/page - e.g. `Billing/OrderApproval.aspx.cs : btnApprove_Click`>
-**Trigger type:** user-initiated | webhook | scheduled | queue-consumer | console/batch | db-scheduled (unconfirmed)
+Copy it verbatim to `<output-root>/features/<feature-slug>.md`, then fill it in.
+Do not compose a doc freehand and hope the structure matches - the structure is
+machine-checked, and a freehand doc fails.
 
-## Purpose
+Slugs are kebab-case, derived from the feature name, and must equal the
+filename without its extension.
 
-Plain-language summary of the business capability this feature provides. 2-4 sentences.
+## The enforced contract
 
-## Predecessors / Successors
+`references/doc-manifest.md` defines exactly what a valid doc contains -
+required frontmatter, required headings, the webhook-only `Authentication`
+section, citation rules, and the count-consistency rules. It is validated by
+`scripts/Test-MapperOutput.ps1` during Phase 3.
 
-- **Comes from:** <feature(s) that typically lead here, or "none found / entry point"> - `(confidence tag, citation)`. For `webhook` trigger type, use `external system: <name/URL if known>` instead of an internal feature.
-- **Leads to:** <feature(s) this triggers/redirects to, or "none found / terminal"> - `(confidence tag, citation)`
+Worth internalizing before writing, because these are the checks that fail most
+often:
 
-## Authentication (webhook only)
+1. **Every** bullet under `## Business Rules` needs a `file:line` citation
+   **and** a confidence tag. Checked per bullet, not in aggregate.
+2. `confidence_summary` counts must equal the tag occurrences in the finished
+   body - recount after editing, every time.
+3. `open_questions_count` must equal the bullets in the open-questions section.
+4. `has_diagram: true` if and only if a mermaid block is present; otherwise the
+   Diagram section says `No diagram - <reason>`.
+5. `Authentication` appears if and only if `trigger_type: webhook`.
+6. Cited files must exist and cited line numbers must be within them. An
+   invented line number is the failure mode this catches, and it is the one
+   that reads most convincingly when nobody checks.
+7. No placeholder text from the skeleton survives.
 
-Omit this section entirely for non-webhook trigger types. For webhooks, document how the inbound call is authenticated - API key, HMAC signature, IP allowlist, none found - with citation and confidence tag.
+## Omitting a section
 
-## Roles / Permissions
+Never delete a required section silently. If it genuinely does not apply, keep
+the heading and state why - "No diagram - single linear path with no
+branching", "None found - no authorization check guards this action". An
+explicit absence is a finding; a missing section is a gap.
 
-Who can take this action and how it's enforced.
+## Shared-component docs
 
-- <Role/check> - `path/file.cs:123` `(verified in code)`
-- If none found guarding an apparently sensitive action, state that plainly: "No authorization check found guarding this action" `(verified in code - absence confirmed by reading the full handler)`
-
-## Happy Path
-
-Step-by-step walkthrough of the normal successful flow, from entry point through to final DB state. Cite each step.
-
-1. ...
-2. ...
-
-## Business Rules
-
-Each rule as its own bullet, cited, with confidence tag.
-
-- Rule description - `path/file.cs:45-52` `(verified in code)`
-- Rule description - `(inferred from naming - method named ValidateCreditLimit, logic not fully traced due to X)`
-
-## Failure States
-
-What happens when things go wrong - validation failures, exceptions, edge cases.
-
-- Condition → what happens (error shown / silent fail / logged / etc.) - citation, confidence tag
-
-## Database Interactions
-
-Table of touchpoints; deep TSQL findings link out to `shared-components/` docs where the object is reused elsewhere, or are described inline if feature-specific. See `tsql-analysis.md` for how these were traced.
-
-| Object | Type | Read/Write | Notes | Citation | Confidence |
-|---|---|---|---|---|---|
-| `dbo.Orders` | Table | Read/Write | ... | `proc.sql:12` | verified in code |
-| `usp_ApproveOrder` | Stored Proc | - | See [shared-components/usp-approve-order.md](../shared-components/usp-approve-order.md) | - | - |
-
-## Diagram
-
-(Only if it adds value - see deep-dive-phase.md. Otherwise write: "No diagram - [reason, e.g. single linear path with no branching]".)
-
-```mermaid
-stateDiagram-v2
-    [*] --> Pending
-    Pending --> Approved : btnApprove_Click, role=Manager
-    Pending --> Rejected : btnReject_Click, role=Manager
-```
-
-## Open Questions / Unverified Items
-
-Anything static analysis couldn't resolve, with a one-line reason.
-
-- <item> - reason it couldn't be verified (e.g., "dynamic SQL built from config value, string not resolvable statically")
-
-## Related Shared Components
-
-- [shared-components/<slug>.md](../shared-components/<slug>.md) - one-line reason this feature depends on it
+Same arrangement: copy `templates/shared-component-doc.md`, see
+`references/shared-components.md` for when to create one, and the same section
+of `doc-manifest.md` for its enforced contract.

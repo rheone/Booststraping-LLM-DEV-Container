@@ -1,57 +1,90 @@
-# AFK Mode
+# AFK / unattended mode
 
-Runs Discovery and/or Deep-dive continuously without pausing for per-feature confirmation, until an explicit endpoint is reached or a hard blocker forces a stop.
+Runs Discovery and Deep-dive continuously without per-feature confirmation,
+until an endpoint condition is met or a hard blocker forces a stop.
 
-## Starting an AFK run
+AFK does **not** relax any rule. Verification still gates every feature, the
+templates are still enforced, and status reports are still emitted - if
+anything they matter more here, because nobody is watching.
 
-Before doing any work, confirm with the user (ask if not already stated in the request):
+## Before starting
 
-1. **Endpoint condition** - exactly one of:
-   - _Full completion_: every feature currently in (or discovered during) `index.md` reaches `documented` status.
-   - _Target list_: a specific named/counted set given by the user (e.g., "these 12 entry points," "the first 30 features," "everything under `/Billing/`"). Confirm the exact set before starting so the endpoint is unambiguous.
-2. Confirm the three required inputs from `kickoff-checklist.md` are already set (csproj scope, SQL folder, output path) - AFK mode does not relax this requirement.
-3. Tell the user roughly what will happen (Discovery first if no index exists, then Deep-dive across the target set) before starting, but don't ask for step-by-step confirmation once running.
+1. **Endpoint condition**, explicitly - exactly one of:
+   - *Full completion*: every feature in (or discovered during) `index.md`
+     reaches a terminal status.
+   - *Target list*: a specific named/counted set ("these 12 entry points", "the
+     first 30 features", "everything under `/Billing/`"). Confirm the exact set
+     so the endpoint is unambiguous.
+2. The three required inputs are resolved (`kickoff-checklist.md`). AFK does
+   not relax this.
+3. The scope ledger is confirmed. Pruning happens at kickoff, not mid-run.
+4. Tell the user what will happen and roughly how long - then stop asking.
 
 ## The run loop
 
-1. If no `index.md` exists yet at the output path, run Discovery first automatically.
-2. Work through Deep-dive on features in the target set, one at a time, in a sensible order (e.g., index order, or grouping related features together if that reduces redundant shared-component tracing).
-3. For each feature:
-   - Set status to `in progress`, do the full deep-dive per `deep-dive-phase.md`, write the doc, update shared-components as needed.
-   - If a doc already exists for this feature: **default to incremental update automatically** (do not ask). Log this decision in the AFK log (see below).
-   - Set status to `documented` when the completeness check passes.
-   - Update `index.md` and `system-overview.md` immediately - don't batch updates until the end, so a run can be inspected or safely resumed mid-way if interrupted.
-4. Continue to the next feature without waiting for user input.
-5. Check the endpoint condition after each feature completes.
+1. Reconcile answered questions (`questions-and-deferral.md`).
+2. If `discovery_complete` is not `true`, **finish Discovery first**. Always.
+   Deep-diving over a partial map is how a run produces confident nonsense.
+3. Build the next batch from the index within the 3-slot budget.
+4. Print the Session Contract.
+5. Run the batch: writers in parallel, then verification per feature.
+6. Update `index.md`, `run-log.md`, `questions-for-user.md` **immediately** as
+   each feature completes - never batched to the end, so an interrupted run is
+   still inspectable and resumable.
+7. Emit the per-feature status line, then the batch rollup.
+8. Check the endpoint condition. Repeat.
 
-## AFK log
+Existing doc during AFK: default to **incremental update** without asking, and
+log the decision.
 
-Maintain `<output-docs-path>/afk-log.md`, appending an entry per feature processed:
+## Defer, do not stall
 
-```markdown
-## <date/time> - <Feature Name> - <feature-slug>
+When the run hits something only the user can settle, **file a `qst-XXXX`, note
+it in the affected doc, and move to the next feature** (see
+`questions-and-deferral.md`). Document what can be documented; mark what
+cannot. A blocked feature is not a blocked run.
 
-- Mode: [full regenerate | incremental update | new doc]
-- Result: documented | open items remain (see doc)
-- Notable open questions: <brief, or "none">
-```
+## Hard stops (everything else defers)
 
-This gives the user a fast way to review what happened during an unattended run without re-reading every doc.
+Stop and report only when continuing correctly is impossible:
 
-## Stop conditions
+1. **The output path is missing or unwritable.** Nothing can be delivered.
+2. **All roots are missing or unreadable.** Nothing can be analyzed.
+3. **Three consecutive features fail verification.** That is a systemic
+   problem - bad scope, an unreadable source root, a misunderstood template -
+   and the next forty features would fail the same way. Stop, report the
+   pattern, and show the failing check items.
 
-**Stop and report back (successful completion) when:**
+Notably *not* hard stops any more:
 
-- The endpoint condition is met.
-
-**Stop and report back (blocked) when:**
-
-- A given `.csproj` path, SQL definitions folder, or output path doesn't exist or can't be read.
-- Scope is ambiguous in a way that can't be resolved by convention already established elsewhere in the index/docs (e.g., a genuinely unclear feature boundary that materially changes the target set).
-- Something suggests the in-scope/out-of-scope boundary itself might be wrong (e.g., a feature's core logic appears to live entirely in a csproj that wasn't included in scope) - flag this rather than either silently expanding scope or silently documenting an incomplete picture.
-
-Do not stop merely because a claim couldn't be verified - that's handled inline via the `unverified assumption` tag, not a run-stopping event. Only stop for things that block continuing correctly, not things that just require noting a limitation.
+- An ambiguous feature boundary -> question, continue
+- A proc with no traceable caller -> `candidate orphan` row + question, continue
+- Logic living in a project outside the roots -> the scope ledger already names
+  it; document the boundary crossing, file a question, continue
+- A claim that could not be verified -> `unverified assumption` tag, continue.
+  This has never been a stopping condition and still is not.
 
 ## Reporting back
 
-When an AFK run ends (either reason), summarize: how many features processed, how many reached `documented`, how many still open (if endpoint wasn't full completion), any hard blocker encountered, and point to `afk-log.md` and `index.md` for full detail.
+At the end of any AFK run:
+
+```
+[2026-08-09T18:03:44-06:00] AFK RUN COMPLETE - 3h41m
+
+Features:  41 total | 34 documented | 4 documented (open questions)
+                    | 2 verification failed | 1 candidate orphan
+Batches:   9 of 9   | batch sweeps: 9 pass
+Coverage:  discovery complete (all 6 projects scanned)
+Output:    C:\src\acme\docs\legacy-map
+
+Needs you:
+  7 questions -> questions-for-user.md
+    3 blocking (feat-0009, feat-0021, feat-0033 re-derive once answered)
+    4 non-blocking (patched into existing docs on answer)
+  2 verification failures -> feat-0017, feat-0028 (see run-log.md)
+
+Answer the questions in the file, then re-run - reconciliation is automatic.
+```
+
+Never end a run by reporting only success counts. The questions and the
+failures are the part the user has to act on.
