@@ -350,7 +350,10 @@ async function validateParse(blocks, dir) {
     pretendToBeVisual: true,
     url: 'http://localhost/',
   });
-  for (const k of ['window', 'document', 'navigator', 'HTMLElement', 'SVGElement', 'Element', 'Node', 'DOMParser', 'MutationObserver', 'getComputedStyle', 'requestAnimationFrame', 'cancelAnimationFrame']) {
+  // location/localStorage/sessionStorage are additionally required by the ZenUML plugin's
+  // internal renderer (@zenuml/core) - core mermaid diagram types don't touch them, so this
+  // list stays a superset of what any single diagram type needs.
+  for (const k of ['window', 'document', 'navigator', 'location', 'localStorage', 'sessionStorage', 'HTMLElement', 'SVGElement', 'Element', 'Node', 'DOMParser', 'MutationObserver', 'getComputedStyle', 'requestAnimationFrame', 'cancelAnimationFrame']) {
     if (globalThis[k] === undefined && dom.window[k] !== undefined) {
       globalThis[k] = typeof dom.window[k] === 'function' && /^(getComputedStyle|requestAnimationFrame|cancelAnimationFrame)$/.test(k)
         ? dom.window[k].bind(dom.window)
@@ -362,6 +365,7 @@ async function validateParse(blocks, dir) {
   const mod = await import(pathToFileURL(entry).href);
   const mermaid = mod.default ?? mod;
   mermaid.initialize({ startOnLoad: false, securityLevel: 'loose', suppressErrorRendering: true });
+  await registerZenUmlIfPresent(mermaid, dir);
 
   const results = [];
   for (const b of blocks) {
@@ -387,6 +391,24 @@ function pickMermaidEsm(mermaidDir) {
     if (fs.existsSync(p)) return p;
   }
   die(`could not find a mermaid ESM entry point under ${mermaidDir}/dist`);
+}
+
+const ZENUML_PACKAGE = '@mermaid-js/mermaid-zenuml';
+
+/**
+ * ZenUML blocks don't parse against core mermaid at all until the plugin is registered
+ * (mermaid.registerExternalDiagrams). No-ops if the package isn't in the cache (e.g. it
+ * wasn't requested for the current mode/packages list).
+ */
+async function registerZenUmlIfPresent(mermaid, dir) {
+  const pkgDir = resolveInCache(dir, ...ZENUML_PACKAGE.split('/'));
+  if (!pkgDir) return false;
+  const candidates = ['dist/mermaid-zenuml.core.mjs', 'dist/mermaid-zenuml.esm.mjs', 'dist/mermaid-zenuml.esm.min.mjs'];
+  const entry = candidates.map((c) => path.join(pkgDir, c)).find((p) => fs.existsSync(p));
+  if (!entry) die(`found ${ZENUML_PACKAGE} in the cache but no known ESM entry under its dist/`);
+  const zenumlMod = await import(pathToFileURL(entry).href);
+  await mermaid.registerExternalDiagrams([zenumlMod.default ?? zenumlMod]);
+  return true;
 }
 
 function pickMermaidUmd(mermaidDir) {
@@ -561,7 +583,12 @@ async function main() {
   let results = [];
 
   if (opts.mode !== 'none') {
-    const packages = opts.mode === 'render' ? [`mermaid@${pinned}`, 'puppeteer'] : [`mermaid@${pinned}`, 'jsdom'];
+    // ZenUML has no first-party diagram support in core mermaid - it only parses once its
+    // plugin is registered (registerZenUmlIfPresent), so the plugin has to be installed
+    // alongside mermaid/jsdom for parse mode. TODO: render mode (puppeteer/browser) doesn't
+    // load or register this plugin yet - ZenUML blocks stay `skip`-annotated for render
+    // mode until that's added too.
+    const packages = opts.mode === 'render' ? [`mermaid@${pinned}`, 'puppeteer'] : [`mermaid@${pinned}`, 'jsdom', `${ZENUML_PACKAGE}@0.2.3`];
     const dir = ensureDeps(pinned, packages, opts);
     const mermaidPkg = resolveInCache(dir, 'mermaid', 'package.json');
     if (mermaidPkg) installedVersion = JSON.parse(fs.readFileSync(mermaidPkg, 'utf8')).version;

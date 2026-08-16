@@ -8,6 +8,11 @@ keyword: zenuml
 source: https://mermaid.js.org/syntax/zenuml.html
 last_verified: 2026-08-09
 plugin_required: true
+gitlab_compatible: true
+github_compatible: false
+vscode_compatible: true
+obsidian_compatible: unknown
+notion_compatible: unknown
 ---
 
 # ZenUML
@@ -55,7 +60,7 @@ Control-flow blocks all use brace syntax: `if (cond) { ... } else { ... }`, `whi
 
 ## Simple example
 
-<!-- mermaid-validate: skip reason="ZenUML requires the @mermaid-js/mermaid-zenuml plugin to be registered; core mermaid cannot parse it" -->
+<!-- mermaid-validate: parse-only reason="validator registers @mermaid-js/mermaid-zenuml for --mode parse (jsdom) but not yet for --mode render (puppeteer); grammar is confirmed, full SVG rendering is not" -->
 ```mermaid
 zenuml
     title Support ticket handoff
@@ -68,7 +73,7 @@ Three plain arrow messages between two implicitly-declared participants - the mi
 
 ## Complex example
 
-<!-- mermaid-validate: skip reason="ZenUML requires the @mermaid-js/mermaid-zenuml plugin to be registered; core mermaid cannot parse it" -->
+<!-- mermaid-validate: parse-only reason="validator registers @mermaid-js/mermaid-zenuml for --mode parse (jsdom) but not yet for --mode render (puppeteer); grammar is confirmed, full SVG rendering is not" -->
 ```mermaid
 zenuml
     title Booking flow
@@ -117,6 +122,8 @@ This nests a sync call inside a `try/catch/finally` block, mixes a creation mess
 ## Beta/experimental caveats
 
 The mermaid docs describe ZenUML as using "experimental lazy loading & async rendering features which could change in the future," and - more fundamentally - it is an *external* diagram type shipped in its own package, not bundled with mermaid core. Any environment that doesn't explicitly load and register `@mermaid-js/mermaid-zenuml` will fail to render a `zenuml` block even though the syntax itself is valid. Confirm plugin support before promising ZenUML output in a given tool.
+
+This skill's own validator (`tools/validate-mermaid.mjs`) registers `@mermaid-js/mermaid-zenuml@0.2.3` (confirmed compatible with the pinned `mermaid@11.16.1` via its `peerDependencies`) before checking the examples below, so both examples on this page are exercised by `--mode parse`, not skipped. That only confirms the *grammar* parses under jsdom, though - `--mode render` (real browser) doesn't register the plugin yet, so full SVG rendering of ZenUML is still unverified by this skill's tooling. The guidance above about confirming plugin registration in your own target renderer still applies - this skill validating its own examples doesn't mean every consuming tool has the plugin loaded.
 
 ## Further reading
 

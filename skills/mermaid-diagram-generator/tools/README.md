@@ -39,13 +39,13 @@ node tools/validate-mermaid.mjs --clean
 ### Understanding the output
 
 ```
-summary mode=parse blocks=68 passed=64 skipped=4 problems=0
+summary mode=parse blocks=68 passed=68 skipped=0 problems=0
 OK - everything checks out
 ```
 
 - **blocks**: total diagram examples discovered (68 total; includes 2 zenuml blocks)
 - **passed**: successfully validated
-- **skipped**: explicitly annotated with `<!-- mermaid-validate: skip ... -->` (e.g., zenuml, event-modeling need plugins)
+- **skipped**: explicitly annotated with `<!-- mermaid-validate: skip ... -->` - currently nothing is fully skipped; ZenUML's 2 blocks are `parse-only` instead (validated in `--mode parse`, not attempted in `--mode render` - see "Per-block annotations" below)
 - **problems**: failures that need fixing
 
 On failure:
@@ -88,7 +88,11 @@ If that passes, the full render run is optional (it catches layout/icon issues t
 
 ### "One diagram type keeps failing. Do I delete it?"
 
-No. If it's broken in the current Mermaid version, annotate the blocks and document the limitation:
+No - first check whether the example itself is wrong before assuming it's an upstream Mermaid
+bug. Event Modeling's examples looked "obviously correct" but were missing the mandatory
+`tf`/`timeframe` keyword on every line; testing candidate syntax directly against the pinned
+parser (see Option B below) found the fix in minutes. Only annotate a block as broken once
+you've confirmed - by testing, not by inspection - that no known-correct syntax parses:
 
 ```markdown
 <!-- mermaid-validate: skip reason="<diagram> is experimental in v11.16.1 and has parser issues" -->
@@ -146,13 +150,13 @@ console.log(svg.includes('error') ? '✗ Render failed' : '✓ Render succeeded'
 Some diagram blocks have special requirements and are annotated:
 
 ```markdown
-<!-- mermaid-validate: skip reason="requires the @mermaid-js/mermaid-zenuml plugin" -->
-<!-- mermaid-validate: parse-only reason="render phase has known layout issues" -->
+<!-- mermaid-validate: skip reason="requires a plugin the validator doesn't install/register" -->
+<!-- mermaid-validate: parse-only reason="validator registers @mermaid-js/mermaid-zenuml for --mode parse but not yet for --mode render" -->
 <!-- mermaid-validate: keyword-exempt reason="C4 family diagrams use C4Context|C4Container|..." -->
 ```
 
-- **skip**: don't validate this block at all (used for plugin-dependent types like ZenUML, or experimental types with known parser issues)
-- **parse-only**: validate grammar, but skip the render phase (for diagrams that parse correctly but produce rendering issues)
+- **skip**: don't validate this block at all (for a plugin-dependent type the validator hasn't wired up, or a type with genuine, confirmed parser issues - confirmed by testing, see above, not assumed from the reason alone)
+- **parse-only**: validate grammar, but skip the render phase (currently used by ZenUML's two blocks - the validator registers its plugin for `--mode parse` via jsdom, but `--mode render` doesn't register it against the puppeteer/browser bundle yet, so a full render would fail there even though the grammar is confirmed valid)
 - **keyword-exempt**: skip the keyword drift check (for diagram families like C4 that support multiple starting keywords)
 
 ## Troubleshooting
@@ -168,7 +172,7 @@ The validator tried to install mermaid/jsdom/puppeteer and it failed. Check that
 Then try manually:
 
 ```bash
-cd "C:\Users\rheone\AppData\Local\Temp\mermaid-validate-11.16.1"
+cd "$TMPDIR/mermaid-validate-11.16.1"          # Windows: %TEMP%\mermaid-validate-11.16.1
 npm install mermaid@11.16.1 jsdom
 ```
 
@@ -177,7 +181,7 @@ npm install mermaid@11.16.1 jsdom
 This can happen on Windows if npm's `--prefix` flag is ignored. Workaround:
 
 ```bash
-cd "C:\Users\rheone\AppData\Local\Temp\mermaid-validate-11.16.1"
+cd "$TMPDIR/mermaid-validate-11.16.1"          # Windows: %TEMP%\mermaid-validate-11.16.1
 npm install --no-save mermaid@11.16.1 jsdom puppeteer
 ```
 

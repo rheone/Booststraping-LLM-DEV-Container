@@ -8,6 +8,11 @@ keyword: stateDiagram-v2
 source: https://mermaid.js.org/syntax/stateDiagram.html
 last_verified: 2026-08-09
 plugin_required: false
+gitlab_compatible: true
+github_compatible: true
+vscode_compatible: true
+obsidian_compatible: unknown
+notion_compatible: unknown
 ---
 
 # State Diagram

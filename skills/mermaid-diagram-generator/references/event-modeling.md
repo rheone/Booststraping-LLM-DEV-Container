@@ -8,6 +8,11 @@ keyword: eventmodeling
 source: https://mermaid.js.org/syntax/eventmodeling.html
 last_verified: 2026-08-09
 plugin_required: false
+gitlab_compatible: false
+github_compatible: false
+vscode_compatible: true
+obsidian_compatible: unknown
+notion_compatible: unknown
 ---
 
 # Event Modeling
@@ -30,51 +35,44 @@ Event Modeling is a diagram type for narrating how information flows through a s
 
 ## Basic syntax
 - Start keyword: `eventmodeling`.
-- Each step is a time frame: `tf <number> <entity-type> <identifier>` (compact) or `timeframe <number> <entity-type> <identifier>` (relaxed) - both notations are interchangeable within the same diagram.
+- Each step is a time frame: `tf <number> <entity-type> <identifier>` (compact) or `timeframe <number> <entity-type> <identifier>` (relaxed) - both notations are interchangeable within the same diagram. **The `tf`/`timeframe` keyword is mandatory** - a bare `01 ui CartUI` line without it fails to parse (confirmed against Mermaid v11.16.1; earlier revisions of this file omitted the keyword in its own examples, which was the actual cause of this type's validator failures, not an upstream Mermaid bug).
 - Entity types, compact / relaxed pairs: `ui` (no relaxed alias) for a user-interface trigger, `pcr`/`processor` for an automated/background trigger, `cmd`/`command` for a command, `evt`/`event` for an event, `rmo`/`readmodel` for a read model.
 - Time frame numbers must be unique per diagram and establish the left-to-right ordering; Mermaid infers a relationship arrow from each time frame to the next unless a reset frame intervenes.
-- Reset frame: `rf` / `resetframe` breaks the automatic inference chain, letting a new, unrelated timeline segment start without an arrow from the previous step.
-- Inline data: append `{ ... }` on the same line as a time frame to attach a short payload description, e.g. `tf 02 cmd AddItem {item id}`.
-- Data blocks: for longer payloads, reference a block with wiki-link syntax `[[identifier]]` and define its contents separately, keeping the time frame line itself short.
+- Reset frame: `rf <number> <entity-type> <identifier>` / `resetframe ...` breaks the automatic inference chain, letting a new, unrelated timeline segment start without an arrow from the previous step. **Unlike the mermaid.js.org prose, a bare `rf <number>` with no entity type fails to parse against v11.16.1** - the reset frame still declares an entity, identical in shape to `tf`, it just also suppresses the inferred arrow from the prior step.
+- Inline data: append `{ ... }` on the same line as a time frame to attach a short payload description, e.g. `tf 02 cmd AddItem {item id}`. When combined with an explicit relation (see below), the `->>` relation tokens must come *before* the `{ ... }` data, e.g. `tf 03 rmo C ->> 01 {payload}` - the reverse order fails to parse.
+- Data blocks: mermaid.js.org documents referencing a block with wiki-link syntax `[[identifier]]` and defining its contents separately (`data <identifier> { ... }`), but this could not be gotten to parse against the pinned v11.16.1 in testing (a bare `data <identifier> { ... }` line consistently fails with an `EM_DATA_BLOCK` token error regardless of brace/colon variations tried). Treat this feature as unconfirmed for this pinned version - stick to inline `{ ... }` data instead until re-verified on a version bump.
 - Namespaces: prefix an identifier with `Namespace.`, e.g. `Inventory.InventoryChanged` - each distinct Namespace + entity-type pair gets its own swimlane, letting you group related timelines visually.
-- Multiple relations: when a step depends on more than one preceding step (e.g. a read model built from several events), chain the extra relations with the `->>` token instead of relying on the default single-predecessor inference.
-- Typed data blocks: a data block's content can be tagged with a backtick-prefixed type hint (e.g. json, text, uri) to hint how it should be rendered.
+- Multiple relations: when a step depends on more than one preceding step (e.g. a read model built from several events), chain the extra relations with `->> <frame-number>` tokens (referencing the *time frame number*, not the entity identifier) instead of relying on the default single-predecessor inference, e.g. `tf 03 rmo C ->> 01 ->> 02`.
+- Typed data blocks: mermaid.js.org describes tagging a data block's content with a backtick-prefixed type hint (e.g. json, text, uri); since plain data blocks themselves are unconfirmed against v11.16.1 (above), this is unconfirmed too.
 
 ## Simple example
 
-<!-- mermaid-validate: skip reason="Event Modeling is experimental in v11.16.1; parser fails on examples that appear correct per mermaid.js.org documentation" -->
 ```mermaid
 eventmodeling
-01 ui CartUI {select item}
-02 cmd AddItem {item id, quantity}
-03 evt ItemAdded {item id, quantity, cart id}
+tf 01 ui CartUI {select item}
+tf 02 cmd AddItem {item id, quantity}
+tf 03 evt ItemAdded {item id, quantity, cart id}
 ```
 A user interaction (`ui`) triggers a command (`cmd`), which produces an event (`evt`); Mermaid infers the two connecting arrows automatically because the time frame numbers run consecutively with no reset frame between them.
 
 ## Complex example
 
-<!-- mermaid-validate: skip reason="Event Modeling is experimental in v11.16.1; parser fails on examples that appear correct per mermaid.js.org documentation" -->
 ```mermaid
 eventmodeling
-01 ui CartUI {customer selects item}
-02 cmd AddItem {item id, quantity}
-03 evt ItemAdded {item id, quantity, cart id}
-04 rmo CartSummary {running total, item count}
+tf 01 ui CartUI {customer selects item}
+tf 02 cmd AddItem {item id, quantity}
+tf 03 evt ItemAdded {item id, quantity, cart id}
+tf 04 rmo CartSummary {running total, item count}
 
-rf 05
+rf 05 ui CheckoutUI {customer confirms order}
+tf 06 cmd PlaceOrder {cart id}
+tf 07 evt OrderPlaced {order id, cart id, total}
 
-06 ui CheckoutUI {customer confirms order}
-07 cmd PlaceOrder {cart id}
-08 evt OrderPlaced {order id, cart id, total}
-
-09 pcr Inventory.ReserveStock {triggered by OrderPlaced}
-10 evt Inventory.StockReserved {order id, reserved items}
-
-11 rmo OrderConfirmation {order id, total, reserved items}
-11 ->> 08
-11 ->> 10
+tf 08 pcr Inventory.ReserveStock {triggered by OrderPlaced}
+tf 09 evt Inventory.StockReserved {order id, reserved items}
+tf 10 rmo OrderConfirmation ->> 07 ->> 09 {order id, total, reserved items}
 ```
-The `rf 05` reset frame separates the "add to cart" timeline from the "checkout" timeline so step 06 doesn't get an inferred arrow from step 04. The `Inventory.` namespace prefix on steps 09–10 places the background reservation processor and its event in their own swimlane, separate from the checkout flow. `OrderConfirmation` is a read model built from two prior steps, so both relations are stated explicitly with `->>` rather than relying on single-predecessor inference.
+`rf 05 ui CheckoutUI` is both the reset frame *and* the entity for that frame - reset frames declare an entity the same way `tf` does, they additionally just suppress the arrow that would otherwise be inferred from step 04. The `Inventory.` namespace prefix on steps 08-09 places the background reservation processor and its event in their own swimlane, separate from the checkout flow. `OrderConfirmation` is a read model built from two prior steps, so both relations are stated explicitly with `->> 07 ->> 09` (referencing frame numbers, and placed before the inline data) rather than relying on single-predecessor inference.
 
 ## Escaping & special characters
 - Inline payload descriptions in `{ ... }` are free text; keep them short and avoid embedding raw `{`/`}` characters, since the parser treats the first matching pair as the payload boundary.

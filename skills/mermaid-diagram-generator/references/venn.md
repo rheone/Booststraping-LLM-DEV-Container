@@ -8,6 +8,11 @@ keyword: venn-beta
 source: https://mermaid.js.org/syntax/venn.html
 last_verified: 2026-08-09
 plugin_required: false
+gitlab_compatible: false
+github_compatible: true
+vscode_compatible: true
+obsidian_compatible: unknown
+notion_compatible: unknown
 ---
 
 # Venn
