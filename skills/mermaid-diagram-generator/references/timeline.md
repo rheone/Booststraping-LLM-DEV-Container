@@ -3,16 +3,11 @@ diagram: Timeline
 slug: timeline
 status: stable
 mermaid_version_introduced: "v10.0.0"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: timeline
 source: https://mermaid.js.org/syntax/timeline.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: true
-github_compatible: true
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Timeline
@@ -98,6 +93,7 @@ Three sections ("Founding era", "Expansion era", "Modern era") each get their ow
 - Long time-period or event text auto-wraps by default; force a manual line break inside a label with `<br>`.
 - A YAML frontmatter block (` --- ... --- `) above the `timeline` keyword can set `theme`, and under `config.timeline.disableMulticolor` or `themeVariables.cScale0`…`cScale11` / `cScaleLabel0`…`cScaleLabel11` to control per-section coloring - this frontmatter is standard YAML, so quote any string value containing `:` or other YAML-special characters.
 - Inside a ` ```mermaid ` fence in markdown, keep the fence's own indentation consistent; nothing inside the timeline body needs escaping specifically because it's fenced.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** A `:` in an event or section name splits it - write `#58;`. In the title, a `<`...`>` pair is read as an HTML tag and silently dropped, so write both as `#60;` and `#62;`. Named codes (`#quot;`) are not decoded here; use numeric ones.
 
 ## Common pitfalls
 
@@ -106,6 +102,10 @@ Three sections ("Founding era", "Expansion era", "Modern era") each get their ow
 - [ ] For multi-event periods, did you either chain them with `:` on one line or use bare leading-colon continuation lines - not repeat the period label on each line?
 - [ ] Did you avoid putting a literal `:` inside period/event text itself?
 - [ ] If setting `theme` or `cScale*` variables, is the frontmatter valid YAML (proper `---` fences, quoted color strings)?
+
+## v11 fallback
+
+No syntax differences. Every example in this file parses and renders on both Mermaid 12.0.0 and 11.16.1.
 
 ## Beta/experimental caveats
 

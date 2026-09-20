@@ -1,11 +1,3 @@
----
-name: justmock-csharp-examples
-description: Worked examples for Telerik JustMock covering Free mode (interface mocking, argument matchers, strict mode, auto-stubbing) and Elevated mode (sealed class, static method, DateTime interception). All examples work in Free mode unless marked [Elevated].
-license: Apache-2.0
-metadata:
-  version: 1.1.0
----
-
 # JustMock Examples
 
 All examples below work in **Free mode** unless explicitly marked `[Elevated]`.
@@ -235,7 +227,3 @@ public void Timestamp_ReturnsFixedDate()
     Assert.AreEqual(fixedDate, result.CreatedAt);
 }
 ```
-
-## Related Skills
-
-These examples support [`justmock-csharp`](SKILL.md), which is invoked by [`csharp-test-sweep`](../../SKILL.md). Framework-agnostic quality rules live in the [parent quality-checklist.md](../../references/quality-checklist.md).

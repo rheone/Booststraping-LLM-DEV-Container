@@ -3,16 +3,11 @@ diagram: Event Modeling
 slug: event-modeling
 status: experimental
 mermaid_version_introduced: "v11.15.0"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: eventmodeling
 source: https://mermaid.js.org/syntax/eventmodeling.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: false
-github_compatible: false
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Event Modeling
@@ -35,15 +30,15 @@ Event Modeling is a diagram type for narrating how information flows through a s
 
 ## Basic syntax
 - Start keyword: `eventmodeling`.
-- Each step is a time frame: `tf <number> <entity-type> <identifier>` (compact) or `timeframe <number> <entity-type> <identifier>` (relaxed) - both notations are interchangeable within the same diagram. **The `tf`/`timeframe` keyword is mandatory** - a bare `01 ui CartUI` line without it fails to parse (confirmed against Mermaid v11.16.1; earlier revisions of this file omitted the keyword in its own examples, which was the actual cause of this type's validator failures, not an upstream Mermaid bug).
+- Each step is a time frame: `tf <number> <entity-type> <identifier>` (compact) or `timeframe <number> <entity-type> <identifier>` (relaxed) - both notations are interchangeable within the same diagram. **The `tf`/`timeframe` keyword is mandatory** - a bare `01 ui CartUI` line without it fails to parse (confirmed on Mermaid 11.16.1 and 12.0.0).
 - Entity types, compact / relaxed pairs: `ui` (no relaxed alias) for a user-interface trigger, `pcr`/`processor` for an automated/background trigger, `cmd`/`command` for a command, `evt`/`event` for an event, `rmo`/`readmodel` for a read model.
 - Time frame numbers must be unique per diagram and establish the left-to-right ordering; Mermaid infers a relationship arrow from each time frame to the next unless a reset frame intervenes.
-- Reset frame: `rf <number> <entity-type> <identifier>` / `resetframe ...` breaks the automatic inference chain, letting a new, unrelated timeline segment start without an arrow from the previous step. **Unlike the mermaid.js.org prose, a bare `rf <number>` with no entity type fails to parse against v11.16.1** - the reset frame still declares an entity, identical in shape to `tf`, it just also suppresses the inferred arrow from the prior step.
+- Reset frame: `rf <number> <entity-type> <identifier>` / `resetframe ...` breaks the automatic inference chain, letting a new, unrelated timeline segment start without an arrow from the previous step. **Unlike the mermaid.js.org prose, a bare `rf <number>` with no entity type fails to parse on 11.16.1 and 12.0.0** - the reset frame still declares an entity, identical in shape to `tf`, it just also suppresses the inferred arrow from the prior step.
 - Inline data: append `{ ... }` on the same line as a time frame to attach a short payload description, e.g. `tf 02 cmd AddItem {item id}`. When combined with an explicit relation (see below), the `->>` relation tokens must come *before* the `{ ... }` data, e.g. `tf 03 rmo C ->> 01 {payload}` - the reverse order fails to parse.
-- Data blocks: mermaid.js.org documents referencing a block with wiki-link syntax `[[identifier]]` and defining its contents separately (`data <identifier> { ... }`), but this could not be gotten to parse against the pinned v11.16.1 in testing (a bare `data <identifier> { ... }` line consistently fails with an `EM_DATA_BLOCK` token error regardless of brace/colon variations tried). Treat this feature as unconfirmed for this pinned version - stick to inline `{ ... }` data instead until re-verified on a version bump.
+- Data blocks: reference a block from a time frame with wiki-link syntax `[[identifier]]` and define its contents in a separate `data <identifier> { ... }` block after the frames (parses on 11.16.1 and 12.0.0). When the same entity repeats, give each block a numbered identifier (`AddItem01`, `AddItem02`).
 - Namespaces: prefix an identifier with `Namespace.`, e.g. `Inventory.InventoryChanged` - each distinct Namespace + entity-type pair gets its own swimlane, letting you group related timelines visually.
 - Multiple relations: when a step depends on more than one preceding step (e.g. a read model built from several events), chain the extra relations with `->> <frame-number>` tokens (referencing the *time frame number*, not the entity identifier) instead of relying on the default single-predecessor inference, e.g. `tf 03 rmo C ->> 01 ->> 02`.
-- Typed data blocks: mermaid.js.org describes tagging a data block's content with a backtick-prefixed type hint (e.g. json, text, uri); since plain data blocks themselves are unconfirmed against v11.16.1 (above), this is unconfirmed too.
+- Typed data: prefix the braces with a backtick type hint, inline or in a data block - ``tf 01 rmo UserAdded `json`{ "name": "foo" }``. The types are `json`, `jsobj`, `figma`, `salt`, `uri`, `md`, `html` and `text`; the renderer gives them no special treatment.
 
 ## Simple example
 
@@ -79,6 +74,7 @@ tf 10 rmo OrderConfirmation ->> 07 ->> 09 {order id, total, reserved items}
 - Identifiers used as namespace-qualified names (`Namespace.Entity`) use a literal period as the separator - avoid periods inside an identifier for any other purpose.
 - Data-block references use double-square-bracket wiki-link syntax (`[[identifier]]`); keep the identifier alphanumeric to avoid ambiguity with Markdown's own link syntax when this diagram is embedded in a larger document.
 - Inside a fenced ```mermaid block in Markdown, blank lines between time frame groups are cosmetic and safe - they do not need escaping and can be used freely to visually separate timeline segments.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** The identifier cannot contain `:` (a lexer error). The `{ data }` part accepts any character.
 
 ## Common pitfalls
 - Relying on default inference across a `rf`/`resetframe` boundary - inference is intentionally cut there, so a missing explicit relation will leave a step disconnected.
@@ -87,8 +83,14 @@ tf 10 rmo OrderConfirmation ->> 07 ->> 09 {order id, total, reserved items}
 - Mixing compact and relaxed keyword forms inconsistently in a way that hurts readability - both parse fine, but pick one convention per diagram for a team's sanity.
 - Treating this like a general sequence diagram - it models information flow over named time frames and swimlanes, not arbitrary message passing, so shoehorning unrelated interaction patterns into it produces an awkward result.
 
+## v11 fallback
+
+This type was introduced in v11.15.0. Renderers older than that fail with `No diagram type detected` (see `general/renderers.md` for which markdown renderers those are). For such targets use a `sequence.md` diagram, one participant per swimlane.
+
+- No syntax differences. Every example in this file parses and renders on both Mermaid 12.0.0 and 11.16.1.
+
 ## Beta/experimental caveats
-This is Mermaid's newest diagram type (v11.15.0+) and its docs note that the underlying grammar is developed in a separate external DSL project intended to eventually support multiple output targets (e.g. IDE tooling), which signals the syntax is still actively evolving outside the main Mermaid release cadence. Always tell the user this diagram type requires Mermaid v11.15.0 or later (this skill is pinned to 11.16.1, which satisfies that), and that both the compact/relaxed keyword set and the inference/namespace rules are more likely than stable diagram types to change in a future Mermaid release.
+This is Mermaid's newest diagram type (v11.15.0+) and its docs note that the underlying grammar is developed in a separate external DSL project intended to eventually support multiple output targets (e.g. IDE tooling), which signals the syntax is still actively evolving outside the main Mermaid release cadence. Always tell the user this diagram type requires Mermaid v11.15.0 or later, and that both the compact/relaxed keyword set and the inference/namespace rules are more likely than stable diagram types to change in a future Mermaid release.
 
 ## Further reading
 - https://mermaid.js.org/syntax/eventmodeling.html

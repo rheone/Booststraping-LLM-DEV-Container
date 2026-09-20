@@ -1,12 +1,3 @@
----
-name: nunit-csharp
-description: API reference for NUnit v5 — constraint catalog, fixture lifecycle, data source patterns, and analyzer recommendations.
-license: Apache-2.0
-metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
-  version: 1.1.0
----
-
 # NUnit v5 Reference
 
 ## Constraint Catalog
@@ -130,17 +121,6 @@ Use `[TestFixture]` when:
 
 Default: tests within a class run sequentially; classes in different fixtures run in parallel.
 
-## Analyzer Recommendation
-
-Add the **NUnit.Analyzers** NuGet package to catch classic-style assertions, missing `[Test]` attributes, and other NUnit-specific issues at build time:
-
-```xml
-<PackageReference Include="NUnit.Analyzers" Version="4.*">
-  <PrivateAssets>all</PrivateAssets>
-  <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-</PackageReference>
-```
-
 ## Test Data Patterns
 
 ```csharp
@@ -159,7 +139,3 @@ static IEnumerable<TestCaseData> Parse_InvalidInput_ThrowsException_Test_Data()
         .SetName("Parse_InvalidFormat_ThrowsFormatException_Test");
 }
 ```
-
-## Related Skills
-
-This skill is invoked by [`csharp-test-sweep`](../../SKILL.md). Framework-agnostic rules live in the [parent quality-checklist.md](../../references/quality-checklist.md).

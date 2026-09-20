@@ -1,11 +1,3 @@
----
-name: mstest-csharp-examples
-description: Worked examples for MSTest v4 covering basic tests, parameterized tests, lifecycle, assertions, and metadata. Use alongside SKILL.md when writing MSTest tests.
-license: Apache-2.0
-metadata:
-  version: 1.1.0
----
-
 # MSTest Examples
 
 ## Basic Test Class
@@ -199,7 +191,3 @@ internal class InternalParserTests
     }
 }
 ```
-
-## Related Skills
-
-These examples support [`mstest-csharp`](SKILL.md), which is invoked by [`csharp-test-sweep`](../../SKILL.md).

@@ -1,21 +1,8 @@
----
-name: moq-csharp
-description: Moq-specific anti-patterns and pitfalls — what to avoid and how to fix it. Framework-agnostic rules (static state, test isolation) are in csharp-test-sweep.
-license: Apache-2.0
-metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
-  version: 1.1.0
----
-
 # Moq Anti-Patterns
-
-Framework-agnostic rules (static mutable state, test isolation) live in
-[`csharp-test-sweep/references/quality-checklist.md`](../../references/quality-checklist.md).
-This file covers Moq-specific pitfalls only.
 
 ## 1. Mocking the Class Under Test
 
-The most common and most damaging Moq mistake. `new Mock<T>()` intercepts virtual members on `T`. When `T` is the subject under test, the real method never runs.
+See the [General Quality Checklist](../../references/quality-checklist.md) for why.
 
 ```csharp
 // BROKEN: never executes the real Process logic
@@ -28,7 +15,7 @@ var sut = new OrderProcessor();
 var result = sut.Process(order);
 ```
 
-**Rule**: `new Mock<T>()` is for dependencies. If you need partial mocking of the subject, extract the dependency instead.
+Need partial mocking of the subject? Extract the dependency instead.
 
 ## 2. CallBase as a Workaround
 
@@ -136,9 +123,3 @@ var mock2 = new Mock<Foo>("test", logger); // correct
 ```
 
 Always pass explicit constructor arguments when mocking concrete classes.
-
-## Related
-
-- [SKILL.md](SKILL.md) — core rules and pattern overview
-- [REFERENCE.md](REFERENCE.md) — API lookup tables
-- [EXAMPLES.md](EXAMPLES.md) — worked examples

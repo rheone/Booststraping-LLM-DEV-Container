@@ -3,16 +3,11 @@ diagram: Architecture
 slug: architecture
 status: beta
 mermaid_version_introduced: "v11.1.0"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: architecture-beta
 source: https://mermaid.js.org/syntax/architecture.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: false
-github_compatible: true
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Architecture
@@ -86,6 +81,7 @@ Two ingest sources fan into a junction before reaching a primary database, which
 - Identifiers (the part before `(...)`) should stay alphanumeric/underscore - keep spaces and punctuation inside the `[Title]` portion, not the id.
 - Iconify icon references use a literal colon (`prefix:icon-name`) - don't quote it, and don't confuse it with the `id:` side syntax used in edges.
 - Inside a ```mermaid fence, no extra escaping is needed beyond avoiding literal triple backticks in titles.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Write labels as `service id(icon)["text"]`; the unquoted `[text]` form cannot contain `[` or `]`. Named codes (`#quot;`) are not decoded here; use numeric ones.
 
 ## Common pitfalls
 - [ ] Is every group/service/junction declared before it's referenced by `in` or by an edge?
@@ -94,6 +90,10 @@ Two ingest sources fan into a junction before reaching a primary database, which
 - [ ] Are nested groups using `in <parentId>` rather than indentation alone (indentation is cosmetic, not structural)?
 - [ ] If a layout looks wrong, have you tried `align row`/`align column` (v11.16.0+) rather than fighting edge order? Note: syntax is `align row id1 id2 id3` (space-separated), not keyword arguments - the docs' `{idA}` notation is just a template placeholder.
 - [ ] Are custom icon names valid `prefix:name` iconify references, not bare icon names?
+
+## v11 fallback
+
+- **`align row|column`** needs v11.16.0+. On older renderers drop the `align` lines and steer layout with edge order.
 
 ## Beta/experimental caveats
 Architecture diagrams are beta as of v11.1.0; the `align` statement is newer still (v11.16.0+) and may see further layout-affecting changes. When delivering this diagram type, note it requires Mermaid v11.1.0 or later (v11.16.0+ if `align` is used), and that edge-routing/layout behavior is more likely to shift between releases than in stable diagram types.

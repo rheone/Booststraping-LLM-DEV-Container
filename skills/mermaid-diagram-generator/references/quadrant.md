@@ -3,16 +3,11 @@ diagram: Quadrant Chart
 slug: quadrant
 status: stable
 mermaid_version_introduced: "v10.2.0"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: quadrantChart
 source: https://mermaid.js.org/syntax/quadrantChart.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: true
-github_compatible: true
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Quadrant Chart
@@ -85,6 +80,7 @@ Eight-plus features are scored on effort (x) and impact (y); two `classDef` bloc
 - Axis/quadrant labels containing special characters (emoji, non-ASCII, or symbols like `<`, `>`) generally render fine unquoted, but wrap the label in double quotes if it contains characters the parser could otherwise misread as syntax (e.g. `-->`, `:`).
 - A YAML frontmatter block above `quadrantChart` for `config.quadrantChart` or `themeVariables` (e.g. `quadrant1TextFill`) is standard YAML - quote string values containing `:`.
 - Inside a ` ```mermaid ` fence in markdown, nothing in quadrant syntax needs backtick escaping; avoid literal triple backticks in label text, or use a four-backtick outer fence if unavoidable.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Point names containing `: | ( ) [ ] { } ; " < >` must be written quoted (`"name": [x, y]`) or with `#<n>;` codes; inside the quotes still escape `"` and a `<`...`>` pair is read as an HTML tag and silently dropped, so write both as `#60;` and `#62;`. In the title, a `<`...`>` pair is read as an HTML tag and silently dropped, so write both as `#60;` and `#62;`.
 
 ## Common pitfalls
 - [ ] Are all point coordinates between 0 and 1 (not raw/unnormalized numbers)?
@@ -93,6 +89,10 @@ Eight-plus features are scored on effort (x) and impact (y); two `classDef` bloc
 - [ ] If using class-based styling, does every `:::className` reference a `classDef` that's actually declared?
 - [ ] Did you avoid mixing inline point styling and a `:::className` class on the same point in conflicting ways?
 - [ ] Is a label with special characters (`:`, `-->`) quoted to avoid parser ambiguity?
+
+## v11 fallback
+
+No syntax differences. Every example in this file parses and renders on both Mermaid 12.0.0 and 11.16.1.
 
 ## Beta/experimental caveats
 N/A - stable diagram type, no known compatibility caveats.

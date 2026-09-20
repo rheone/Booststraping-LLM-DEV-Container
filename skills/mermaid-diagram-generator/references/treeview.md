@@ -3,16 +3,11 @@ diagram: TreeView
 slug: treeview
 status: beta
 mermaid_version_introduced: "v11.14.0"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: treeView-beta
 source: https://mermaid.js.org/syntax/treeView.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: false
-github_compatible: true
-vscode_compatible: unknown
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # TreeView
@@ -111,6 +106,7 @@ This combines frontmatter config (icon pack registration plus filename/extension
 - Labels - quoted or bare - are rendered exactly as written, including consecutive spaces and Unicode/emoji; emoji are a handy stand-in icon since built-in icons are opt-in.
 - Inside a ```` ```mermaid ```` fence in Markdown, keep box-drawing characters byte-for-byte as pasted - most Markdown renderers won't reflow them, but editors that auto-trim trailing whitespace can corrupt a `│ ` continuation column, silently shifting depth on later lines.
 - Don't mix indentation-style and box-drawing-style lines in the same diagram; the auto-detector keys off the first structural line.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Quote labels (portable to v11.14.0); the only character that still needs an escape inside the quotes is `"`, written `#34;`.
 
 ## Common pitfalls
 - [ ] Did you use `treeView-beta` with a capital `V` - not `treeview-beta`?
@@ -121,6 +117,12 @@ This combines frontmatter config (icon pack registration plus filename/extension
 - [ ] If icons were expected but aren't showing, is `showIcons: true` set under `config.treeView` in frontmatter?
 - [ ] Are annotations (`:::class`, `icon()`, `##`) appended after the label rather than placed on their own line (unlike mindmap's icon/class syntax)?
 - [ ] Are bare labels or annotations (`:::class`, `icon()`, `##`) avoided unless the target renderer is confirmed Mermaid >= 11.16.0? On v11.14.0/v11.15.0, a bare label is a parse error (`Expecting token of type 'STRING2'`) and an annotation is also a hard parse error - quote every label and skip annotations to stay portable back to the v11.14.0 introduction.
+
+## v11 fallback
+
+This type was introduced in v11.14.0. Renderers older than that fail with `No diagram type detected` (see `general/renderers.md` for which markdown renderers those are). For such targets use a plain-text tree in a fenced code block (or a `mindmap.md` outline when hierarchy, not file layout, is the point).
+
+- **Bare (unquoted) labels and all annotations** (`:::class`, `##`, `icon()`) need v11.16.0+ and hard-fail on v11.14.0/v11.15.0 with `Expecting token of type 'STRING2'`. Quote every label and skip annotations when the target may be older.
 
 ## Beta/experimental caveats
 TreeView is new as of v11.14.0 and both the dual-input-style parser and the icon-resolution config surface (`filenameIcons`/`extensionIcons`/`defaultIconPack`) are young enough that edge cases in auto-detection or icon-pack resolution may change in later releases. Confirm the target Mermaid runtime is v11.14.0 or later before delivering a TreeView diagram; on older pinned versions this diagram type does not exist and will fail to parse. Note two syntax gates layered on after introduction: **bare (unquoted) labels and all annotation forms (`:::class`, `##`, `icon()`) both require Mermaid >= 11.16.0** - the v11.14.0/v11.15.0 grammar only accepts double-quoted labels with no annotations. Default to quoted labels and no annotations for maximum portability, and only use bare labels/annotations when the user confirms the target renderer is 11.16.0+.

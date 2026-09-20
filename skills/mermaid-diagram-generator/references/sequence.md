@@ -3,16 +3,11 @@ diagram: Sequence Diagram
 slug: sequence
 status: stable
 mermaid_version_introduced: "long-standing (pre-v10)"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: sequenceDiagram
 source: https://mermaid.js.org/syntax/sequenceDiagram.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: true
-github_compatible: true
-vscode_compatible: unknown
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Sequence Diagram
@@ -103,6 +98,7 @@ sequenceDiagram
 - Use entity codes for punctuation that collides with the message/note grammar, e.g. `#35;` for `#`, `#59;` for a literal semicolon inside message text.
 - The literal word `end` appearing as message or note text must be wrapped, e.g. `(end)`, `[end]`, or `{end}`, so it isn't parsed as a block terminator.
 - Avoid a literal triple-backtick sequence inside message/note text; if unavoidable, bump the *outer* fence wrapping this whole mermaid block to four backticks.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** In participant aliases, message text, notes and titles a `#` or `;` is cut or lost - write `#35;` and `#59;`. In a title, a `<`...`>` pair is read as an HTML tag and silently dropped, so write both as `#60;` and `#62;`.
 
 ## Common pitfalls
 - Forgetting the closing `end` for any `loop`/`alt`/`opt`/`par`/`critical`/`break` block.
@@ -111,6 +107,10 @@ sequenceDiagram
 - Assuming participant left-to-right order - it follows first-appearance order in the diagram body unless participants are declared up front, which can produce a confusing layout.
 - Placing `else`, `and`, or `option` without a matching `alt`, `par`, or `critical` block opener.
 - Leaving the literal word `end` unescaped in message text, breaking block parsing.
+
+## v11 fallback
+
+- **Default appearance:** v12 draws this type with the `neo` look and the `redux-color` theme by default; v11 draws it with the `classic` look and the `default` theme. The diagram source is identical - only the rendering differs. `general/v11-compatibility.md` shows how to make v12 draw the v11 appearance.
 
 ## Beta/experimental caveats
 N/A - stable diagram type, no known compatibility caveats. Half-arrow message variants and inline JSON actor stereotypes/aliases are later additive syntax (v11.12+/v11.15+) layered on top of the same stable core grammar.

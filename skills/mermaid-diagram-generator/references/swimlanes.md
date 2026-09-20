@@ -3,16 +3,11 @@ diagram: Swimlanes
 slug: swimlanes
 status: beta
 mermaid_version_introduced: "v11.16.0"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: swimlane-beta
 source: https://mermaid.js.org/syntax/swimlanes.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: false
-github_compatible: true
-vscode_compatible: unknown
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Swimlanes
@@ -132,6 +127,7 @@ Three lanes - one lane (`reviewer`) uses a separate internal id and display labe
 - Node and edge label quoting follows flowchart rules: wrap a label in double quotes if it contains characters like `[`, `]`, `(`, `)`, or `#` that would otherwise be parsed as shape/annotation syntax, e.g. `id["Cost: $500"]`.
 - A lane's display label (the bracketed part of `subgraph id [Label]`) follows the same quoting needs as a flowchart node label when it contains reserved characters.
 - Inside a ```` ```mermaid ```` fence in Markdown, keep the `subgraph ... end` block's indentation consistent - it's cosmetic (unlike TreeView/mindmap, structure comes from `subgraph`/`end` keywords, not indentation) but inconsistent indentation makes the source harder to review.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Quote node labels (`a["text"]`); unquoted labels break on `" | ( ) [ ] { }`, and the only character that still needs an escape inside the quotes is `"`, written `#34;`.
 
 ## Common pitfalls
 - [ ] Did you use `swimlane-beta` (singular "swimlane"), not "swimlanes-beta"?
@@ -140,6 +136,12 @@ Three lanes - one lane (`reviewer`) uses a separate internal id and display labe
 - [ ] If a lane needs a label with spaces, did you give it an internal id (`subgraph id [Label with spaces]`) rather than putting spaces in the id itself?
 - [ ] Are cross-lane handoff arrows labeled where the handoff depends on a decision, document, or condition - unlabeled arrows read as "just sequence"?
 - [ ] Is a direction (`LR`/`TB`/etc.) chosen deliberately rather than left to default `TB`, since lane orientation strongly affects readability for wide processes?
+
+## v11 fallback
+
+This type was introduced in v11.16.0. Renderers older than that fail with `No diagram type detected` (see `general/renderers.md` for which markdown renderers those are). For such targets use a `flowchart.md` with one subgraph per lane.
+
+- **Default appearance:** v12 draws this type with the `neo` look and the `redux-color` theme by default; v11 draws it with the `classic` look and the `default` theme. The diagram source is identical - only the rendering differs. `general/v11-compatibility.md` shows how to make v12 draw the v11 appearance.
 
 ## Beta/experimental caveats
 Swimlanes is new as of v11.16.0; the source documentation itself carries an explicit warning that its syntax may evolve in future versions. Confirm the target Mermaid runtime is v11.16.0 or later before delivering a swimlane diagram - on older pinned versions this diagram type does not exist and will fail to parse. The doc's rendered examples use the "Neo" look and "Redux" theme, but that is cosmetic-only: swimlanes render fine under whatever look/theme is otherwise configured.

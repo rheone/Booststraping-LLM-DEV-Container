@@ -1,17 +1,4 @@
----
-name: nsubstitute-csharp-reference
-description: API lookup tables for NSubstitute — substitutes, returns, matchers, verification, callbacks. Referenced by csharp-test-sweep when configuring NSubstitute mocks.
-license: Apache-2.0
-metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
-  version: 1.1.0
----
-
 # NSubstitute API Reference
-
-Part of [csharp-test-sweep](../../SKILL.md).
-For worked examples see [`EXAMPLES.md`](EXAMPLES.md).
-For framework-specific pitfalls see [`ANTI-PATTERNS.md`](ANTI-PATTERNS.md).
 
 ## Creating Substitutes
 
@@ -86,7 +73,3 @@ For framework-specific pitfalls see [`ANTI-PATTERNS.md`](ANTI-PATTERNS.md).
 |---------|-------------|
 | `sub.ClearReceivedCalls()` | Reset call history only |
 | `sub.ClearSubstitute()` | Reset calls AND configured returns |
-
-## Tooling
-
-Install [`NSubstitute.Analyzers`](https://www.nuget.org/packages/NSubstitute.Analyzers/) (NuGet) to catch non-virtual member stubbing and other common mistakes at compile time.

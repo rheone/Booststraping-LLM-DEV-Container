@@ -1,14 +1,4 @@
----
-name: justmock-csharp-antipatterns
-description: Framework-specific pitfalls when using Telerik JustMock in C# test projects. Covers the free/elevated mode trap, class-under-test mocking, missing assertions, and elevated-mode overuse.
-license: Apache-2.0
-metadata:
-  version: 1.1.0
----
-
 # JustMock Anti-Patterns
-
-These are JustMock-specific. Framework-agnostic anti-patterns (async void, flaky tests, shared state) belong in the [parent quality-checklist.md](../../references/quality-checklist.md).
 
 ## 1. Mocking the Class Under Test (Free Mode)
 
@@ -105,9 +95,3 @@ var result = sut.PublicMethod(42);
 ```
 
 **Fix**: test the public contract. If a private method is complex enough to warrant direct testing, extract it into its own testable class.
-
-## Related Skills
-
-This reference supports [`justmock-csharp`](SKILL.md), which is invoked by [`csharp-test-sweep`](../../SKILL.md). Framework-agnostic quality rules live in the [parent quality-checklist.md](../../references/quality-checklist.md).
-
-

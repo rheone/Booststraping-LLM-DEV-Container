@@ -3,16 +3,11 @@ diagram: Cynefin
 slug: cynefin
 status: beta
 mermaid_version_introduced: "v11.16.0"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: cynefin-beta
 source: https://mermaid.js.org/syntax/cynefin.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: false
-github_compatible: false
-vscode_compatible: false
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Cynefin
@@ -105,6 +100,12 @@ Five domains are populated with strategy items, and five labeled transitions tra
 - [ ] Is the `confusion` domain kept short, given only 3 items display before collapsing into a `+N more` badge?
 - [ ] Did you rely on declaration order to control domain layout - domains render in fixed positions regardless of the order you write them?
 - [ ] If targeting handdrawn/sketch theme, note it's explicitly unsupported for this diagram type.
+
+## v11 fallback
+
+This type was introduced in v11.16.0. Renderers older than that fail with `No diagram type detected` (see `general/renderers.md` for which markdown renderers those are). For such targets use a `flowchart.md` with one subgraph per domain.
+
+- No syntax differences. Every example in this file parses and renders on both Mermaid 12.0.0 and 11.16.1.
 
 ## Beta/experimental caveats
 Cynefin diagrams are beta as of v11.16.0; domain layout, the `confusion` overflow behavior, and config option names (`showDomainDescriptions`, `boundaryAmplitude`, `seed`, etc.) may still change in minor releases. When delivering this diagram type, note it requires Mermaid v11.16.0 or later and that handdrawn mode is explicitly not supported.

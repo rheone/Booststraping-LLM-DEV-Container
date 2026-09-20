@@ -3,16 +3,11 @@ diagram: XY Chart
 slug: xy-chart
 status: beta
 mermaid_version_introduced: "v10.6.0"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: xychart
 source: https://mermaid.js.org/syntax/xyChart.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: true
-github_compatible: true
-vscode_compatible: unknown
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # XY Chart
@@ -85,15 +80,21 @@ A bar series (monthly download counts) and a line series (a running trend) share
 - Numeric ranges use `-->` (three characters exactly, matching the arrow used in `quadrant.md`'s axis syntax) - not `->` or `=>`.
 - Per-point line labels are a quoted string placed directly after the numeric value, separated by whitespace, inside the same `[ ]` list - no comma between a value and its label.
 - Inside a ```mermaid fence in markdown, nothing extra needs escaping beyond avoiding a literal triple backtick inside a quoted label.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Quote the title and category labels; the only character that still needs an escape inside the quotes is `"`, written `#34;`. Even inside quotes, a `<`...`>` pair is read as an HTML tag and silently dropped, so write both as `#60;` and `#62;`.
 
 ## Common pitfalls
 - [ ] Does every `bar`/`line` series list have exactly as many values as there are x-axis categories (or a value at every implied numeric position)?
 - [ ] Are multi-word titles, axis titles, and category labels wrapped in double quotes?
 - [ ] Is the y-axis strictly numeric - categorical values are only valid on the x-axis?
 - [ ] If relying on per-point line labels, are they only on a `line` series (they render but are silently dropped on `bar`)?
-- [ ] Are per-point line labels avoided unless the target renderer is confirmed Mermaid >= 11.16.0? On older versions (e.g. GitLab's Mermaid v10 pin) `line [20 "Beta", ...]` is a hard parse error (`Expecting 'SQUARE_BRACES_END', 'COMMA', got 'STR'`), not a silent no-op - use plain values to stay portable.
+- [ ] Are per-point line labels avoided unless the target renderer is confirmed Mermaid >= 11.16.0? On older versions `line [20 "Beta", ...]` is a hard parse error (`Expecting 'SQUARE_BRACES_END', 'COMMA', got 'STR'`), not a silent no-op - use plain values to stay portable.
 - [ ] Is `showDataLabel` (and `showDataLabelOutsideBar` if used) actually turned on in config - data labels are off by default?
 - [ ] Does `plotColorPalette` list enough colors for every series, in the order series are declared?
+
+## v11 fallback
+
+- **Legend for named series** (`line "avg" [...]`, `bar "name" [...]`) is documented v11.17.0+. 11.16.1 parses the same source and draws no legend.
+- **Per-point line labels** (`line [20 "Beta", ...]`) need v11.16.0+ and hard-fail below it with `Expecting 'SQUARE_BRACES_END', 'COMMA', got 'STR'`. Use plain values when the target may be older.
 
 ## Beta/experimental caveats
 XY Chart requires Mermaid v10.6.0 or later; this base version was not stated on the doc page itself and is cross-referenced from the mermaid-js/mermaid GitHub release notes ("Add new chart xychart"). Two features layered on afterward are version-gated and should be called out explicitly when relied on: bar data labels (`showDataLabel`/`showDataLabelOutsideBar`) require v11.14.0+ and silently do nothing against an older pinned Mermaid version, while per-point line labels require v11.16.0+ and fail with a hard parse error (`Expecting 'SQUARE_BRACES_END', 'COMMA', got 'STR'`) rather than degrading gracefully - so default to plain values and only emit `20 "Beta"` when the user confirms the target renderer is 11.16.0+. Note also that the canonical keyword confirmed on the current doc page is plain `xychart`, not `xychart-beta` (the `-beta` form is still accepted as a legacy alias per the diagram detector in the mermaid-js/mermaid source, but isn't what the docs themselves use).

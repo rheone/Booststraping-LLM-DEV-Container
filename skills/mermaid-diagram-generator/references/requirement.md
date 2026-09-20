@@ -3,16 +3,11 @@ diagram: Requirement Diagram
 slug: requirement
 status: stable
 mermaid_version_introduced: "v8.9.2"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: requirementDiagram
 source: https://mermaid.js.org/syntax/requirementDiagram.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: true
-github_compatible: true
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Requirement Diagram
@@ -152,6 +147,7 @@ This combines four requirement types, three elements (one with a `docRef`), a `d
 - The relationship arrow tokens (`-`, `->`, `<-`) are reserved syntax - don't use a literal `-` adjacent to a relationship keyword in a way that could be misparsed as part of the arrow.
 - A literal `:` inside an unquoted field value (e.g. `docRef: github.com/user/repo`) is generally fine since these are simple bare tokens, but if the value contains spaces or other special characters, quote it.
 - Inside a ` ```mermaid ` fence in markdown, nothing in requirement-diagram syntax needs backtick escaping; avoid literal triple backticks in any text field, or use a four-backtick outer fence if unavoidable.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Quote the `text:` value; the only character that still needs an escape inside the quotes is `"`, written `#34;`.
 
 ## Common pitfalls
 - [ ] Does every requirement/element block close its `{ ... }` on its own and include all expected fields?
@@ -160,6 +156,10 @@ This combines four requirement types, three elements (one with a `docRef`), a `d
 - [ ] Are relationship lines using a real relationship keyword (`contains`, `copies`, `derives`, `satisfies`, `verifies`, `refines`, `traces`) between the dashes/arrow?
 - [ ] Do both ends of every relationship reference names that were actually declared as a `requirement`/`element` type?
 - [ ] If a field value has spaces or punctuation, is it wrapped in double quotes?
+
+## v11 fallback
+
+- **Default appearance:** v12 draws this type with the `neo` look and the `redux-color` theme by default, laid out by ELK instead of dagre; v11 draws it with the `classic` look and the `default` theme and dagre layout. The diagram source is identical - only the rendering differs. `general/v11-compatibility.md` shows how to make v12 draw the v11 appearance.
 
 ## Beta/experimental caveats
 N/A - stable diagram type, no known compatibility caveats.

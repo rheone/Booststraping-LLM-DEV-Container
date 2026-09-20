@@ -3,16 +3,11 @@ diagram: ZenUML
 slug: zenuml
 status: stable
 mermaid_version_introduced: "v10.2.0"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: zenuml
 source: https://mermaid.js.org/syntax/zenuml.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: true
-gitlab_compatible: true
-github_compatible: false
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # ZenUML
@@ -119,11 +114,15 @@ This nests a sync call inside a `try/catch/finally` block, mixes a creation mess
 - [ ] If using `@return`, is it placed immediately before the arrow message it's meant to annotate?
 - [ ] Are annotated participant types (`@Actor`, `@Database`, etc.) spelled/cased as the target ZenUML version expects - the plugin defines this list, not mermaid core?
 
+## v11 fallback
+
+- **Plugin:** ZenUML needs `@mermaid-js/mermaid-zenuml` registered in every renderer. Plugin 1.0.1 declares support for Mermaid 10, 11 and 12; the 0.2.x line covers Mermaid 11 only.
+
 ## Beta/experimental caveats
 
 The mermaid docs describe ZenUML as using "experimental lazy loading & async rendering features which could change in the future," and - more fundamentally - it is an *external* diagram type shipped in its own package, not bundled with mermaid core. Any environment that doesn't explicitly load and register `@mermaid-js/mermaid-zenuml` will fail to render a `zenuml` block even though the syntax itself is valid. Confirm plugin support before promising ZenUML output in a given tool.
 
-This skill's own validator (`tools/validate-mermaid.mjs`) registers `@mermaid-js/mermaid-zenuml@0.2.3` (confirmed compatible with the pinned `mermaid@11.16.1` via its `peerDependencies`) before checking the examples below, so both examples on this page are exercised by `--mode parse`, not skipped. That only confirms the *grammar* parses under jsdom, though - `--mode render` (real browser) doesn't register the plugin yet, so full SVG rendering of ZenUML is still unverified by this skill's tooling. The guidance above about confirming plugin registration in your own target renderer still applies - this skill validating its own examples doesn't mean every consuming tool has the plugin loaded.
+This skill's own validator (`tools/validate-mermaid.mjs`) registers `@mermaid-js/mermaid-zenuml` (1.0.1 for Mermaid 12, 0.2.3 for Mermaid 11, chosen from the Mermaid version under test) before checking the examples below, so both examples on this page are exercised by `--mode parse`, not skipped. That only confirms the *grammar* parses under jsdom, though - `--mode render` (real browser) doesn't register the plugin yet, so full SVG rendering of ZenUML is still unverified by this skill's tooling. The guidance above about confirming plugin registration in your own target renderer still applies - this skill validating its own examples doesn't mean every consuming tool has the plugin loaded.
 
 ## Further reading
 

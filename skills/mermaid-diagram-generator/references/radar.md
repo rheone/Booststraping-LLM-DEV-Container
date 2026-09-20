@@ -3,16 +3,11 @@ diagram: Radar
 slug: radar
 status: beta
 mermaid_version_introduced: "v11.6.0"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: radar-beta
 source: https://mermaid.js.org/syntax/radar.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: false
-github_compatible: true
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Radar
@@ -90,6 +85,7 @@ Three teams are compared across five axes; the config frontmatter overrides curv
 - Curve value lists use `{ }` - key/value entries need a colon after the axis id (`axisId: value`); mixing positional and key/value forms in the same curve line is unsupported, pick one style per curve.
 - A YAML frontmatter block (`---` fences) above `radar-beta` follows standard YAML escaping - quote hex colors and any string containing `:`.
 - Inside a ```mermaid fence, no extra escaping is needed beyond avoiding literal triple backticks in labels.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Quote axis and curve labels (`axis a["text"]`); the only character that still needs an escape inside the quotes is `"`, written `#34;`.
 
 ## Common pitfalls
 - [ ] Does every curve supply exactly as many values as there are axes (or fully qualify each with an axis id)?
@@ -98,6 +94,10 @@ Three teams are compared across five axes; the config frontmatter overrides curv
 - [ ] Did you pick `graticule polygon` vs `circle` deliberately - polygon emphasizes per-axis comparison, circle emphasizes overall coverage?
 - [ ] Are axis ids referenced in key/value curves spelled exactly as declared in the `axis` lines?
 - [ ] Is `showLegend` needed - with many curves, an on-by-default legend can crowd a small canvas?
+
+## v11 fallback
+
+No syntax differences. Every example in this file parses and renders on both Mermaid 12.0.0 and 11.16.1.
 
 ## Beta/experimental caveats
 Radar diagrams are beta as of v11.6.0; axis/curve grammar, default tick count, and config option names may still change in minor releases. When delivering this diagram type, note it requires Mermaid v11.6.0 or later and that generated output should be spot-checked against the target renderer.

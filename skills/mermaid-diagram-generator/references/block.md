@@ -3,16 +3,11 @@ diagram: Block
 slug: block
 status: beta
 mermaid_version_introduced: "v10.8.0"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: block
 source: https://mermaid.js.org/syntax/block.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: true
-github_compatible: true
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Block
@@ -85,6 +80,7 @@ A three-column grid places `Frontend` and `Backend` with a block arrow between t
 - A block id and its label are independent - `id["label"]` - so an id can stay a short token even when the visible label is long or punctuated.
 - Composite blocks require a matching `end` for every `block:<id>` - an unmatched `end` (or a missing one) breaks parsing of everything after it.
 - Inside a ```mermaid fence in markdown, indentation used for readability around `block:`/`end` is cosmetic (not load-bearing like mindmap's), but keep it consistent for your own clarity.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Quote block labels (`a["text"]`); the only character that still needs an escape inside the quotes is `"`, written `#34;`.
 
 ## Common pitfalls
 - [ ] Does every `block:<id>` have a matching `end`?
@@ -93,6 +89,10 @@ A three-column grid places `Frontend` and `Backend` with a block arrow between t
 - [ ] Is `columns <n>` declared before the row of blocks it should apply to (it affects everything after it until changed)?
 - [ ] For block arrows, is the direction one of the documented tokens (`right`, `left`, `up`, `down`, `x`, `y`, or a comma combo like `x, down`)?
 - [ ] If a block spans columns via `id:<n>`, does `<n>` fit within the grid's declared `columns` count?
+
+## v11 fallback
+
+No syntax differences. Every example in this file parses and renders on both Mermaid 12.0.0 and 11.16.1.
 
 ## Beta/experimental caveats
 Requires Mermaid v10.8.0 or later; this version was not stated on the doc page itself and is cross-referenced from the mermaid-js/mermaid GitHub release notes ("Adding new diagram type - Block Diagram"). The doc page itself carries no explicit "experimental" warning banner (unlike Sankey/Treemap), but block diagrams remain newer and less battle-tested than flowchart/sequence - expect possible shape or layout-option changes on future upgrades. Note that the canonical keyword confirmed across every example on the current doc page is plain `block`, not `block-beta` (the `-beta` form is still accepted as a legacy alias per the diagram detector in the mermaid-js/mermaid source, but isn't what the docs themselves use).

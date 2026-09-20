@@ -1,16 +1,4 @@
----
-name: rhinomocks-csharp-anti-patterns
-description: RhinoMocks-specific anti-patterns and pitfalls. Covers record/replay misuse, mocking the SUT, over-specification, missing VerifyAll, and StructureMap.AutoMocking traps.
-license: Apache-2.0
-user-invocable: false
-metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
-  version: 1.1.0
----
-
 # RhinoMocks Anti-Patterns
-
-> Framework-agnostic anti-patterns (missing assertions, flaky tests, etc.) are covered in [`csharp-test-sweep/references/quality-checklist.md`](../../references/quality-checklist.md). This file covers RhinoMocks-specific pitfalls only.
 
 ## 1. Using Record/Replay Instead of AAA
 
@@ -33,11 +21,14 @@ mock.AssertWasCalled(x => x.GetValue());
 
 ## 2. Mocking the Class Under Test
 
-**Problem:** `GenerateMock<T>()` intercepts all virtual methods. When `T` is the class under test, the real method never runs — the mock returns `default(TResult)`.
+**Problem:** see the [General Quality Checklist](../../references/quality-checklist.md); here `GenerateMock<T>()` returns `default(TResult)`.
 
-**Fix:** Use a concrete test subclass that inherits without overriding.
+**Fix:** a concrete test subclass that inherits without overriding the method under test.
 
-See [Core Rule 2 in SKILL.md](SKILL.md#core-rules) for the pattern.
+```csharp
+private class TestableProcessor : AbstractProcessor { }
+var sut = new TestableProcessor();
+```
 
 ## 3. Over-Specification with Repeat Constraints
 
@@ -92,4 +83,4 @@ autoMocker.Container.Configure(x =>
 
 **Problem:** Unlike NSubstitute or Moq (which have Roslyn analyzers that catch common mistakes at compile time), RhinoMocks has none. Tests that compile fine can fail at runtime or pass vacuously. This is a known risk of using an unmaintained library.
 
-**Mitigation:** Run [`csharp-test-sweep`](../../SKILL.md) audits regularly. Prefer AAA style (no `ReplayAll` to forget). Prioritize migration to a maintained framework.
+**Mitigation:** Review sweeps regularly. Prefer AAA style (no `ReplayAll` to forget). Prioritize migration to a maintained framework.

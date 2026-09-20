@@ -1,11 +1,3 @@
----
-name: mstest-csharp-reference
-description: API lookup tables for MSTest v4 assertions, lifecycle attributes, execution control, and metadata. Use alongside SKILL.md when writing or reviewing MSTest tests.
-license: Apache-2.0
-metadata:
-  version: 1.1.0
----
-
 # MSTest API Reference
 
 ## Assert Methods
@@ -88,11 +80,3 @@ metadata:
 | `[WorkItem(id)]` | Azure DevOps work item link |
 | `[GitHubWorkItem(id)]` | GitHub issue link |
 | `[Description("text")]` | Descriptive text |
-
-## Analyzer
-
-Add the `MSTest.Analyzers` NuGet package to catch missing `[TestClass]`, incorrect signatures, and other MSTest-specific issues at build time.
-
-## Related Skills
-
-This reference supports [`mstest-csharp`](SKILL.md), which is invoked by [`csharp-test-sweep`](../../SKILL.md).

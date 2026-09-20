@@ -1,16 +1,4 @@
----
-name: rhinomocks-csharp-reference
-description: RhinoMocks API lookup tables for AAA style, record/replay, argument matchers, repeat constraints, and StructureMap.AutoMocking. Use alongside SKILL.md when writing or reviewing RhinoMocks mock setups.
-license: Apache-2.0
-user-invocable: false
-metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
-  version: 1.1.0
----
-
 # RhinoMocks API Reference
-
-> Framework-agnostic rules live in [`csharp-test-sweep/references/quality-checklist.md`](../../references/quality-checklist.md). This file covers RhinoMocks-specific syntax only.
 
 ## Mock Creation
 
@@ -110,7 +98,3 @@ autoMocker.Get<ILogger>().Stub(x => x.Log(Arg<string>.Is.Anything));
 autoMocker.Get<IRepository>().Stub(x => x.Find(1)).Return(entity);
 var result = autoMocker.ClassUnderTest.Execute();
 ```
-
-## Analyzer Support
-
-**None available.** RhinoMocks is unmaintained. No Roslyn analyzer exists for common mistakes. Tests relying on RhinoMocks are at higher risk for silent failures (e.g., missing `VerifyAll`, unmatched expectations throwing in dispose). Manual review and [`csharp-test-sweep`](../../SKILL.md) audits are the only safeguards.

@@ -3,16 +3,11 @@ diagram: Class Diagram
 slug: class
 status: stable
 mermaid_version_introduced: "long-standing (pre-v10)"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: classDiagram
 source: https://mermaid.js.org/syntax/classDiagram.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: true
-github_compatible: true
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Class Diagram
@@ -118,6 +113,7 @@ classDiagram
 - Generics use tildes (`~T~`); a literal comma inside a generic parameter list is not supported - simplify the type or describe it in a note instead.
 - Quote cardinality/relationship labels that contain punctuation, e.g. `"0..1"`.
 - Avoid a literal triple-backtick sequence inside note/label text; bump the *outer* fence wrapping this whole mermaid block to four backticks if unavoidable.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** A relationship label breaks on `:` and `;` (`#58;`, `#59;`); member text breaks on `)`, `{` and `}` (`#41;`, `#123;`, `#125;`). For a labelled class (`class A["text"]`) the only character that still needs an escape inside the quotes is `"`, written `#34;`.
 
 ## Common pitfalls
 - Forgetting the closing `}` for a bracket-style class member block.
@@ -125,6 +121,11 @@ classDiagram
 - Putting a comma inside a generic type parameter list - unsupported and will fail to parse.
 - Declaring the same class name twice with conflicting members across separate `class` blocks.
 - Omitting quotes around multiplicity/cardinality labels on a relation.
+
+## v11 fallback
+
+- **Default appearance:** v12 draws this type with the `neo` look and the `redux-color` theme by default, laid out by ELK instead of dagre; v11 draws it with the `classic` look and the `default` theme and dagre layout. The diagram source is identical - only the rendering differs. `general/v11-compatibility.md` shows how to make v12 draw the v11 appearance.
+- **`class.defaultRenderer`** is removed in v12 and ignored. Set `layout` in frontmatter `config:` instead.
 
 ## Beta/experimental caveats
 N/A - stable diagram type, no known compatibility caveats. Dot-notation namespace paths (`class namespace.A.B.ClassName`) are a v11.15.0 addition layered on top of the stable core grammar.

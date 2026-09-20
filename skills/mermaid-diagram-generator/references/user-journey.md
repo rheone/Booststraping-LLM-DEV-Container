@@ -3,16 +3,11 @@ diagram: User Journey
 slug: user-journey
 status: stable
 mermaid_version_introduced: "long-standing (pre-v10)"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: journey
 source: https://mermaid.js.org/syntax/userJourney.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: true
-github_compatible: true
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # User Journey
@@ -86,6 +81,7 @@ Four sections trace the full lifecycle; scores dip during "Resolution" (as low a
 - Commas separate actors, so avoid unescaped commas inside a single actor's name.
 - Quotes, parentheses, and other punctuation are generally fine in task-name text since it's free text up to the first colon, but keep it simple and test render if you need anything unusual.
 - Wrapping a journey diagram inside a larger ` ```mermaid ` fenced block in markdown is safe as long as the task/actor text itself never contains a literal triple backtick; if it must, fence the outer markdown block with four backticks instead of three.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Task text breaks on `:`, `#` and `;` (`#58;`, `#35;`, `#59;`). A title breaks on `#` and `;`, and a `<`...`>` pair is read as an HTML tag and silently dropped, so write both as `#60;` and `#62;`.
 
 ## Common pitfalls
 - [ ] Is the score a plain integer between 1 and 5 (not 0, not 6+, not a decimal)?
@@ -93,6 +89,10 @@ Four sections trace the full lifecycle; scores dip during "Resolution" (as low a
 - [ ] Are multiple actors comma-separated on the same task line, rather than repeating the task on multiple lines?
 - [ ] Is each `section` header its own line, with tasks indented underneath rather than inline?
 - [ ] Did you avoid embedding a literal `:` inside the task-name text itself?
+
+## v11 fallback
+
+No syntax differences. Every example in this file parses and renders on both Mermaid 12.0.0 and 11.16.1.
 
 ## Beta/experimental caveats
 N/A - stable diagram type, no known compatibility caveats.

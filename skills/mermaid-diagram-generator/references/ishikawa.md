@@ -3,16 +3,11 @@ diagram: Ishikawa
 slug: ishikawa
 status: beta
 mermaid_version_introduced: "v11.12.3"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: ishikawa-beta
 source: https://mermaid.js.org/syntax/ishikawa.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: false
-github_compatible: true
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Ishikawa
@@ -81,6 +76,7 @@ Four main bones ("Process", "People", "Systems", "Data") branch off the head pro
 - Because indentation is structurally significant, avoid mixing tabs and spaces; keep each depth level's indentation consistent (e.g. always 4 spaces per level) or nested causes may attach at the wrong depth.
 - Avoid leading/trailing punctuation that could be mistaken for Mermaid comment or directive syntax (e.g. a line starting with `%%`).
 - Inside a ```mermaid fence, no extra escaping is needed beyond avoiding literal triple backticks in a cause label.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Cause text is plain indented text: a `<`...`>` pair is read as an HTML tag and silently dropped, so write both as `#60;` and `#62;`. Named codes (`#quot;`) are not decoded here; use numeric ones.
 
 ## Common pitfalls
 - [ ] Is the very first content line the problem/event, not a category (a common mistake carried over from mindmap habits)?
@@ -88,6 +84,10 @@ Four main bones ("Process", "People", "Systems", "Data") branch off the head pro
 - [ ] Did you accidentally put a cause at the same indent level as a category, flattening the fishbone structure?
 - [ ] Are deeply nested sub-causes (3+ levels) still readable, or would flattening into fewer, better-named categories communicate more clearly?
 - [ ] Did you use `ishikawa-beta` and not a bare `ishikawa` (the `-beta` suffix is part of the required keyword)?
+
+## v11 fallback
+
+No syntax differences. Every example in this file parses and renders on both Mermaid 12.0.0 and 11.16.1.
 
 ## Beta/experimental caveats
 Ishikawa diagrams are beta as of v11.12.3; indentation-based grammar, nesting-depth limits, and styling options may still change in minor releases. When delivering this diagram type, note it requires Mermaid v11.12.3 or later, and that the exact starting keyword is `ishikawa-beta` (confirmed from the live doc's rendered example source, not inferred) - a bare `ishikawa` will not parse.

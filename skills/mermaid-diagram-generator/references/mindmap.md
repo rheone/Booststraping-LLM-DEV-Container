@@ -3,16 +3,11 @@ diagram: Mindmap
 slug: mindmap
 status: stable
 mermaid_version_introduced: "v9.2.0"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: mindmap
 source: https://mermaid.js.org/syntax/mindmap.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: true
-github_compatible: true
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Mindmap
@@ -127,6 +122,7 @@ This combines five node shapes (circle root, square, rounded, cloud, bang), a cl
   ```
   Without the backtick form, long labels will not auto-wrap and need manual `<br/>` breaks instead.
 - Inside a ` ```mermaid ` fence in a markdown document, the fence doesn't care about the mindmap's internal indentation, but keep the block's own indentation relative to the fence consistent so a markdown renderer doesn't dedent (and thereby corrupt) the tree structure.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Unquoted node text breaks on `( ) [ ] { }` because they are shape delimiters - write `id["text"]`; the only character that still needs an escape inside the quotes is `"`, written `#34;`.
 
 ## Common pitfalls
 
@@ -135,6 +131,10 @@ This combines five node shapes (circle root, square, rounded, cloud, bang), a cl
 - [ ] Is there exactly one root node at the top of the tree?
 - [ ] Are `::icon(...)` and `:::class` lines placed as their own line, indented level with the node they decorate - not appended inline to the node text?
 - [ ] If a label contains `:`, `(`, `)`, or `[`, is it quoted (or written as a markdown-string in backticks)?
+
+## v11 fallback
+
+No syntax differences. Every example in this file parses and renders on both Mermaid 12.0.0 and 11.16.1.
 
 ## Beta/experimental caveats
 

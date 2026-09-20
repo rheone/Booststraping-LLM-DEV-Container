@@ -3,16 +3,11 @@ diagram: Sankey
 slug: sankey
 status: beta
 mermaid_version_introduced: "v10.3.0"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: sankey
 source: https://mermaid.js.org/syntax/sankey.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: true
-github_compatible: true
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Sankey
@@ -104,6 +99,7 @@ A frontmatter `config` block sets link coloring, node alignment, outlined labels
 - Node names are matched by exact string - trailing whitespace or inconsistent capitalization silently creates a second, separate node instead of merging into the existing one.
 - YAML frontmatter above `sankey` follows normal YAML quoting rules - quote any `nodeColors` key that itself contains a comma or colon.
 - Inside a ```mermaid fence in markdown, nothing about Sankey's CSV syntax needs backtick escaping; just avoid a literal blank first line being mistaken for the diagram's required blank line before data.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Node names accept ASCII letters, digits and spaces only: `#`, non-ASCII characters and `<` cannot be used, quoted or not (`<` also corrupts the SVG). A comma needs the field in quotes, and a literal `"` is doubled (`""`).
 
 ## Common pitfalls
 - [ ] Does every data row have exactly 3 comma-separated fields (source, target, value)?
@@ -112,6 +108,10 @@ A frontmatter `config` block sets link coloring, node alignment, outlined labels
 - [ ] Is the `value` column strictly numeric - no currency symbols, thousands separators, or units baked into the CSV value?
 - [ ] If using `nodeColors`, do the map keys exactly match node names used in the data rows?
 - [ ] Is the `sankey:` config block correctly nested under a YAML `config:` key at the top of the frontmatter, not a sibling of it?
+
+## v11 fallback
+
+- **`labelStyle`, `nodeWidth`, `nodePadding`, `nodeColors`** need v11.15.0+; omit them when the target may be older.
 
 ## Beta/experimental caveats
 Mermaid's own docs label Sankey "an experimental diagram" whose CSV-like syntax is expected to be extended over time - treat generated Sankey diagrams as more likely than stable types to need a syntax tweak on a future Mermaid upgrade. Requires Mermaid v10.3.0 or later; `labelStyle`, `nodeWidth`, `nodePadding`, and `nodeColors` additionally require v11.15.0+. Note: the legacy keyword `sankey-beta` is still accepted (cross-checked against the diagram detector in the mermaid-js/mermaid source, not stated on the doc page itself) - the current canonical keyword shown in every example on the doc page is plain `sankey`, without the `-beta` suffix.

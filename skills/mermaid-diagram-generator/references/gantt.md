@@ -3,16 +3,11 @@ diagram: Gantt
 slug: gantt
 status: stable
 mermaid_version_introduced: "long-standing (pre-v10)"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: gantt
 source: https://mermaid.js.org/syntax/gantt.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: true
-github_compatible: true
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Gantt
@@ -91,6 +86,7 @@ This combines four sections, `done`/`active`/`crit`/`milestone` tags, multi-pare
 - `,` separates metadata items and multiple `after` task ids - avoid unescaped commas in task names.
 - Task ids should stay alphanumeric (plus `_`/`-`) since they're referenced bare in `after`/`until` clauses; spaces or punctuation in an id will not parse as intended.
 - Inside a ` ```mermaid ` fence in a larger markdown document, nothing in gantt syntax needs backtick escaping - just ensure no task/section text contains a literal triple backtick; use a four-backtick outer fence if it must.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** A task name breaks on `:` - write `#58;`. Section names accept every character.
 
 ## Common pitfalls
 - [ ] Does every date match the declared (or default `YYYY-MM-DD`) `dateFormat` exactly?
@@ -99,6 +95,10 @@ This combines four sections, `done`/`active`/`crit`/`milestone` tags, multi-pare
 - [ ] Do `after`/`until` references point at task ids that were actually assigned (not display names)?
 - [ ] Is `excludes` spelled out per line if you need multiple exclusion rules (dates, weekends, specific weekdays)?
 - [ ] Do milestones use `milestone` tag with an explicit (often `0d`) duration so they render as a point, not a bar?
+
+## v11 fallback
+
+No syntax differences. Every example in this file parses and renders on both Mermaid 12.0.0 and 11.16.1.
 
 ## Beta/experimental caveats
 N/A - stable diagram type, no known compatibility caveats.

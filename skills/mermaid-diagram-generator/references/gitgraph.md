@@ -3,16 +3,11 @@ diagram: GitGraph (Git) Diagram
 slug: gitgraph
 status: stable
 mermaid_version_introduced: "long-standing (pre-v10)"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: gitGraph
 source: https://mermaid.js.org/syntax/gitgraph.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: true
-github_compatible: true
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # GitGraph (Git) Diagram
@@ -90,6 +85,7 @@ gitGraph
 - Any `id:`, `tag:`, or commit/branch text containing spaces or punctuation must be double-quoted, e.g. `commit id: "release candidate 1"`.
 - Keep branch names to alphanumerics, dashes, underscores, and slashes (e.g. `feature/login`) for reliable parsing; quote anything more exotic where the grammar allows it.
 - Avoid a literal triple-backtick sequence inside any quoted id/tag text; bump the *outer* fence wrapping this whole mermaid block to four backticks if unavoidable.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Quote commit ids and messages; inside them the only character that still needs an escape inside the quotes is `"`, written `#34;`, and a `<`...`>` pair is read as an HTML tag and silently dropped, so write both as `#60;` and `#62;`.
 
 ## Common pitfalls
 - Cherry-picking a commit that was never given an explicit `id:` - `cherry-pick` can only target commits declared with `commit id: "..."`.
@@ -98,6 +94,10 @@ gitGraph
 - Omitting `parent:` when cherry-picking a merge commit - merge commits require the immediate parent to be specified explicitly.
 - Confusing `checkout` (switch to an existing branch) with `branch` (create a new branch and switch to it) - `checkout` on a branch that doesn't exist yet is an error.
 - Relying on declaration order alone for lane placement instead of the `order:` attribute when exact lane position matters.
+
+## v11 fallback
+
+No syntax differences. Every example in this file parses and renders on both Mermaid 12.0.0 and 11.16.1.
 
 ## Beta/experimental caveats
 N/A - stable diagram type, no known compatibility caveats.

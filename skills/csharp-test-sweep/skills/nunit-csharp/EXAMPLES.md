@@ -1,12 +1,3 @@
----
-name: nunit-csharp
-description: Worked examples for NUnit v5 — constraint model, Assert.Multiple, fixture lifecycle, parameterized tests, and parallelization.
-license: Apache-2.0
-metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
-  version: 1.1.0
----
-
 # NUnit v5 Examples
 
 ## 1. Complete Test Class — Constraint Model
@@ -236,7 +227,3 @@ With `[NonParallelizable]` for tests that must run alone:
 [NonParallelizable]
 public void SharedResource_Access_ExclusiveLock_Test() { /* ... */ }
 ```
-
-## Related Skills
-
-This skill is invoked by [`csharp-test-sweep`](../../SKILL.md). Framework-agnostic rules live in the [parent quality-checklist.md](../../references/quality-checklist.md).

@@ -1,11 +1,3 @@
----
-name: justmock-csharp-reference
-description: API lookup tables for Telerik JustMock covering mock creation, arrangement, verification, argument matchers, behavior modes, and elevated-only features. Use alongside SKILL.md when writing or reviewing JustMock tests.
-license: Apache-2.0
-metadata:
-  version: 1.1.0
----
-
 # JustMock API Reference
 
 ## Mock Creation
@@ -136,11 +128,3 @@ These compile in Free mode but **throw at runtime**:
 | Mock private method | `Mock.NonPublic.Arrange<ReturnType>(mock, "PrivateMethod", args).Returns(x);` |
 | Mock constructor | `Mock.Arrange(() => new Foo(Arg.IsAny<int>())).IgnoreInstance();` |
 | SetupAllProperties | `Mock.SetupAllProperties(mock);` — auto-implements property setter tracking |
-
-## Analyzer
-
-JustMock does **not** ship a Roslyn analyzer. Rely on build-time tests to catch Free-mode runtime failures.
-
-## Related Skills
-
-This reference supports [`justmock-csharp`](SKILL.md), which is invoked by [`csharp-test-sweep`](../../SKILL.md).

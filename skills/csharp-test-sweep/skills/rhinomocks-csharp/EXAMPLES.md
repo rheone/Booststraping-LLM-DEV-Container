@@ -1,16 +1,4 @@
----
-name: rhinomocks-csharp-examples
-description: Full worked examples for RhinoMocks AAA style, argument matchers, stubs, StructureMap.AutoMocking, partial mocks, record/replay, repeat constraints, and concrete subclass patterns.
-license: Apache-2.0
-user-invocable: false
-metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
-  version: 1.1.0
----
-
 # RhinoMocks Examples
-
-> Framework-agnostic rules live in [`csharp-test-sweep/references/quality-checklist.md`](../../references/quality-checklist.md). The examples below demonstrate RhinoMocks-specific patterns only.
 
 All examples use xUnit; the RhinoMocks API is identical across test frameworks.
 

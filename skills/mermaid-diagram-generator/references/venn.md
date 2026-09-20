@@ -3,16 +3,11 @@ diagram: Venn
 slug: venn
 status: beta
 mermaid_version_introduced: "v11.12.3"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: venn-beta
 source: https://mermaid.js.org/syntax/venn.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: false
-github_compatible: true
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Venn
@@ -77,6 +72,7 @@ Three sized sets each carry an inline text annotation, pairwise overlaps are ind
 - Identifiers can be bare words or quoted strings (`"Foo Bar"`); prefer bare short ids and put the human-readable text in the `["..."]` label instead of the identifier.
 - `union` set lists are comma-separated with no space required (`A,B,C`) - extra whitespace around commas is generally tolerated but not required.
 - Inside a ```mermaid fence, no extra escaping is needed beyond avoiding literal triple backticks in labels.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Quote set labels (`set A["text"]`); the only character that still needs an escape inside the quotes is `"`, written `#34;`.
 
 ## Common pitfalls
 - [ ] Is every set named in a `union` line declared by an earlier `set` line (forward references aren't allowed)?
@@ -85,6 +81,10 @@ Three sized sets each carry an inline text annotation, pairwise overlaps are ind
 - [ ] Are you trying to show more than 3-4 sets - consider whether the overlap layout will actually stay readable?
 - [ ] Do `style` lines target valid, already-declared ids (sets, unions, or text)?
 - [ ] Did you intend `:<N>` sizing to visually communicate proportion - sizes are relative weights, not exact area guarantees?
+
+## v11 fallback
+
+- **Default appearance:** v12 draws this type with the `neo` look and the `redux-color` theme by default; v11 draws it with the `classic` look and the `default` theme. The diagram source is identical - only the rendering differs. `general/v11-compatibility.md` shows how to make v12 draw the v11 appearance.
 
 ## Beta/experimental caveats
 Venn diagrams are beta as of v11.12.3, with the docs explicitly noting the syntax may evolve. When delivering this diagram type, note it requires Mermaid v11.12.3 or later and that statement forms (especially sizing and styling) are more likely to change in future minor releases than stable diagram types.

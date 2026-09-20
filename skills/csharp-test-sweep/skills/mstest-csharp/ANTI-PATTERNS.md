@@ -1,11 +1,3 @@
----
-name: mstest-csharp-anti-patterns
-description: Framework-specific MSTest pitfalls to avoid. Use alongside SKILL.md when reviewing or writing MSTest tests.
-license: Apache-2.0
-metadata:
-  version: 1.1.0
----
-
 # MSTest Anti-Patterns
 
 ## Missing [TestClass]
@@ -143,7 +135,3 @@ Good:
 var calc = new Calculator();
 var result = calc.Add(1, 2);
 ```
-
-## Related Skills
-
-This reference supports [`mstest-csharp`](SKILL.md), which is invoked by [`csharp-test-sweep`](../../SKILL.md).

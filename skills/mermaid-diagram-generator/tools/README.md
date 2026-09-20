@@ -1,232 +1,216 @@
 # Validation Guide for mermaid-diagram-generator
 
-This directory contains `validate-mermaid.mjs`, a replayable validator for all 68 Mermaid diagram examples in the skill, pinned to **Mermaid v11.16.1**. The script performs structural checks, keyword drift detection, version pin verification, and optional grammar/rendering validation.
+`validate-mermaid.mjs` is a replayable validator for every Mermaid example in the skill and its README (111 blocks), pinned to **Mermaid v12.0.0**. It runs structural checks, keyword drift detection and version-pin verification, plus optional grammar and rendering validation against any Mermaid release. It can also check the diagram blocks in your own files.
 
 ## Quick start
 
-### Scripted validation
-
-Prerequisites: Node.js 18+ (v24.19.0 / npm 11.17.0 confirmed on this host).
+Prerequisites: **Node.js 22.12 or later** (Mermaid 12 declares `engines.node >=22.12.0`; the script refuses to load Mermaid on an older Node, and `--mode none` works on any Node).
 
 ```bash
-# Run all checks: structure + keyword + version + render (full validation)
+# Full validation: structure + keyword + version + render (Chromium)
 node tools/validate-mermaid.mjs
 
-# Parse-only validation (fast, no browser)
+# Grammar only (no browser)
 node tools/validate-mermaid.mjs --mode parse
 
-# Structural checks only (instant, no dependencies)
+# Structural checks only (installs nothing)
 node tools/validate-mermaid.mjs --mode none
 
-# Validate a single diagram type
+# One diagram type
 node tools/validate-mermaid.mjs --only architecture,treeview
 
-# Machine-readable JSON output
+# The same blocks against another Mermaid release
+node tools/validate-mermaid.mjs --mode parse --mermaid-version 11.16.1
+
+# Your own diagrams, against a target release
+node tools/validate-mermaid.mjs --files docs/architecture.md,docs/flow.mmd --mode parse --mermaid-version 11.16.1
+
+# Replay the escaping matrix and report drift from the baseline
+node tools/validate-mermaid.mjs --escaping --mermaid-version 12.0.0
+
+# Machine-readable output
 node tools/validate-mermaid.mjs --json | jq .
 
-# Remove the temp dependency cache (outside the repo)
+# Remove the dependency cache for the selected release
 node tools/validate-mermaid.mjs --clean
 ```
 
-### What each mode does
+### Modes
 
-| Mode                 | What it checks                     | Deps required      | Time    | Best for                                       |
-| -------------------- | ---------------------------------- | ------------------ | ------- | ---------------------------------------------- |
-| **render** (default) | Grammar + layout + icon resolution | mermaid, puppeteer | ~15–25s | Full validation; catches the most bugs         |
-| **parse**            | Grammar only (no rendering)        | mermaid, jsdom     | ~2–5s   | CI/quick checks; no browser system libs needed |
-| **none**             | Structure, keywords, version pins  | none               | <1s     | Offline checks; pre-merge validation           |
+| Mode                 | Checks                                    | Installs           | Time    | Best for                                       |
+| -------------------- | ----------------------------------------- | ------------------ | ------- | ---------------------------------------------- |
+| **render** (default) | Grammar + layout + icon resolution        | mermaid, puppeteer | ~15-25s | Full validation; catches the most bugs         |
+| **parse**            | Grammar only                              | mermaid, jsdom     | ~2-5s   | CI and quick checks; no browser system libs    |
+| **none**             | Structure, keywords, version pins         | nothing            | <1s     | Offline checks; pre-merge validation           |
 
-### Understanding the output
+### Reading the output
 
-```
-summary mode=parse blocks=68 passed=68 skipped=0 problems=0
+```text
+summary mode=parse blocks=111 passed=111 skipped=0 version-gated=0 problems=0
 OK - everything checks out
 ```
 
-- **blocks**: total diagram examples discovered (68 total; includes 2 zenuml blocks)
-- **passed**: successfully validated
-- **skipped**: explicitly annotated with `<!-- mermaid-validate: skip ... -->` - currently nothing is fully skipped; ZenUML's 2 blocks are `parse-only` instead (validated in `--mode parse`, not attempted in `--mode render` - see "Per-block annotations" below)
-- **problems**: failures that need fixing
+- **blocks** - diagram blocks discovered.
+- **passed** - blocks that validated.
+- **skipped** - blocks annotated `skip`. Currently none.
+- **version-gated** - blocks whose `since=` / `until=` annotation excludes the release under test (see "Per-block annotations"). Against 11.16.1 the six v12-only use case and agentflow blocks are gated.
+- **problems** - failures to fix.
 
-On failure:
+A failure prints the file and line of the block and the parser's message:
 
-```
+```text
 parse - 1 problem(s)
   FAIL references/architecture.md:60
         parse failed: Error text here
-        [source lines of the failing block shown]
 ```
-
-Click [source line reference](../references/architecture.md#L60) to jump to the block.
 
 ## Common scenarios
 
-### "I just cloned the repo. Do I run this?"
+### Checking a Mermaid release other than the pin
 
-Yes, to spot-check examples or CI/pre-commit. But the default run (`node tools/validate-mermaid.mjs`) downloads ~180MB of Chromium (via puppeteer), so consider `--mode parse` for a faster first run:
+`--mermaid-version X.Y.Z` installs that release into its own cache and checks every block against it. Run the two releases that matter for this skill:
 
 ```bash
-node tools/validate-mermaid.mjs --mode parse
+node tools/validate-mermaid.mjs --mode parse                            # 12.0.0, the pin
+node tools/validate-mermaid.mjs --mode parse --mermaid-version 11.16.1  # the v11 fallback
 ```
 
-If that passes, the full render run is optional (it catches layout/icon issues the parser misses, but those are rare with stable diagram types).
+A block that must only run on some releases carries a `since` / `until` annotation instead of failing on the others.
 
-### "I updated the Mermaid version pin in SKILL.md. How do I verify all examples still work?"
+### Bumping the pinned version
 
-1. Update `metadata.mermaid_version` in `SKILL.md` to the new version.
-2. Update `mermaid_version_verified` and `last_verified` in each diagram reference file you actually re-checked (don't bulk-update dates for files you didn't inspect).
-3. Run:
-   ```bash
-   node tools/validate-mermaid.mjs --clean   # remove the old mermaid version from cache
-   node tools/validate-mermaid.mjs --mode parse  # fast check
-   ```
-4. If parse passes, run the full render mode:
-   ```bash
-   node tools/validate-mermaid.mjs
-   ```
-5. On failure, fix the example or update your frontmatter notes with the breaking change.
+1. Set `metadata.mermaid_version` in `SKILL.md`.
+2. Run `node tools/validate-mermaid.mjs --clean`, then `--mode parse`, then the default render run. Fix or annotate failures.
+3. Set `mermaid_version_verified` and `last_verified` in each reference file you actually re-checked; do not bulk-update files you did not inspect. The validator requires every reference's `mermaid_version_verified` to equal the pin.
+4. Check the fallback: `--mode parse --mermaid-version 11.16.1` (or the oldest release the skill still supports).
+
+### Adding a diagram type
+
+Add `references/<slug>.md` with the required frontmatter and sections (the validator lists what is missing), then update `EXPECTED_DIAGRAM_FILES` in the script and the tables in `SKILL.md`. A file with more than one starting keyword (Railroad, C4) annotates its blocks `keyword-exempt`.
 
 ### "One diagram type keeps failing. Do I delete it?"
 
-No - first check whether the example itself is wrong before assuming it's an upstream Mermaid
-bug. Event Modeling's examples looked "obviously correct" but were missing the mandatory
-`tf`/`timeframe` keyword on every line; testing candidate syntax directly against the pinned
-parser (see Option B below) found the fix in minutes. Only annotate a block as broken once
-you've confirmed - by testing, not by inspection - that no known-correct syntax parses:
+First check whether the example itself is wrong. Test candidate syntax directly against the target parser (see "Manual validation") and only annotate a block `skip` once no known-correct syntax parses. The reference files record the syntax that was confirmed by parsing, not only what the upstream prose says.
 
 ```markdown
-<!-- mermaid-validate: skip reason="<diagram> is experimental in v11.16.1 and has parser issues" -->
+<!-- mermaid-validate: skip reason="<diagram> has parser issues in vX.Y.Z" -->
 ```
 
-The manual checklist in `SKILL.md` still applies when a user generates a new diagram of that type - they can spot-check it by hand or paste it into [mermaid.live](https://mermaid.live) (noting it may run a different Mermaid version).
+## Escaping matrix
 
-## Manual validation (no script)
+The escaping rules in `references/general/authoring-rules.md` and each type's "Escaping" section come from a matrix: every special character (`" # & ; : < > | ( ) [ ] { }` and a backtick) in every label position of every diagram family, written raw and in each escape spelling (`#n;`, `&#n;`, `#name;`, `&name;`). `--escaping` replays it (about 2,700 cases, ~30s) in headless Chromium and records one outcome per case:
 
-If you want to validate one or two blocks by hand without installing anything:
+- **pass** - parsed, rendered, and the expected label text is in the SVG.
+- **fail** - a parse or render error.
+- **altered text** - rendered without error, but the text is missing or changed. These silent failures are why "no error" is not proof a label is right.
 
-### Option A: Use mermaid.live
-
-1. Copy the diagram source code (the contents of the ` ```mermaid ` fence).
-2. Paste it into https://mermaid.live and click "Parse" or "Render".
-3. Note: mermaid.live may run a different Mermaid version than v11.16.1, so results may vary.
-
-### Option B: One-off parse check (15 seconds, no browser)
+Outcomes are compared with `tools/escaping-baseline.json`, which holds one string per Mermaid major version (recorded on 12.0.0 and 11.16.1). Any difference prints as `DRIFT` and exits 1, meaning the guidance in `references/` may be stale.
 
 ```bash
-cd /tmp
-npm install --no-save mermaid@11.16.1 jsdom
+node tools/validate-mermaid.mjs --escaping                                  # against the pin (12.x baseline)
+node tools/validate-mermaid.mjs --escaping --mermaid-version 11.16.1        # against the 11.x baseline
+node tools/validate-mermaid.mjs --escaping --update-baseline                # record this release as the baseline
 ```
 
-Then use the Node REPL to test a single block:
+After a Mermaid bump, run it, read each drift, update the rules the drift contradicts, then `--update-baseline`. Adding a label position or character means editing `tools/escaping-cases.mjs`; the case list is hashed, so the tool asks for a new baseline when it changes.
+
+Two caveats when reading a drift. "Altered text" also covers types whose SVG is not XML-parseable (event modeling, Wardley) and renderers that draw text outside the SVG text nodes, and a one-service architecture diagram does not render on 11.16.1 whatever its label. Those outcomes are stable per release, so they are useful as drift signals but do not mean the escaping itself changed - 11.17.2 drifts from the 11.16.1 baseline only in C4 (text becomes extractable) and architecture for exactly this reason.
+
+## Manual validation
+
+### mermaid.live
+
+Paste the diagram into https://mermaid.live. It may run a different Mermaid version than the one you are checking.
+
+### One-off parse check (no browser)
+
+```bash
+mkdir mermaid-check && cd mermaid-check && npm init -y
+npm install mermaid@12.0.0 jsdom
+```
 
 ```javascript
-const { JSDOM } = require("jsdom");
-const mod = require("mermaid");
-const mermaid = mod.default ?? mod;
-mermaid.initialize({ startOnLoad: false, securityLevel: "loose" });
-
-// Paste your diagram code here
-const code = `flowchart TD\nA --> B`;
-
+// check.mjs
+import { JSDOM } from "jsdom";
+const dom = new JSDOM("<!doctype html><body></body>", { pretendToBeVisual: true, url: "http://localhost/" });
+for (const k of ["window", "document", "navigator", "HTMLElement", "SVGElement", "Element", "Node", "DOMParser"]) {
+   globalThis[k] ??= dom.window[k];
+}
+const mermaid = (await import("mermaid")).default;
+mermaid.initialize({ startOnLoad: false, securityLevel: "loose", suppressErrorRendering: true });
 try {
-   await mermaid.parse(code);
-   console.log("✓ Parse succeeded");
+   await mermaid.parse("flowchart TD\nA --> B");
+   console.log("parse ok");
 } catch (e) {
-   console.log("✗ Parse failed:", e.message);
+   console.log("parse failed:", e.message);
 }
 ```
 
-### Option C: Render locally (requires Chromium, ~60 seconds)
+### Render locally
 
-```bash
-npm install --no-save puppeteer@latest
-# Then see the "One-off parse check" above, but use mermaid.render() instead:
-const { svg } = await mermaid.render('diagram-id', code);
-console.log(svg.includes('error') ? '✗ Render failed' : '✓ Render succeeded');
-```
+Install `puppeteer`, load `node_modules/mermaid/dist/mermaid.min.js` into a page, and call `mermaid.render(id, code)`; an error graphic or a thrown error means failure.
 
 ## Per-block annotations
 
-Some diagram blocks have special requirements and are annotated:
+An annotation is an HTML comment on the line above a fence:
 
 ```markdown
-<!-- mermaid-validate: skip reason="requires a plugin the validator doesn't install/register" -->
-<!-- mermaid-validate: parse-only reason="validator registers @mermaid-js/mermaid-zenuml for --mode parse but not yet for --mode render" -->
-<!-- mermaid-validate: keyword-exempt reason="C4 family diagrams use C4Context|C4Container|..." -->
+<!-- mermaid-validate: skip reason="requires a plugin the validator does not register" -->
+<!-- mermaid-validate: parse-only reason="plugin is registered for --mode parse only" -->
+<!-- mermaid-validate: keyword-exempt reason="railroad family: several starting keywords" -->
+<!-- mermaid-validate: since="12.0.0" -->
+<!-- mermaid-validate: until="12.0.0" -->
 ```
 
-- **skip**: don't validate this block at all (for a plugin-dependent type the validator hasn't wired up, or a type with genuine, confirmed parser issues - confirmed by testing, see above, not assumed from the reason alone)
-- **parse-only**: validate grammar, but skip the render phase (currently used by ZenUML's two blocks - the validator registers its plugin for `--mode parse` via jsdom, but `--mode render` doesn't register it against the puppeteer/browser bundle yet, so a full render would fail there even though the grammar is confirmed valid)
-- **keyword-exempt**: skip the keyword drift check (for diagram families like C4 that support multiple starting keywords)
+- **skip** - do not validate the block (a plugin-dependent type the validator has not wired up, or a parser issue confirmed by testing).
+- **parse-only** - validate grammar, skip the render phase. ZenUML's blocks use it: the plugin is registered against jsdom for `--mode parse` but not against the browser bundle.
+- **keyword-exempt** - skip the starting-keyword drift check, for files with several keywords or a fallback block in a different diagram family.
+- **since="X.Y.Z"** - run only on releases at or above X.Y.Z. Marks syntax that older releases reject.
+- **until="X.Y.Z"** - run only on releases below X.Y.Z.
+
+`since` and `until` combine with a directive on the same comment.
 
 ## Troubleshooting
 
-### "npm install failed in /path/to/cache"
+### "npm install failed in ..."
 
-The validator tried to install mermaid/jsdom/puppeteer and it failed. Check that:
-
-1. You have npm 7+ installed (`npm --version`)
-2. Internet access is available
-3. You have write permissions to `$TMPDIR`
-
-Then try manually:
+The validator installs mermaid, jsdom and puppeteer into a cache under the OS temp directory. Check that npm 7+ is installed, the network is reachable, and the temp directory is writable, then install by hand:
 
 ```bash
-cd "$TMPDIR/mermaid-validate-11.16.1"          # Windows: %TEMP%\mermaid-validate-11.16.1
-npm install mermaid@11.16.1 jsdom
+cd "$TMPDIR/mermaid-validate-12.0.0"          # Windows: %TEMP%\mermaid-validate-12.0.0
+npm install mermaid@12.0.0 jsdom
 ```
 
-### "mermaid not found in cache after npm install"
+### "puppeteer failed to launch"
 
-This can happen on Windows if npm's `--prefix` flag is ignored. Workaround:
+Puppeteer needs Chromium (Windows and macOS usually just work) or system libraries on Linux. In a container without them, use `--mode parse`.
 
-```bash
-cd "$TMPDIR/mermaid-validate-11.16.1"          # Windows: %TEMP%\mermaid-validate-11.16.1
-npm install --no-save mermaid@11.16.1 jsdom puppeteer
-```
+### "parse and render modes need Node >= 22.12.0"
 
-### "Puppeteer failed to launch"
+Upgrade Node, or use `--mode none` for the structural checks.
 
-Puppeteer needs system libraries (Linux) or Chromium (Windows/macOS). On Windows, this usually just works. On Linux in a container without X11:
+## Cache
 
-1. Try `--mode parse` instead (no browser needed).
-2. Or install Chromium system libs: `apt-get install -y chromium-browser`.
+Dependencies live in `$TMPDIR/mermaid-validate-<version>/`, outside the repository, one directory per Mermaid release. The cache saves its packages to its own `package.json`, so installing one mode's packages never prunes another's. `--clean` removes the directory for the release selected by `--mermaid-version` (default: the pin); it never touches the repository.
 
-## Cache cleanup
-
-Dependencies are cached in the OS temp directory (`$TMPDIR/mermaid-validate-11.16.1/`) outside the repo, so `git status` stays clean. To free space:
-
-```bash
-node tools/validate-mermaid.mjs --clean
-```
-
-This does not affect the repo at all - it only deletes the temp cache. Safe to run anytime.
-
-## Integration with your workflow
+## Integration
 
 ### Pre-commit hook
 
 ```bash
 #!/bin/bash
-cd "$(git rev-parse --show-toplevel)/skills/mermaid-diagram-generator"
+cd "$(git rev-parse --show-toplevel)/.claude/skills/mermaid-diagram-generator"
 node tools/validate-mermaid.mjs --mode parse || exit 1
 ```
 
-### CI pipeline
+### CI
 
 ```yaml
 - name: Validate Mermaid examples
   run: |
-     cd skills/mermaid-diagram-generator
+     cd .claude/skills/mermaid-diagram-generator
      node tools/validate-mermaid.mjs --mode parse
+     node tools/validate-mermaid.mjs --mode parse --mermaid-version 11.16.1
 ```
 
-## When render mode is slow or unavailable
-
-If puppeteer takes too long or the host lacks Chromium, use `--mode parse`:
-
-```bash
-node tools/validate-mermaid.mjs --mode parse
-```
-
-This catches grammar errors (most bugs) but misses layout/icon resolution issues. For a release or after a Mermaid version bump, do a full render pass at least once to be thorough.
+Run a full render pass at least once after a version bump; parse mode misses layout and icon-resolution failures.

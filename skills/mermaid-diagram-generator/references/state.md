@@ -3,16 +3,11 @@ diagram: State Diagram
 slug: state
 status: stable
 mermaid_version_introduced: "long-standing (pre-v10)"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: stateDiagram-v2
 source: https://mermaid.js.org/syntax/stateDiagram.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: true
-github_compatible: true
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # State Diagram
@@ -111,6 +106,7 @@ stateDiagram-v2
 - Use HTML entity codes for characters that collide with the grammar (e.g. `#35;` for `#`), the same convention used across other Mermaid diagram types.
 - Multi-line note text requires the block form (`note right of X` ... `end note`); the single-line colon form only holds one line.
 - Avoid a literal triple-backtick sequence inside state/note text; bump the *outer* fence wrapping this whole mermaid block to four backticks if unavoidable.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Write descriptions as `state "text" as id` (the only character that still needs an escape inside the quotes is `"`, written `#34;`); transition text breaks on `;` (`#59;`).
 
 ## Common pitfalls
 - Forgetting the closing `}` for every opened composite state block.
@@ -118,6 +114,11 @@ stateDiagram-v2
 - Treating legacy `stateDiagram` and `stateDiagram-v2` as interchangeable - use `stateDiagram-v2` unless you specifically need the old renderer.
 - Malformed stereotype declarations - `<<choice>>`/`<<fork>>`/`<<join>>` must be attached via a separate `state id <<stereotype>>` line, not inline on a transition.
 - Omitting `[*]` entry/exit markers where the diagram needs to show a clear start or terminal point.
+
+## v11 fallback
+
+- **Default appearance:** v12 draws this type with the `neo` look and the `redux-color` theme by default, laid out by ELK instead of dagre; v11 draws it with the `classic` look and the `default` theme and dagre layout. The diagram source is identical - only the rendering differs. `general/v11-compatibility.md` shows how to make v12 draw the v11 appearance.
+- **`state.defaultRenderer`** is removed in v12 and ignored. Set `layout` in frontmatter `config:` instead.
 
 ## Beta/experimental caveats
 N/A - `stateDiagram-v2` is the stable, recommended renderer; the legacy `stateDiagram` keyword is retained only for backward compatibility and carries no new-feature guarantees.

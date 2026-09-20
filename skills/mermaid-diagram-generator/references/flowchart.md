@@ -3,16 +3,11 @@ diagram: Flowchart
 slug: flowchart
 status: stable
 mermaid_version_introduced: "long-standing (pre-v10)"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: flowchart
 source: https://mermaid.js.org/syntax/flowchart.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: true
-github_compatible: true
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Flowchart
@@ -93,6 +88,7 @@ flowchart LR
 - `|` is reserved as the edge-label delimiter - quote any label text that must contain a literal pipe.
 - `(` and `)` are node-shape delimiters - quote the whole label if it needs literal parentheses.
 - Never let a literal triple-backtick sequence appear inside label text; if a label must show one, quote the label and bump the *outer* fence wrapping this whole mermaid block to four backticks.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Quote node, edge and subgraph labels (`A["text"]`, `A -->|"text"| B`, `subgraph S["text"]`); unquoted labels break on `" | ( ) [ ] { }`, and the only character that still needs an escape inside the quotes is `"`, written `#34;`. A `<`...`>` pair survives inside quotes here (an actual tag such as `<b>` is rendered as HTML). Codes for the rest are in `general/authoring-rules.md`.
 
 ## Common pitfalls
 - Using lowercase `end` as a bare node id/label - it's the reserved subgraph-closing token; capitalize as `End`/`END` or quote it.
@@ -101,6 +97,13 @@ flowchart LR
 - Forgetting the closing `end` for every opened `subgraph`.
 - Unquoted labels containing `()`, `[]`, `{}`, or `|` that collide with shape/link delimiters.
 - Redeclaring the same node id with a different shape later in the file - the first-seen shape wins and later shape declarations are ignored.
+
+## v11 fallback
+
+- **Default appearance:** v12 draws this type with the `neo` look and the `redux-color` theme by default, laid out by ELK instead of dagre; v11 draws it with the `classic` look and the `default` theme and dagre layout. The diagram source is identical - only the rendering differs. `general/v11-compatibility.md` shows how to make v12 draw the v11 appearance.
+- **Collapsible subgraphs** - `id@{ view: collapsed }` (documented v11.17.0+). v12 folds the subgraph to one node; 11.16.1 parses it without error and ignores it, drawing the subgraph expanded.
+- **Shapes `folder` (alias `directory`), `bucket`, `console`, `browser`, `person`** (documented v11.17.0+). 11.16.1 hard-fails with `No such shape: <name>.` Fall back to a shape it has: `cyl` for `bucket`, `rect` (with a descriptive label) for the others.
+- **`flowchart.defaultRenderer`** is removed in v12 and ignored; the `flowchart-elk` keyword still works but is no longer needed. Set `layout: dagre` or `layout: elk` in frontmatter `config:` instead.
 
 ## Beta/experimental caveats
 N/A - stable diagram type, no known compatibility caveats. The newer unified `@{ shape: ... }` node syntax (v11.3.0+) is an additive alternative, not a breaking change to the classic shape tokens above.

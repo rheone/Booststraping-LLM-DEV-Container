@@ -3,16 +3,11 @@ diagram: Kanban
 slug: kanban
 status: beta
 mermaid_version_introduced: "v11.4.0"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: kanban
 source: https://mermaid.js.org/syntax/kanban.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: false
-github_compatible: true
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Kanban
@@ -87,6 +82,7 @@ Five columns carry a mix of tasks with partial metadata (some have only `priorit
 - Metadata values that are strings (`assigned`, ticket ids with non-numeric characters) should be single-quoted inside the `@{ ... }` block; `priority` values specifically must match one of the four documented literal strings exactly, quotes included.
 - `#TICKET#` inside `ticketBaseUrl` is a literal placeholder token, not a variable reference - don't substitute or quote it differently.
 - Inside a ```mermaid fence in markdown, indentation nesting tasks under columns is structurally significant - keep it consistent the same way `mindmap.md` requires, or a markdown renderer that dedents the block will misattach tasks to the wrong column.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Quote column and task labels (`col["text"]`); the only character that still needs an escape inside the quotes is `"`, written `#34;`.
 
 ## Common pitfalls
 - [ ] Is every task indented under the correct column, with consistent whitespace (no mixing tabs and spaces)?
@@ -94,6 +90,10 @@ Five columns carry a mix of tasks with partial metadata (some have only `priorit
 - [ ] Does every `priority` value exactly match one of `'Very High'`, `'High'`, `'Low'`, `'Very Low'` (case and wording)?
 - [ ] Is `@{ ... }` metadata placed immediately after the task's `[...]`, with no space breaking the association?
 - [ ] If using `ticketBaseUrl`, does it contain the literal `#TICKET#` placeholder, and is it nested correctly under `config.kanban` in the frontmatter?
+
+## v11 fallback
+
+No syntax differences. Every example in this file parses and renders on both Mermaid 12.0.0 and 11.16.1.
 
 ## Beta/experimental caveats
 Requires Mermaid v11.4.0 or later; this version was not stated on the doc page itself and is cross-referenced from the mermaid-js/mermaid GitHub release notes ("Adding Kanban board, a new diagram type"). Unlike Sankey, Treemap, XY Chart, Block, and Packet, Kanban has no `-beta`-suffixed alias at all - the diagram detector in the mermaid-js/mermaid source only recognizes the bare `kanban` keyword, so there's no legacy form to be aware of here. Column/task metadata is a newer addition to the syntax and is the most likely piece to gain new supported keys in future releases.

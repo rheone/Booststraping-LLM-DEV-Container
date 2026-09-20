@@ -3,16 +3,11 @@ diagram: Wardley
 slug: wardley
 status: beta
 mermaid_version_introduced: "v11.14.0"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: wardley-beta
 source: https://mermaid.js.org/syntax/wardley.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: false
-github_compatible: true
-vscode_compatible: true
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Wardley
@@ -104,6 +99,7 @@ Custom evolution stage boundaries are defined up front; components carry build/b
 - Labeled flow links embed the label in single quotes inside the arrow token itself (`+'label'>`) - that's part of the arrow syntax, not a separate string argument.
 - Note/annotation/accelerator text uses double quotes; escape a literal double quote inside the text or restructure the label to avoid it.
 - Inside a ```mermaid fence, no extra escaping is needed beyond avoiding literal triple backticks in text.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Component and anchor names accept only letters, digits and spaces unless quoted (`component "a: b" [0.5, 0.5]`; quote the name wherever it is referenced). In the title, a `<`...`>` pair is read as an HTML tag and silently dropped, so write both as `#60;` and `#62;`.
 
 ## Common pitfalls
 - [ ] Are coordinates in `[visibility, evolution]` order, not `(x, y)` - visibility is Y, evolution is X?
@@ -112,6 +108,12 @@ Custom evolution stage boundaries are defined up front; components carry build/b
 - [ ] Are you distinguishing plain dependency (`->`) from flow (`+>`, `+<>`, `+'label'>`) intentionally, not interchangeably?
 - [ ] If using custom evolution stages, do all component evolution values fall within 0.0–1.0 regardless of custom stage boundary widths?
 - [ ] Are decorators placed after the coordinates on the same `component` line, not on a separate line?
+
+## v11 fallback
+
+This type was introduced in v11.14.0. Renderers older than that fail with `No diagram type detected` (see `general/renderers.md` for which markdown renderers those are). For such targets use a `quadrant.md` chart (value chain on one axis, evolution on the other).
+
+- No syntax differences. Every example in this file parses and renders on both Mermaid 12.0.0 and 11.16.1.
 
 ## Beta/experimental caveats
 Wardley diagrams are beta as of v11.14.0; component/link/decorator grammar and config option names may still change in minor releases. When delivering this diagram type, note it requires Mermaid v11.14.0 or later and that flow-link tokens (`+>`, `+<>`, `+'label'>`) in particular are newer, less-common syntax worth spot-checking against the target renderer.

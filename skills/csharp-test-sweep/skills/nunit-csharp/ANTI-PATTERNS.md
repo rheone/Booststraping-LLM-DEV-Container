@@ -1,12 +1,3 @@
----
-name: nunit-csharp
-description: NUnit v5-specific anti-patterns — constraint violations, fixture pitfalls, and framework traps.
-license: Apache-2.0
-metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
-  version: 1.1.0
----
-
 # NUnit v5 Anti-Patterns
 
 ## 1. Classic Assert.AreEqual Instead of Constraint-Based
@@ -88,21 +79,7 @@ Assert.Multiple(() =>
 });
 ```
 
-## 6. Ignored Tests Without a Reason
-
-```csharp
-// BAD — no explanation, no ticket reference
-[Test]
-[Ignore]
-public void Parse_IPv6_ReturnsSubnet_Test() { }
-
-// GOOD — includes justification and ticket reference
-[Test]
-[Ignore("Blocked by #42 — IPv6 parser not yet implemented")]
-public void Parse_IPv6_ReturnsSubnet_Test() { }
-```
-
-## 7. Static Mutable State in [OneTimeSetUp]
+## 6. Static Mutable State in [OneTimeSetUp]
 
 ```csharp
 // BAD — static state persists across test classes, causes order-dependent failures
@@ -125,7 +102,7 @@ public void OneTimeSetUp()
 }
 ```
 
-## 8. Assert.Throws Without Verifying the Exception
+## 7. Assert.Throws Without Verifying the Exception
 
 ```csharp
 // BAD — any thrown exception passes, even the wrong type
@@ -134,11 +111,3 @@ Assert.Throws<Exception>(() => Something());
 // GOOD — be specific and verify the exception type
 Assert.That(() => Something(), Throws.InstanceOf<ArgumentNullException>());
 ```
-
-## 9. Mixing Assertion Styles in the Same Project
-
-Don't mix classic (`Assert.AreEqual`) and constraint-based (`Assert.That`) styles. Pick constraint-based as the default. The NUnit.Analyzers package catches classic calls at build time — enable it.
-
-## Related Skills
-
-This skill is invoked by [`csharp-test-sweep`](../../SKILL.md). Framework-agnostic quality rules live in the [parent quality-checklist.md](../../references/quality-checklist.md).

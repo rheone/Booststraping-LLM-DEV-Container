@@ -1,15 +1,4 @@
----
-name: xunit-csharp-examples
-description: Worked examples for xUnit v3 C# testing patterns
-license: Apache-2.0
-metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
-  version: 1.1.0
----
-
 # xUnit v3 Worked Examples
-
-> See [SKILL.md](SKILL.md) for rules, [REFERENCE.md](REFERENCE.md) for API tables, and [ANTI-PATTERNS.md](ANTI-PATTERNS.md) for pitfalls.
 
 ---
 
@@ -213,11 +202,3 @@ public sealed class SubnetTests
 ```
 
 See [references/ObjectMother.md](references/ObjectMother.md) for placement rules, multi-class usage, and what NOT to do.
-
----
-
-## Related
-
-- [SKILL.md](SKILL.md) — rules and guidance.
-- [REFERENCE.md](REFERENCE.md) — API lookup tables.
-- [ANTI-PATTERNS.md](ANTI-PATTERNS.md) — framework-specific pitfalls.

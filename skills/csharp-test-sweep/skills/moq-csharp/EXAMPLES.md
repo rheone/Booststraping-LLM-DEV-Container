@@ -1,16 +1,4 @@
----
-name: moq-csharp
-description: Worked examples of Moq 4.x patterns — creating mocks, setups, verification, argument matchers, sequences, and property stubbing.
-license: Apache-2.0
-metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
-  version: 1.1.0
----
-
 # Moq 4.x Examples
-
-Framework-agnostic rules (static state, test isolation) are in
-[`csharp-test-sweep/references/quality-checklist.md`](../../references/quality-checklist.md).
 
 **Interface under test throughout:**
 ```csharp
@@ -154,8 +142,3 @@ mock.Object.TimeoutSeconds = 60;
 Assert.Equal("updated", mock.Object.ConnectionString);
 Assert.Equal(60, mock.Object.TimeoutSeconds);
 ```
-
-## Related
-
-See [REFERENCE.md](REFERENCE.md) for the full API lookup table.
-See [ANTI-PATTERNS.md](ANTI-PATTERNS.md) for common Moq mistakes.

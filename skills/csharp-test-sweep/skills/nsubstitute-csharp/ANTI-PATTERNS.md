@@ -1,21 +1,8 @@
----
-name: nsubstitute-csharp-anti-patterns
-description: NSubstitute framework-specific pitfalls — substituting the class under test, Arg.Any overuse, ForPartsOf misuse, non-virtual members, and more. Referenced by csharp-test-sweep.
-license: Apache-2.0
-metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
-  version: 1.1.0
----
-
 # NSubstitute Anti-Patterns
-
-Part of [csharp-test-sweep](../../SKILL.md).
-API reference at [`REFERENCE.md`](REFERENCE.md).
-Examples at [`EXAMPLES.md`](EXAMPLES.md).
 
 ## 1. Substituting the Class Under Test
 
-**Never substitute the type whose behavior you are testing.** NSubstitute intercepts all virtual members and returns the type default — the real implementation never executes. The test passes vacuously because the method under test was never actually measured.
+The [General Quality Checklist](../../references/quality-checklist.md) explains why; the NSubstitute fix:
 
 ```csharp
 // BROKEN: Substitute.For<AbstractIPAddressRange> intercepts virtual ToString
@@ -28,8 +15,6 @@ var range = new IPAddressRange(head, tail);
 var result = range.ToString("G", CultureInfo.CurrentCulture);
 Assert.Equal("192.168.1.1 - 192.168.1.42", result);
 ```
-
-**Exception**: substituting the abstract class is correct when it is a *dependency* being injected, not the subject under test. See SKILL.md.
 
 ## 2. Arg.Any Overuse
 

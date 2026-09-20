@@ -60,7 +60,7 @@ npx skills disable audit-remediation-pipeline
 
 | Skill | Description | Install |
 |-------|-------------|---------|
-| [`mermaid-diagram-generator`](skills/mermaid-diagram-generator) | Generates any Mermaid diagram type (flowchart, sequence, class, ER, Gantt, C4, and 25+ more) as `.mermaid`/`.mmd` files or markdown-embedded blocks, with per-type stable/beta/experimental status | `--skill mermaid-diagram-generator` |
+| [`mermaid-diagram-generator`](skills/mermaid-diagram-generator) | Generates any Mermaid diagram type (flowchart, sequence, class, ER, Gantt, C4, and 30+ more, including use case, agentflow, and railroad) as `.mermaid`/`.mmd` files or markdown-embedded blocks, converts diagrams between Mermaid 11 and 12, with per-type stable/beta/experimental status | `--skill mermaid-diagram-generator` |
 
 ### Legacy Modernization
 
@@ -74,12 +74,19 @@ npx skills disable audit-remediation-pipeline
 |-------|-------------|---------|
 | [`csharp-split-type-to-partials`](skills/csharp-split-type-to-partials) | Split C# types into partial files by interface/functional grouping | `--skill csharp-split-type-to-partials` |
 | [`csharp-library-repo-structure`](skills/csharp-library-repo-structure) | Bootstrap, audit, and refactor .NET library repo layout for NuGet distribution | `--skill csharp-library-repo-structure` |
+| [`csharp-code-organization`](skills/csharp-code-organization) | Reorganize C# member ordering and file/type structure (constants → fields → ctors → properties → events → methods, partial splitting, generic-arity file naming); detects and respects the repo's StyleCop/.editorconfig rules | `--skill csharp-code-organization` |
+
+### Language Features
+
+| Skill | Description | Install |
+|-------|-------------|---------|
+| [`csharp-union`](skills/csharp-union) | Best practices for the C# 15 / .NET 11 preview `union` type — closed, compiler-exhaustive alternatives, switching/pattern matching, CS8509/CS8655, CQRS-style response types | `--skill csharp-union` |
 
 ### Test Suite Sweep (Orchestrator)
 
 | Skill | Description | Install |
 |-------|-------------|---------|
-| [`csharp-test-sweep`](skills/csharp-test-sweep) | Orchestrates project-wide test suite improvement — detects framework/mocking library, runs 16-step discovery, dispatches to companion skills, iterates each class with verification | `--skill csharp-test-sweep` |
+| [`csharp-test-sweep`](skills/csharp-test-sweep) | Orchestrates project-wide test suite improvement — detects framework/mocking library, runs 16-step discovery, dispatches to companion skills, iterates each class with verification; shared quality checklist now lives in the orchestrator's `references/` rather than in each companion | `--skill csharp-test-sweep` |
 
 ### Test Frameworks (Companion)
 

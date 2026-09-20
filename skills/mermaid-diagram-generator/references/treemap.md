@@ -3,16 +3,11 @@ diagram: Treemap
 slug: treemap
 status: beta
 mermaid_version_introduced: "v11.8.0"
-mermaid_version_verified: "11.16.1"
+mermaid_version_verified: "12.0.0"
 keyword: treemap-beta
 source: https://mermaid.js.org/syntax/treemap.html
-last_verified: 2026-08-09
+last_verified: 2026-09-19
 plugin_required: false
-gitlab_compatible: false
-github_compatible: true
-vscode_compatible: unknown
-obsidian_compatible: unknown
-notion_compatible: unknown
 ---
 
 # Treemap
@@ -87,6 +82,7 @@ A three-level hierarchy (Company Budget → department → line item) is combine
 - A literal `"` inside a node name needs standard escaping for the surrounding context (avoid it if possible; prefer rephrasing the label).
 - `:::<className>` is a reserved token sequence - a class name can't itself contain `:::`.
 - Inside a ```mermaid fence in markdown, keep the block's indentation relative to the fence consistent, since a markdown renderer that dedents the fenced content will corrupt the hierarchy the same way inconsistent indentation would.
+- **Tested (Mermaid 12.0.0 and 11.16.1):** Quote node labels; the only character that still needs an escape inside the quotes is `"`, written `#34;`.
 
 ## Common pitfalls
 - [ ] Is every node name (parent and leaf) wrapped in double quotes?
@@ -95,6 +91,10 @@ A three-level hierarchy (Company Budget → department → line item) is combine
 - [ ] Are all values non-negative - treemap area can't represent a negative number?
 - [ ] Does every `:::className` reference a `classDef` that's actually declared somewhere in the diagram?
 - [ ] If using `valueFormat`, is it a valid D3 format specifier or one of the documented currency shortcuts (`$`, `$0,0`, `$.2f`, `$,.2f`, etc.)?
+
+## v11 fallback
+
+No syntax differences. Every example in this file parses and renders on both Mermaid 12.0.0 and 11.16.1.
 
 ## Beta/experimental caveats
 Mermaid's own docs flag treemap as "a new diagram type" whose syntax "may evolve in future versions" - expect possible breaking changes to node/leaf grammar or config option names on future Mermaid upgrades. Requires Mermaid v11.8.0 or later (this version was not stated on the doc page itself; it's cross-referenced from the mermaid-js/mermaid GitHub release notes, where treemap first appears as "Adding support for the new diagram type nested treemap"). Note that as of this writing, the docs also mention a Sunburst (radial hierarchy) diagram as a planned-but-unreleased alternative - don't offer it as an option.

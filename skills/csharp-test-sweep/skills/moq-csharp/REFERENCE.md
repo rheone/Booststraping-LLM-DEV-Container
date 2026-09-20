@@ -1,16 +1,4 @@
----
-name: moq-csharp
-description: Moq 4.x API lookup tables — mock creation, setup patterns, argument matchers, verification, callbacks, and property mocking.
-license: Apache-2.0
-metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
-  version: 1.1.0
----
-
 # Moq 4.x API Reference
-
-Loaded by [`moq-csharp`](SKILL.md) when writing or reviewing Moq usage.
-Framework-agnostic rules (static state, test isolation) are in [`csharp-test-sweep`](../../references/quality-checklist.md).
 
 ## Mock Creation
 
@@ -108,13 +96,3 @@ Framework-agnostic rules (static state, test isolation) are in [`csharp-test-swe
 | `.SetupProperty(x => x.Prop)` | Get/set stub — acts like auto-property |
 | `.SetupProperty(x => x.Prop, "initial")` | Get/set with initial value |
 | `.SetupGet(x => x.Prop).Returns(v)` | Read-only property stub |
-
-## Analyzers
-
-| Package | Purpose |
-|---------|---------|
-| `Moq.Analyzers` | Build-time checks for mismatched setup signatures, redundant setups, and common mistakes |
-
-## Related Skills
-
-Referenced by [`csharp-test-sweep`](../../SKILL.md) as the Moq companion skill.

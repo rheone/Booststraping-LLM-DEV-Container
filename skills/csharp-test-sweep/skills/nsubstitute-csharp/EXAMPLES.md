@@ -1,17 +1,4 @@
----
-name: nsubstitute-csharp-examples
-description: Worked examples for NSubstitute patterns — creation, stubbing, verification, callbacks, partials. Referenced by csharp-test-sweep.
-license: Apache-2.0
-metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
-  version: 1.1.0
----
-
 # NSubstitute Examples
-
-Part of [csharp-test-sweep](../../SKILL.md).
-API reference at [`REFERENCE.md`](REFERENCE.md).
-Pitfalls at [`ANTI-PATTERNS.md`](ANTI-PATTERNS.md).
 
 Setup shared across examples:
 
