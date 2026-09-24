@@ -51,7 +51,4 @@ Load the file matching your target; each one names its fallback for older target
 - [specialized/extension-operators.md](specialized/extension-operators.md) — operator overloads on types you don't own
 - [specialized/fluent-and-linq-style-patterns.md](specialized/fluent-and-linq-style-patterns.md) — chaining and custom LINQ-style query operators
 - [specialized/resolution-and-coexistence-rules.md](specialized/resolution-and-coexistence-rules.md) — overload precedence, `using` scoping, mixing both syntaxes, multi-targeting
-
-## Tests
-
-[examples/TESTS.md](examples/TESTS.md) — xUnit examples for every tier above, including generic and multi-targeted cases.
+- [specialized/testing-extension-members.md](specialized/testing-extension-members.md) — writing extension methods/members as test-authoring tools: fluent assertions, builders, mock setup helpers
