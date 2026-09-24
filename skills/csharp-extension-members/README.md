@@ -3,8 +3,8 @@
 Reference for C# extension methods and extension members: from the classic `this`-parameter form
 (C# 3.0 / .NET Framework 3.5) through extension properties, static extension members, and
 operators (C# 14 / .NET 10), and extension indexers (C# 15 / .NET 11). Includes the pre-C#3
-fallback pattern for .NET Framework 1.0–2.0, generic extension members, and xUnit test examples.
-The routing table is in [SKILL.md](SKILL.md).
+fallback pattern for .NET Framework 1.0–2.0, generic extension members, and a reference on writing
+extension methods/members as test-authoring tools. The routing table is in [SKILL.md](SKILL.md).
 
 ```text
 references/                       version-gated core syntax, oldest to newest
@@ -21,9 +21,7 @@ specialized/                      cross-cutting patterns, applicable across vers
   extension-operators.md
   fluent-and-linq-style-patterns.md
   resolution-and-coexistence-rules.md
-
-examples/
-  TESTS.md                          xUnit examples per tier, including generics
+  testing-extension-members.md      extension methods/members as test-authoring tools
 ```
 
 ## Version coverage
