@@ -1,45 +1,43 @@
 # Portability and Cross-Referencing
 
-A link from one skill to another — a sibling in the same repo, or an unrelated skill like
-`write-a-skill` — is a **soft pointer**: worded as optional enrichment, never as something the
-reader needs in order to finish understanding the current file. Skills get installed
-individually, copied out of a repo on their own, or run in an environment that simply doesn't
-have the target installed; a link that quietly carries essential meaning becomes a dead end for
-anyone in that situation.
+**Rule:** a skill must not name another skill unless the current file has a direct, necessary
+dependency on it — content it cannot produce or explain without that other skill's material
+actually being present. Skills are portable: installed individually, copied out of a repo on
+their own, or run in an environment that doesn't have any particular sibling installed. Naming
+another skill creates a coupling the portability model doesn't allow, whether or not the mention
+is framed as optional.
 
 ## The test
 
-For every link to another skill, ask: **if this link resolved to nothing, would the current file
-still make complete sense?** Two outcomes:
+For every place you're about to name another skill, ask: **does this file's own job require that
+skill's content to exist?**
 
-- **Yes — it's supplementary.** A "see also," a comparison to a related pattern, a pointer to
-  more depth than the current file needs to provide. The soft pointer alone is fine:
-  *"...if you also have the `csharp-union` skill installed, it covers generic case types in
-  unions in full."*
-- **No — it's essential.** The current file's own explanation genuinely depends on content that
-  lives only in the other skill. Don't leave it purely behind the link: inline a short,
-  self-contained version of the essential part — a paragraph, one example — so the file stands on
-  its own, and keep the link only for whoever wants the fuller treatment.
-
-This mirrors the ordinary rule against duplication, inverted for a specific reason: duplication
-is wasteful when the original is reliably reachable. A link to a possibly-absent skill is not
-reliably reachable, so the "single source of truth" it would otherwise point to needs a cached,
-load-bearing copy of its essential content sitting locally instead — the same reasoning that
-justifies caching a fact the agent "cannot find by looking."
+- **No — drop the name.** Overlap, a related pattern, "you might also like" — none of that is a
+  dependency. Either inline whatever's actually needed so the file stands alone, or say nothing.
+  Do not soften a non-dependency into a "soft pointer" (*"if you also have X installed, it covers
+  this in more depth"*) — that used to be this file's guidance and it is retired. A soft pointer
+  still couples two skills by name, which is exactly what portability rules out for anything short
+  of a real dependency.
+- **Yes — it's a hard dependency.** Name it, and give the skill a presence check that runs before
+  it relies on that dependency: state which file or skill name to look for (e.g. `skills/<name>/SKILL.md`,
+  or however the host exposes installed skills), and instruct the skill to **halt and tell the
+  user the dependency is missing** rather than proceeding without it, guessing at its content, or
+  degrading silently. Don't inline a fallback copy of the dependency's content as a substitute for
+  the check — that just reintroduces the coupling as stale duplication instead of removing it.
 
 ## Applies both directions
 
-- **Within the same repo**: sibling skills usually get installed together, but not always —
-  someone may extract one skill's folder on its own, or a future install mechanism may support
-  picking individual skills from a multi-skill repo. Don't assume co-installation just because
-  the files currently sit side by side in the same `skills/` directory.
-- **Outside the repo entirely**: global or marketplace skills (`write-a-skill`,
-  `writing-for-agents`, a companion test-framework skill) may not exist in another person's
-  install at all. Every reference to one of these needs the same soft-pointer treatment, and
-  anything essential needs the same inline fallback.
+- **Within the same repo**: sibling skills don't ship together by assumption. A skill extracted on
+  its own, or a host that installs skills individually, must not break because it was written
+  assuming an unresolvable name would always be there.
+- **Outside the repo entirely**: global or marketplace skills (`write-a-skill`, `writing-for-agents`,
+  a companion test-framework skill) are never assumed present. Don't name one unless the current
+  file has a real, checked dependency on it.
 
-## Wording
+## Applying this when scaffolding output
 
-Prefer explicit conditionals over bare links: "if you also have the X skill installed" or
-"X, if installed, covers this in more depth" — not a bare `[X](../x/SKILL.md)` link with no
-framing, which reads as a required next step rather than an optional one.
+Every reference file, specialized file, `SKILL.md`, and `README.md` you generate is subject to
+this rule on its own — audit each file independently, not the skill as a whole. A file that
+happens to sit beside content covering a related pattern (extension methods next to generics,
+mocking libraries next to test-authoring patterns) does not thereby gain a dependency on it, and
+must not name it.

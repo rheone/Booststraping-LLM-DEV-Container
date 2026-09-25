@@ -19,15 +19,7 @@ This skill covers generics, so here's the minimum needed to read the example abo
 `extension(ReceiverType receiverName) { ... }` block adds instance members to `ReceiverType`;
 `extension(ReceiverType)` with no parameter name (no generic parameter needed on a static block
 either, unless the static members themselves need one) adds static members, called as
-`ReceiverType.Member`. Both forms also support properties and operators, not just methods. The
-full extension-member mechanics — instance vs. static blocks, properties, operators, IL
-compatibility with classic extension methods — are in the `csharp-extension-members` skill, if
-you also have it installed: specifically
-[references/csharp14-extension-members.md](../../csharp-extension-members/references/csharp14-extension-members.md)
-and [specialized/generic-extension-members.md](../../csharp-extension-members/specialized/generic-extension-members.md),
-which has the full generic-block treatment including static generic members
-(`extension<T>(T) where T : IParsable<T>`) and worked constraint examples. It isn't a dependency
-of this file — the generics-specific content below stands on its own.
+`ReceiverType.Member`. Both forms also support properties and operators, not just methods.
 
 ## What's new for generics specifically
 
@@ -42,14 +34,11 @@ of this file — the generics-specific content below stands on its own.
 ## C# 15 / .NET 11 status
 
 C# 15 (.NET 11, RC1 as of September 2026; GA expected November 2026) adds extension **indexers**
-to the block syntax (`this T this[TIndex index] { get; set; }` inside an `extension(...)` block —
-see `csharp-extension-members`'
-[csharp15-extension-indexers.md](../../csharp-extension-members/references/csharp15-extension-indexers.md)
-if installed, for the full treatment) but introduces no new generics feature of its own. C# 15
-also ships union types and closed hierarchies; both support generic case types. If the
-`csharp-union` skill is installed, it documents that in full; otherwise, the essential fact is
-just that a union's case types and a closed hierarchy's derived types can each be closed generic
-types like any other — no special syntax beyond ordinary generic type arguments.
+to the block syntax (`this T this[TIndex index] { get; set; }` inside an `extension(...)` block)
+but introduces no new generics feature of its own. C# 15 also ships union types and closed
+hierarchies; both support generic case types — a union's case types and a closed hierarchy's
+derived types can each be closed generic types like any other, no special syntax beyond ordinary
+generic type arguments.
 
 ## Fallback
 
@@ -69,5 +58,4 @@ public static class ReadOnlyListExtensions
 ```
 
 See [references/csharp2-generics-fundamentals.md](csharp2-generics-fundamentals.md) for the
-classic generic-method shape. If the `csharp-extension-members` skill is installed, its
-`references/csharp3-extension-methods.md` covers the `this`-parameter mechanics in full.
+classic generic-method shape.

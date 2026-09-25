@@ -10,7 +10,7 @@ references/
   fact-verification-checklist.md    how to verify version/GA-date/feature-availability claims
   file-tree-and-naming.md           references/ vs specialized/ split, csharpN-<slug>.md naming
   maintenance-workflow.md           extending an existing versioned skill with a new tier
-  portability-and-cross-referencing.md   soft-pointer rule for links to other skills
+  portability-and-cross-referencing.md   rule for naming (or not naming) other skills
 
 assets/templates/
   SKILL.md.tmpl
@@ -19,10 +19,5 @@ assets/templates/
   specialized-file.md.tmpl
 ```
 
-## Worked examples
-
-`csharp-extension-members` and `csharp-generics`, elsewhere in this repo's `skills/` folder, are
-the pattern this skill scaffolds — read them for a full worked example if you have them
-installed. This skill doesn't depend on them; see
-[references/portability-and-cross-referencing.md](references/portability-and-cross-referencing.md)
-for why every skill this tool produces treats sibling-skill links the same way.
+See [references/portability-and-cross-referencing.md](references/portability-and-cross-referencing.md)
+for the rule every skill this tool produces follows on naming (or not naming) other skills.
