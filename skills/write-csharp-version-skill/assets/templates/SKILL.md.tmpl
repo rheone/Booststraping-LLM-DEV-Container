@@ -34,11 +34,14 @@ metadata:
 - [specialized/{{PATTERN_FILE}}](specialized/{{PATTERN_FILE}}) — {{ONE_LINE}}
 
 <!--
-  Optional: a "Related skill" section for genuinely relevant sibling skills — phrase every link
-  as a soft pointer per references/portability-and-cross-referencing.md, e.g.:
+  Do not add a "Related skill" section naming a sibling unless this skill has a real, necessary
+  dependency on it. Per references/portability-and-cross-referencing.md: no dependency means no
+  name — inline what's needed or say nothing. A real dependency means naming it here plus a
+  presence check that halts and tells the user if it's missing, e.g.:
 
-  ## Related skill
+  ## Requires
 
-  If you also have the {{SIBLING_SKILL}} skill installed, it covers {{WHAT}} in more depth —
-  not a dependency of this skill.
+  This skill depends on the {{REQUIRED_SKILL}} skill. Before proceeding, check it is installed
+  (e.g. `skills/{{REQUIRED_SKILL}}/SKILL.md` exists). If it is not, stop and tell the user this
+  skill requires {{REQUIRED_SKILL}} to be installed.
 -->

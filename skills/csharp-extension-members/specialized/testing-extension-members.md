@@ -5,10 +5,7 @@ assertions, test-data builders, and mock/stub setup helpers. This file is about 
 kind of extension* — not about unit-testing the syntax examples elsewhere in this skill. See
 [csharp3-extension-methods.md](../references/csharp3-extension-methods.md) and
 [csharp14-extension-members.md](../references/csharp14-extension-members.md) for the underlying
-syntax rules. If the `csharp-test-sweep` skill is installed, its
-[xunit-csharp companion](../../csharp-test-sweep/skills/xunit-csharp/SKILL.md) covers the xUnit
-conventions these examples build on (`TheoryData<T>`, `Assert.Multiple`, naming) in more depth;
-neither is required to follow what's below.
+syntax rules.
 
 ## Basic: custom fluent assertions (classic extension methods, C# 3.0+)
 
@@ -98,10 +95,6 @@ var repository = Substitute.For<IOrderRepository>()
     .WithOrder(existingOrder)
     .WithNoOrders();
 ```
-
-If `csharp-test-sweep` is installed, its mocking-library companion skills under
-[csharp-test-sweep/skills/](../../csharp-test-sweep/skills/) (Moq, NSubstitute, JustMock,
-RhinoMocks) cover the underlying setup APIs these extensions wrap.
 
 ## Advanced: extension properties as computed test assertions (C# 14+)
 

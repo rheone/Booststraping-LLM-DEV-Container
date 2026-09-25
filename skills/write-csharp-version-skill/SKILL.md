@@ -1,6 +1,6 @@
 ---
 name: write-csharp-version-skill
-description: Scaffold or extend a version-gated C# language-feature reference skill — per-C#-version reference files with stated fallback chains, specialized cross-cutting pattern files, and a SKILL.md routing table. Modeled on this repo's csharp-extension-members and csharp-generics skills.
+description: Scaffold or extend a version-gated C# language-feature reference skill — per-C#-version reference files with stated fallback chains, specialized cross-cutting pattern files, and a SKILL.md routing table.
 license: Apache-2.0
 user-invocable: true
 disable-model-invocation: true
@@ -14,8 +14,11 @@ metadata:
 Builds a **tier**-based reference skill for a C# language feature: one file per C# version
 where the feature's syntax or availability actually changed, each stating what it falls back to
 on an older target, plus a `specialized/` set of cross-cutting patterns that apply across tiers.
-`csharp-extension-members` and `csharp-generics` are worked examples of the output, if you have
-them installed — not a dependency of this skill.
+Scope note: this builder is only for skills whose organizing axis is version-introduced tiers
+(syntax/availability that changed across C# releases)
+— a reference skill organized by category or purpose instead (e.g. an attributes-by-concern skill,
+where version-introduced is a fact noted per entry rather than the file-splitting axis) should be
+hand-authored or use a different builder.
 
 ## Mode
 
@@ -29,8 +32,7 @@ them installed — not a dependency of this skill.
 1. **Scope the feature and its version range.** Establish, as a plain list:
    - The earliest C# version where the feature exists in *any* form — including "never before
      C#N," itself a valid first tier (a pre-history file naming the pre-feature workaround
-     pattern, the way `csharp-extension-members` documents .NET Framework 1.0–2.0's static-helper
-     substitute for extension methods).
+     pattern — e.g. a static-helper substitute for a feature that later became syntax).
    - Every later C# version where the feature's syntax, constraints, or availability actually
      changed — a tier exists only where behavior changed, not one file per C# release
      indiscriminately. Most C# versions touch most features not at all.
@@ -71,7 +73,7 @@ them installed — not a dependency of this skill.
    rule applies specifically to any testing-themed specialized file: it covers the feature used
    **as a test-authoring tool** — fluent assertions, builders, mock/stub helpers — never tests
    that validate this skill's own syntax examples. (This is not a hypothetical mistake: an
-   earlier draft of `csharp-extension-members` got it backwards and had to be reworked after
+   earlier draft of a skill built with this tool got it backwards and had to be reworked after
    review.)
 
 6. **Write `SKILL.md`** from [assets/templates/SKILL.md.tmpl](assets/templates/SKILL.md.tmpl): a
@@ -82,8 +84,10 @@ them installed — not a dependency of this skill.
 
 7. **Audit portability.** Read
    [references/portability-and-cross-referencing.md](references/portability-and-cross-referencing.md)
-   and apply it to every link this skill makes to any other skill, whichever repo it lives in.
-   Completion: no file's core content depends on a sibling skill's link actually resolving.
+   and apply it to every place any file in this skill names another skill, whichever repo it lives
+   in: drop the name unless it's a real dependency, and if it is, give it a presence check that
+   halts and notifies the user when the dependency is missing. Completion: no file names a skill
+   it doesn't depend on, and every named dependency has a halt-on-missing check.
 
 ## Skill mechanics reminder
 

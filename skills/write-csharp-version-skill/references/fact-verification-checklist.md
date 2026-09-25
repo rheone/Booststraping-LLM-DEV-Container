@@ -36,10 +36,9 @@ blogs, which are useful for worked examples but not for pinning a version number
 
 A feature whose latest tier is an RC, not GA, needs an explicit caveat in that tier's reference
 file — state the RC number, that details may still shift before GA, and the expected GA date —
-rather than presenting RC-stage syntax with the same confidence as a shipped version's. See
-`csharp-extension-members`' `csharp15-extension-indexers.md` for the caveat's wording, if that
-skill is installed; otherwise, the shape is: **"RC caveat:"** a bolded lead-in, the RC number and
-today's date, and the expected GA date, immediately under the file's title.
+rather than presenting RC-stage syntax with the same confidence as a shipped version's. The shape:
+**"RC caveat:"** a bolded lead-in, the RC number and today's date, and the expected GA date,
+immediately under the file's title.
 
 ## Completion
 

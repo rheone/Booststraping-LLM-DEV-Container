@@ -42,10 +42,8 @@ tiers. Group by the pattern's own name, not by which reference file it's "attach
 When a feature has a meaningful "how did people do this before the feature existed" answer, write
 it as the *first* reference file, not a skipped starting point. It's genuinely useful, portable
 content on its own — the workaround pattern a project stuck on an old target still needs — not
-mere scene-setting. `csharp-extension-members`' `pre-csharp3-no-extensions.md` (the static-helper
-substitute for extension methods, for .NET Framework 1.0–2.0) is the template shape: what the
-absence looks like, the workaround pattern, and how to port forward once the real feature becomes
-available.
+mere scene-setting: what the absence looks like, the workaround pattern, and how to port forward
+once the real feature becomes available.
 
 Skip the pre-history tier only when there genuinely is no meaningful "before" — a feature that
 replaces nothing and has no natural workaround (rare; most C# features have *some* older idiom
