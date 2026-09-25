@@ -1,0 +1,23 @@
+# {{SKILL_TITLE}}
+
+<!-- Match the phrasing/scope of SKILL.md's opening paragraph. -->
+
+The routing table is in [SKILL.md](SKILL.md).
+
+```text
+references/                       version-gated core syntax, oldest to newest
+  {{FILE_1}}                        {{TARGET_1}} (C# {{CSHARP_1}}) — {{ONE_LINE_1}}
+
+specialized/                      cross-cutting patterns, applicable across versions
+  {{PATTERN_FILE}}
+```
+
+## Version coverage
+
+| .NET | C# | GA | {{FEATURE}}-relevant additions |
+| --- | --- | --- | --- |
+| {{DOTNET_1}} | {{CSHARP_1}} | {{GA_DATE_1}} | {{WHAT_CHANGED_1}} |
+
+<!-- Keep this table's rows in sync with SKILL.md's routing table — same tiers, same order.
+     On a maintenance pass, re-check the previously-newest row's GA/RC status before appending
+     a new one; see references/maintenance-workflow.md. -->
