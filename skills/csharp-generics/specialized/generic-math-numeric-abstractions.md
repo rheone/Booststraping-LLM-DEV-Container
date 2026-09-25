@@ -46,7 +46,7 @@ type — no runtime dispatch overhead).
 | `INumber<TSelf>` | the full arithmetic/comparison contract most algorithms want — implemented by `int`, `long`, `double`, `decimal`, `float`, etc. |
 | `IAdditionOperators<TSelf, TOther, TResult>` | just `+`, for algorithms that need nothing else |
 | `IComparisonOperators<TSelf, TOther, TResult>` | `<`, `>`, `<=`, `>=` |
-| `IParsable<TSelf>` | `TSelf.TryParse(string, ...)` — see the [static extension members parallel](../../csharp-extension-members/specialized/static-extension-members.md) |
+| `IParsable<TSelf>` | `TSelf.TryParse(string, ...)` — same static-member-through-a-constraint shape as C# 14 static extension members, if `csharp-extension-members` is installed |
 | `IMinMaxValue<TSelf>` | `TSelf.MinValue` / `TSelf.MaxValue` |
 
 Constrain to the narrowest interface the algorithm actually needs — `IAdditionOperators<T, T, T>`

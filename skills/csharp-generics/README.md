@@ -37,7 +37,7 @@ specialized/                           cross-cutting patterns, applicable across
 | 7 | 11 | Nov 2022 | generic attributes; static abstract interface members (generic math) |
 | 9 | 13 | Nov 2024 | `allows ref struct` anti-constraint |
 | 10 | 14 | Nov 2025 | generic `extension<T>(...)` blocks |
-| 11 | 15 | RC1 Sept 2026, GA expected Nov 2026 | no new core-generics syntax; ships union types/closed hierarchies (see the [csharp-union skill](../csharp-union/SKILL.md)), which support generic case types |
+| 11 | 15 | RC1 Sept 2026, GA expected Nov 2026 | no new core-generics syntax; ships union types/closed hierarchies (generic case types supported — see the [csharp-union skill](../csharp-union/SKILL.md) if installed) |
 
 Each reference file states its own fallback file, so a project pinned to an older `LangVersion`
 than its target SDK supports can still find the right syntax tier.

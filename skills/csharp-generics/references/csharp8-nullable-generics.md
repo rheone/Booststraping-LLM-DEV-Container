@@ -1,8 +1,11 @@
 # `notnull` and Nullable Reference Type Parameters (C# 8.0+ / .NET Core 3.0+)
 
-C# 8 (.NET Core 3.0, 2019) added nullable reference type annotations
-([shared with the extension-methods skill's coverage](../../csharp-extension-members/references/csharp8-nullable-extensions.md))
-and, specific to generics, a `notnull` constraint.
+C# 8 (.NET Core 3.0, 2019) added nullable reference type annotations — `string?` vs. `string` as
+compiler-checked, opt-in (`<Nullable>enable</Nullable>`) hints about whether a reference-typed
+value may be `null` — and, specific to generics, a `notnull` constraint. (If the
+`csharp-extension-members` skill is installed, its
+[csharp8-nullable-extensions.md](../../csharp-extension-members/references/csharp8-nullable-extensions.md)
+covers the annotations themselves in more depth; the rest of this file is self-contained.)
 
 ## The `notnull` constraint
 

@@ -57,5 +57,7 @@ Load the file matching your target; each one names its fallback for older target
 
 ## Related skill
 
-[csharp-extension-members](../csharp-extension-members/SKILL.md) — extension methods and extension
-members, including generic extension methods and generic `extension<T>(...)` blocks in full detail.
+If you also have the [csharp-extension-members](../csharp-extension-members/SKILL.md) skill
+installed, it covers extension methods and extension members — including generic extension
+methods and generic `extension<T>(...)` blocks — in full detail. Not a dependency of this skill:
+every generics-specific file here stands on its own.

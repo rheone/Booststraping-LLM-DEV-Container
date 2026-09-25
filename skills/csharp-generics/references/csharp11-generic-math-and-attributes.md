@@ -83,9 +83,10 @@ DateTime date = ParseOrThrow<DateTime>("2026-01-01");
 ```
 
 One method now serves every `IParsable<T>` implementation in the BCL and any user type that opts
-in — the same static-member-through-a-constraint shape that
-[static extension members](../../csharp-extension-members/specialized/static-extension-members.md)
-use for types that *don't* implement the interface.
+in — the same static-member-through-a-constraint shape that C# 14 static extension members use
+for types that *don't* implement the interface (see `csharp-extension-members`'
+[static-extension-members.md](../../csharp-extension-members/specialized/static-extension-members.md),
+if installed).
 
 ## Fallback
 
