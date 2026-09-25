@@ -1,0 +1,44 @@
+---
+name: {{SKILL_NAME}}
+description: {{ONE_SENTENCE_WHAT}} — {{TIER_SUMMARY_OLDEST_TO_NEWEST}}. Use when {{TRIGGER_BRANCHES}}.
+license: Apache-2.0
+user-invocable: true
+metadata:
+  author: {{AUTHOR}}
+  version: 1.0.0
+---
+
+# {{SKILL_TITLE}}
+
+<!-- One paragraph: the throughline across every tier — what stayed the same, what each later
+     version added. Name the baseline tier's file. -->
+
+## Quick start (works everywhere, C# {{BASELINE_VERSION}}+)
+
+```csharp
+```
+
+## Pick your reference file
+
+<!-- One row per tier, oldest to newest. Each reference file states its own fallback, so this
+     table just needs to get the reader to the highest tier they need. -->
+
+| Target | C# language version | Reference file |
+| --- | --- | --- |
+| {{TARGET_1}} | {{CSHARP_1}} | [references/{{FILE_1}}](references/{{FILE_1}}) — {{ONE_LINE_1}} |
+
+## Specialized patterns
+
+<!-- One bullet per specialized/ file. -->
+
+- [specialized/{{PATTERN_FILE}}](specialized/{{PATTERN_FILE}}) — {{ONE_LINE}}
+
+<!--
+  Optional: a "Related skill" section for genuinely relevant sibling skills — phrase every link
+  as a soft pointer per references/portability-and-cross-referencing.md, e.g.:
+
+  ## Related skill
+
+  If you also have the {{SIBLING_SKILL}} skill installed, it covers {{WHAT}} in more depth —
+  not a dependency of this skill.
+-->
