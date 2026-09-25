@@ -1,11 +1,14 @@
 # Generics for Testing
 
 Generics show up constantly in test-authoring code: parameterized theory data, reusable
-assertion helpers, and object-mother builders that work across an entire family of types. See the
-[csharp-extension-members skill's testing-extension-members.md](../../csharp-extension-members/specialized/testing-extension-members.md)
-for the sibling pattern — extension methods/members used as test tools — and the
-[xunit-csharp skill](../../csharp-test-sweep/skills/xunit-csharp/SKILL.md) for the underlying
-`TheoryData<T>` conventions these examples build on.
+assertion helpers, and object-mother builders that work across an entire family of types. If
+installed, the `csharp-extension-members` skill's
+[testing-extension-members.md](../../csharp-extension-members/specialized/testing-extension-members.md)
+covers the sibling pattern — extension methods/members used as test tools — and the
+`csharp-test-sweep` skill's
+[xunit-csharp companion](../../csharp-test-sweep/skills/xunit-csharp/SKILL.md) covers the
+`TheoryData<T>` conventions these examples build on in more depth; neither is required to follow
+what's below.
 
 ## Basic: `TheoryData<T>` is itself generic
 
@@ -53,10 +56,10 @@ type-specific round-trip test per class.
 
 ## Advanced: a constrained generic assertion over an ID-bearing family
 
-Rather than a generic *builder* (best done per-record with `with`-expressions, as in the
-[testing-extension-members.md example](../../csharp-extension-members/specialized/testing-extension-members.md#basic-test-data-builder-extensions)),
-generics pull their weight in *test-side assertions* shared across every type that opts into a
-marker interface:
+Rather than a generic *builder* (best done per-record with `with`-expressions — see the
+[testing-extension-members.md example](../../csharp-extension-members/specialized/testing-extension-members.md#basic-test-data-builder-extensions)
+if `csharp-extension-members` is installed), generics pull their weight in *test-side assertions*
+shared across every type that opts into a marker interface:
 
 ```csharp
 public interface IHasId<TId>

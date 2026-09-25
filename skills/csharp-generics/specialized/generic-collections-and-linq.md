@@ -27,10 +27,9 @@ List<Order> pendingHighValue = orders
 ```
 
 `Where<TSource>`, `OrderByDescending<TSource, TKey>`, `Take<TSource>` — every LINQ operator is a
-generic extension method (classic `this`-parameter syntax; see the
-[csharp-extension-members skill](../../csharp-extension-members/SKILL.md)) with its type
-parameters inferred from the lambda's input, chaining without ever naming a type argument
-explicitly.
+generic extension method (classic `this`-parameter syntax — the `csharp-extension-members` skill
+covers that mechanic in full, if installed) with its type parameters inferred from the lambda's
+input, chaining without ever naming a type argument explicitly.
 
 ## Advanced: implementing `IEnumerable<T>` by hand
 
