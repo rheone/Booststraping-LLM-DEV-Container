@@ -103,6 +103,7 @@ flowchart TD
 | [`csharp-command-pattern`](skills/csharp-command-pattern) — [readme](skills/csharp-command-pattern/README.md) | Encapsulating a request as an object, including undo/redo history. |
 | [`csharp-decorator-pattern`](skills/csharp-decorator-pattern) — [readme](skills/csharp-decorator-pattern/README.md) | Wrapping behavior around an interface implementation without modifying it. |
 | [`csharp-factory-pattern`](skills/csharp-factory-pattern) — [readme](skills/csharp-factory-pattern/README.md) | Factory Method and Abstract Factory for centralizing object creation. |
+| [`csharp-fluent-interface`](skills/csharp-fluent-interface) — [readme](skills/csharp-fluent-interface/README.md) | Method-chaining API design: mutable, immutable, and staged (order-enforcing) chain shapes. |
 | [`csharp-mediator-pattern`](skills/csharp-mediator-pattern) — [readme](skills/csharp-mediator-pattern/README.md) | A hand-rolled in-process mediator that decouples senders from handlers. |
 | [`csharp-null-object-pattern`](skills/csharp-null-object-pattern) — [readme](skills/csharp-null-object-pattern/README.md) | A do-nothing implementation that eliminates null checks at call sites. |
 | [`csharp-observer-pattern`](skills/csharp-observer-pattern) — [readme](skills/csharp-observer-pattern/README.md) | Subject/observer notification, C# events, and `IObservable<T>`/`IObserver<T>`. |
@@ -123,6 +124,7 @@ flowchart TD
 | Skill | Summary |
 | --- | --- |
 | [`dotnet-aspnetcore-authentication`](skills/dotnet-aspnetcore-authentication) — [readme](skills/dotnet-aspnetcore-authentication/README.md) | ASP.NET Core's authentication scheme model, cookies, JWT bearer, and policy-based authorization. |
+| [`dotnet-aspnetcore-authorization`](skills/dotnet-aspnetcore-authorization) — [readme](skills/dotnet-aspnetcore-authorization/README.md) | Every ASP.NET Core authorization form: simple, role, claims, policy/requirement, resource-based, custom policy providers. |
 | [`dotnet-aspnetcore-controllers`](skills/dotnet-aspnetcore-controllers) — [readme](skills/dotnet-aspnetcore-controllers/README.md) | Controller-based Web APIs — attribute routing, model binding, action filters. |
 | [`dotnet-aspnetcore-openapi`](skills/dotnet-aspnetcore-openapi) — [readme](skills/dotnet-aspnetcore-openapi/README.md) | Generating OpenAPI 3.1 documents from minimal APIs and controllers. |
 | [`dotnet-dependency-injection`](skills/dotnet-dependency-injection) — [readme](skills/dotnet-dependency-injection/README.md) | The built-in `Microsoft.Extensions.DependencyInjection` container. |
@@ -196,6 +198,7 @@ flowchart TD
 | [`dotnet-nodatime`](skills/dotnet-nodatime) — [readme](skills/dotnet-nodatime/README.md) | Unambiguous date, time, and time zone handling with NodaTime. |
 | [`dotnet-refit`](skills/dotnet-refit) — [readme](skills/dotnet-refit/README.md) | Declarative REST API clients with Refit. |
 | [`dotnet-roslyn-analyzers`](skills/dotnet-roslyn-analyzers) — [readme](skills/dotnet-roslyn-analyzers/README.md) | Authoring Roslyn diagnostic analyzers and paired code fixes. |
+| [`dotnet-roslyn-syntax-trees`](skills/dotnet-roslyn-syntax-trees) — [readme](skills/dotnet-roslyn-syntax-trees/README.md) | Parsing, querying, and rewriting C# syntax trees with the Roslyn Syntax API. |
 | [`dotnet-yamldotnet`](skills/dotnet-yamldotnet) — [readme](skills/dotnet-yamldotnet/README.md) | Parsing and emitting YAML with YamlDotNet. |
 
 ### Documentation
