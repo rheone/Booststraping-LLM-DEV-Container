@@ -1,26 +1,41 @@
 # NSubstitute
 
-Guidance on NSubstitute, a third-party mocking/test-double library for C#/.NET — the routing table
-(by situation, not by NSubstitute version) is in [SKILL.md](SKILL.md).
+NSubstitute is a third-party mocking library for .NET with a fluent, non-recording API for creating
+test doubles. This skill covers creating substitutes, configuring what they return, matching
+arguments, and verifying which calls a substitute actually received.
 
-**`references/`** — one file per category, not per NSubstitute version
+## When to reach for it
 
-| File | Covers |
+- Creating a test double for an interface, class, or delegate a unit under test depends on.
+- Configuring a substitute member to return a specific value, throw, or return different values on
+  successive calls.
+- Asserting whether a member was called, how many times, or with which arguments.
+- A substitute isn't returning what you configured, or a verification always fails for reasons that
+  aren't obvious.
+- Verifying a shared substitute-factory helper or a custom argument matcher you wrote works
+  correctly.
+
+## Using it
+
+This skill is model-invoked: it fires automatically when the situation matches, such as writing or
+debugging test code that creates or verifies calls against an NSubstitute substitute. You can also
+invoke it directly as `/dotnet-nsubstitute`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `core-concepts.md` | `Substitute.For<T>()` for interfaces, classes, and delegates |
-| `configuring-return-values.md` | `Returns`, `ReturnsForAnyArgs`, multi-call sequences, throwing from a substitute |
-| `argument-matchers.md` | `Arg.Any<T>`, `Arg.Is<T>`, `Arg.Do<T>`, compound matcher expressions |
-| `verifying-calls.md` | `Received()`, `Received(n)`, `DidNotReceive()`, `ReceivedWithAnyArgs()`, `ClearReceivedCalls()` |
-| `async-support.md` | Configuring and verifying `Task<T>`/`ValueTask<T>`-returning members |
-| `partial-substitutes.md` | `Substitute.ForPartsOf<T>()`, `.When(...).CallBase()` |
-| `common-pitfalls.md` | Argument matcher scope rules, non-virtual members, over-specified verifications |
-| `testing-your-test-doubles.md` | Testing shared substitute-factory helpers and custom argument matchers |
+| Substitute.For for interfaces, classes, delegates | [references/core-concepts.md](references/core-concepts.md) |
+| Returns, ReturnsForAnyArgs, sequences, throwing | [references/configuring-return-values.md](references/configuring-return-values.md) |
+| Arg.Any, Arg.Is, Arg.Do, compound matchers | [references/argument-matchers.md](references/argument-matchers.md) |
+| Received, DidNotReceive, ReceivedWithAnyArgs | [references/verifying-calls.md](references/verifying-calls.md) |
+| Configuring and verifying async members | [references/async-support.md](references/async-support.md) |
+| Substitute.ForPartsOf and CallBase | [references/partial-substitutes.md](references/partial-substitutes.md) |
+| Common mistakes with matchers, non-virtual members, over-verification | [references/common-pitfalls.md](references/common-pitfalls.md) |
+| Testing shared substitute-factory helpers and custom matchers | [references/testing-your-test-doubles.md](references/testing-your-test-doubles.md) |
 
-## Scope
+## Example prompts
 
-NSubstitute's core substitute-creation, configuration, and verification API (`NSubstitute`
-package). Out of scope: other mocking libraries, general test-framework mechanics, and integration
-testing against real infrastructure — see [SKILL.md](SKILL.md#out-of-scope) for the full list.
-
-Each reference file notes a version-introduced fact inline; version is not the file-splitting axis
-for this skill (see [SKILL.md](SKILL.md) for why). Current stable release as of this writing: 6.2.0.
+- "Create a substitute for IOrderRepository that returns a specific order for one ID."
+- "Verify this service called Save exactly once with an order whose status is Completed."
+- "Why does this Received() assertion keep failing even though the method was clearly called?"

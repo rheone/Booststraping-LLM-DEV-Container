@@ -1,30 +1,40 @@
 # Immutable Collections
 
-Guidance on `System.Collections.Immutable` — the routing table (by situation) is in
-[SKILL.md](SKILL.md).
+This skill covers `System.Collections.Immutable`: `ImmutableList<T>`, `ImmutableArray<T>`,
+`ImmutableDictionary<TKey,TValue>`, `ImmutableHashSet<T>`, the builder pattern for batch mutation,
+and choosing the right immutable type for a given access pattern.
 
-**`references/`** — one file per concern
+## When to reach for it
 
-| File | Covers |
+- A type needs a collection field or property that callers can't mutate out from under it.
+- Sharing collection state safely across threads without taking a lock.
+- Deciding between `ImmutableArray<T>` (value-type-like, best for small/infrequently-mutated
+  collections) and `ImmutableList<T>` (tree-based, better for larger/frequently-mutated ones).
+- Batch-building an immutable collection efficiently instead of paying the copy cost of many
+  individual `Add` calls.
+- Deciding between an immutable collection and a defensive copy or read-only wrapper at an API
+  boundary.
+
+## Using it
+
+This skill fires automatically when your request involves `System.Collections.Immutable` types or
+choosing an immutable collection for thread-safe or defensive-copy scenarios. You can also invoke
+it directly with `/dotnet-immutable-collections`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `core-types.md` | `ImmutableList<T>`, `ImmutableArray<T>`, `ImmutableDictionary<TKey,TValue>`, `ImmutableHashSet<T>`; creation; structural sharing and its performance characteristics |
-| `builders.md` | `ToBuilder()`/the `Builder` pattern for efficient batch mutation before finalizing with `ToImmutable()` |
-| `choosing-a-collection.md` | `ImmutableArray<T>` vs `ImmutableList<T>` — value-type-like/small/infrequently-mutated vs tree-based/larger/frequently-mutated |
-| `thread-safety.md` | what the immutability guarantee actually covers, `Interlocked`/`ImmutableInterlocked` for a shared mutable reference to an immutable instance |
-| `interop-with-mutable-collections.md` | converting to/from `List<T>`, arrays, `Dictionary<TKey,TValue>`; API boundary design |
-| `testing.md` | asserting original-instance immutability, testing a wrapping type's copy-on-write behavior, testing builder-based construction |
+| The four core immutable types, creation, structural sharing | [references/core-types.md](references/core-types.md) |
+| `ToBuilder()`/`Builder` pattern for efficient batch mutation | [references/builders.md](references/builders.md) |
+| `ImmutableArray<T>` vs. `ImmutableList<T>`: which one fits | [references/choosing-a-collection.md](references/choosing-a-collection.md) |
+| What the immutability guarantee actually covers thread-safety-wise | [references/thread-safety.md](references/thread-safety.md) |
+| Converting to/from `List<T>`, arrays, `Dictionary<TKey,TValue>` | [references/interop-with-mutable-collections.md](references/interop-with-mutable-collections.md) |
+| Testing immutability and copy-on-write/builder-based construction | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-`System.Collections.Immutable` (current stable release **10.0.9**, shipping alongside **.NET 10**,
-part of the [dotnet/runtime](https://github.com/dotnet/runtime) repository). Covers the four core
-immutable collection types, structural sharing and its performance implications, the builder pattern
-for batch mutation, choosing between `ImmutableArray<T>` and `ImmutableList<T>`, thread-safety
-guarantees, interop with mutable collections, and testing code built on these types.
-
-Out of scope: read-only *views* over a still-mutable backing collection (`ReadOnlyCollection<T>`,
-`.AsReadOnly()`), and `System.Collections.Frozen` (`FrozenDictionary<TKey,TValue>`/`FrozenSet<T>`) — a
-separate, read-only-after-construction collection family optimized for lookup speed rather than
-structural sharing. See [SKILL.md](SKILL.md) for the full out-of-scope list and rationale.
-
-This skill is self-contained: it does not assume any other skill is installed.
+- "Should this public property expose a `List<T>` or an `ImmutableList<T>` to callers?"
+- "I need to build up a large immutable collection in a loop without a full copy on every add."
+- "Multiple threads read this shared collection. Do I need a lock if I switch it to
+  `ImmutableDictionary`?"

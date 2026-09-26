@@ -1,27 +1,34 @@
 # Roslyn Analyzers
 
-Guidance on authoring `DiagnosticAnalyzer`s and paired `CodeFixProvider`s for C# — the routing
-table (by task, not Roslyn version) is in [SKILL.md](SKILL.md).
+Guidance on writing `DiagnosticAnalyzer`s that report compile-time and IDE diagnostics against C#
+code, and the `CodeFixProvider`s that pair with them to offer automated fixes.
 
-**`references/`** — one file per topic, not per Roslyn version
+## When to reach for it
 
-| File | Covers |
+- Writing a new `DiagnosticAnalyzer` and deciding whether to register a syntax, symbol, or
+  operation action.
+- Pairing a diagnostic with an automated `CodeFixProvider`.
+- Setting up an analyzer project and packaging it as a NuGet package or `<Analyzer>` reference.
+- Writing a `Microsoft.CodeAnalysis.Testing`-based test for an analyzer or a code fix.
+
+## Using it
+
+This skill is model-invoked: it fires automatically when you're authoring, registering, testing,
+or packaging a Roslyn diagnostic analyzer or code fix. You can also invoke it directly by name.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `diagnostic-descriptors.md` | `DiagnosticDescriptor` fields, `SupportedDiagnostics`, id/category conventions, help links |
-| `registering-analyzer-actions.md` | `RegisterSyntaxNodeAction`, `RegisterSymbolAction`, `RegisterOperationAction`, `RegisterCompilationStartAction`, concurrent execution |
-| `syntax-symbol-operation-analysis.md` | Syntax-tree vs. symbol vs. operation analysis; when each fits |
-| `code-fix-providers.md` | `CodeFixProvider`, `RegisterCodeFixesAsync`, `FixableDiagnosticIds`, `FixAllProvider` |
-| `project-setup-and-packaging.md` | Analyzer `.csproj` shape, `PrivateAssets="all"`, NuGet packaging, `analyzers` folder convention |
-| `testing.md` | `Microsoft.CodeAnalysis.Testing`, `CSharpAnalyzerTest`, `CSharpCodeFixTest` |
+| DiagnosticDescriptor fields, SupportedDiagnostics, id/category conventions, help links | [references/diagnostic-descriptors.md](references/diagnostic-descriptors.md) |
+| RegisterSyntaxNodeAction, RegisterSymbolAction, RegisterOperationAction, RegisterCompilationStartAction | [references/registering-analyzer-actions.md](references/registering-analyzer-actions.md) |
+| Choosing syntax-tree vs. symbol vs. operation analysis for a given check | [references/syntax-symbol-operation-analysis.md](references/syntax-symbol-operation-analysis.md) |
+| CodeFixProvider, RegisterCodeFixesAsync, FixableDiagnosticIds, FixAllProvider | [references/code-fix-providers.md](references/code-fix-providers.md) |
+| Analyzer .csproj shape, PrivateAssets="all", NuGet packaging | [references/project-setup-and-packaging.md](references/project-setup-and-packaging.md) |
+| Testing an analyzer or code fix with Microsoft.CodeAnalysis.Testing | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-Roslyn diagnostic analyzers and their paired code fixes only — reporting `Diagnostic`s against a
-compilation and offering automated fixes for them. Out of scope: compile-time source generation
-(a different extensibility mechanism with its own registration model and packaging shape), general
-C#/BCL guidance beyond the analyzer-authoring surface, and IDE extension UI beyond the standard
-`CodeFixProvider` registration.
-
-Each reference file notes a version-introduced fact inline (e.g. which Roslyn SDK version added a
-given API); version is not the file-splitting axis for this skill (see [SKILL.md](SKILL.md) for
-why).
+- "Write an analyzer that flags direct `Console.WriteLine` calls."
+- "Add a code fix that replaces the flagged call with an injected `ILogger`."
+- "Set up this analyzer project so it packages as a NuGet analyzer reference."

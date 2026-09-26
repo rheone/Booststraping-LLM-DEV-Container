@@ -1,53 +1,40 @@
 # C# Span and Memory
 
-Reference for C# `Span<T>`/`Memory<T>` and `ref`-based performance features: pre-`ref struct`
-array/`ArraySegment<T>`/`unsafe`-pointer workarounds through `ref` returns and locals (C# 7.0),
-`ref struct` and `Span<T>`/`Memory<T>` itself (C# 7.2 language feature; `System.Memory` BCL package,
-stable May 2018), `ref` reassignment and safe `stackalloc` (C# 7.3), pattern-based disposal and
-range/`Index` slicing (C# 8.0 / .NET Core 3.0), `ref` fields and `scoped` (C# 11 / .NET 7),
-`ref readonly` parameters (C# 12 / .NET 8), `ref struct`s as generic type arguments via
-`allows ref struct` (C# 13 / .NET 9), first-class implicit `Span<T>` conversions (C# 14 / .NET 10),
-and the preview updated `unsafe` model (C# 15 / .NET 11). The routing table is in
-[SKILL.md](SKILL.md).
+Helps you write, review, or port low-allocation, high-performance C# code built on `Span<T>`,
+`Memory<T>`, and the `ref`-based features around them (`ref struct`, `stackalloc`, `ref` returns
+and locals, `ArrayPool<T>` pooling, and `MemoryMarshal`), while respecting the compiler's guarantee
+that a stack-only view never outlives the frame that created it.
 
-**`references/`** — version-gated core syntax, oldest to newest
+## When to reach for it
 
-| File | Covers |
+- Choosing between `Span<T>`, `Memory<T>`, and `ReadOnlyMemory<T>` for a method signature
+- Pooling buffers with `ArrayPool<T>` instead of allocating a new array per call
+- Working out why a `ref struct` can't be stored on the heap, boxed, or captured in a closure
+- Deciding between `ref`, `in`, and `ref readonly` on a parameter
+- Slicing a span with range/`Index` operators instead of manual offset/length math
+
+## Using it
+
+This skill is model-invoked: it fires automatically when you're writing, reviewing, or porting
+low-allocation code that touches `Span<T>`/`Memory<T>` or `ref`-based features.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `pre-csharp7-arrays-and-pointers.md` | C# 1.0 – 6.0 — arrays, `ArraySegment<T>`, unsafe pointers |
-| `csharp7-ref-returns-and-locals.md` | C# 7.0+ — ref returns, ref locals |
-| `csharp7.2-ref-struct-and-span.md` | C# 7.2+ — ref struct, in, ref readonly returns, stackalloc; language-vs-BCL split |
-| `csharp7.3-ref-reassignment-and-stackalloc-init.md` | C# 7.3+ — ref reassignment, stackalloc initializer syntax |
-| `csharp8-span-foreach-and-ranges.md` | C# 8.0+ — pattern-based Dispose(), range/Index slicing |
-| `csharp11-ref-fields-and-scoped.md` | C# 11+ — ref fields, scoped modifier |
-| `csharp12-ref-readonly-parameters.md` | C# 12+ — ref readonly parameters |
-| `csharp13-allows-ref-struct.md` | C# 13+ — allows ref struct anti-constraint |
-| `csharp14-implicit-span-conversions.md` | C# 14+ — implicit `Span<T>`/`ReadOnlySpan<T>`/`T[]` conversions |
-| `csharp15-unsafe-model-preview.md` | C# 15 preview — updated unsafe model (RC caveat) |
+| Arrays, `ArraySegment<T>`, unsafe pointers (the pre-`ref struct` era) | [references/pre-csharp7-arrays-and-pointers.md](references/pre-csharp7-arrays-and-pointers.md) |
+| `ref` returns and locals | [references/csharp7-ref-returns-and-locals.md](references/csharp7-ref-returns-and-locals.md) |
+| `ref struct`, `in`, `ref readonly` returns, `stackalloc` | [references/csharp7.2-ref-struct-and-span.md](references/csharp7.2-ref-struct-and-span.md) |
+| `ref` reassignment, `stackalloc` initializer syntax | [references/csharp7.3-ref-reassignment-and-stackalloc-init.md](references/csharp7.3-ref-reassignment-and-stackalloc-init.md) |
+| Pattern-based `Dispose()`, range/`Index` slicing | [references/csharp8-span-foreach-and-ranges.md](references/csharp8-span-foreach-and-ranges.md) |
+| `ref` fields, `scoped` modifier | [references/csharp11-ref-fields-and-scoped.md](references/csharp11-ref-fields-and-scoped.md) |
+| `ref readonly` parameters | [references/csharp12-ref-readonly-parameters.md](references/csharp12-ref-readonly-parameters.md) |
+| `allows ref struct` anti-constraint | [references/csharp13-allows-ref-struct.md](references/csharp13-allows-ref-struct.md) |
+| Implicit `Span<T>`/`ReadOnlySpan<T>`/`T[]` conversions | [references/csharp14-implicit-span-conversions.md](references/csharp14-implicit-span-conversions.md) |
+| Updated `unsafe` model (preview) | [references/csharp15-unsafe-model-preview.md](references/csharp15-unsafe-model-preview.md) |
 
-```text
-specialized/                                         cross-cutting patterns, applicable across versions
-  span-vs-memory-vs-readonlymemory.md
-  ref-struct-constraints-and-limitations.md
-  arraypool-and-buffer-pooling.md
-  memorymarshal-interop-patterns.md
-  testing-with-span-and-memory.md
-```
+## Example prompts
 
-## Version coverage
-
-| .NET | C# | GA | Span/Memory-relevant additions |
-| --- | --- | --- | --- |
-| Framework 1.0 – 4.6.1 / Core pre-1.0 | 1.0 – 6.0 | 2002 – 2015 | no `ref struct`, no `Span<T>`: `ArraySegment<T>` (Fx 2.0), raw `offset`/`count` parameters, or `unsafe` pointers were the only low-allocation options |
-| Framework 4.6.2+ / Core 1.0+ | 7.0 | Mar 2017 | `ref` returns, `ref` locals |
-| — | 7.2 | Dec 2017 (VS 2017 15.5) | `ref struct`, `readonly struct`/`readonly ref struct`, `in` parameters, `ref readonly` returns, `stackalloc` in nested expressions — language feature only; `Span<T>`/`Memory<T>` shipped as the `System.Memory` NuGet package, stable 4.5.0 May 29, 2018, then part of the shared framework from .NET Core 2.1, fully built in from .NET Core 3.0 |
-| — | 7.3 | May 2018 (VS 2017 15.7) | `ref` local reassignment (`r = ref v`), `stackalloc` array-initializer syntax convertible to `Span<T>`/`ReadOnlySpan<T>` without `unsafe` |
-| Core 3.0 | 8.0 | Sep 2019 | pattern-based `Dispose()` lets a `ref struct` participate in `using` without implementing `IDisposable`; range (`..`) and `Index` (`^`) operators slice `Span<T>`/`ReadOnlySpan<T>` with no allocation |
-| 7 | 11 | Nov 2022 | `ref` fields declarable inside a `ref struct`; `scoped` modifier narrows a `ref`-like value's inferred escape scope |
-| 8 | 12 | Nov 2023 | `ref readonly` parameters — like `in`, but rejects non-addressable call-site arguments instead of silently copying them |
-| 9 | 13 | Nov 2024 | `allows ref struct` anti-constraint: `ref struct` types (including `Span<T>`) usable as generic type arguments for the first time |
-| 10 | 14 | Nov 2025 | first-class implicit conversions among `T[]`, `Span<T>`, `ReadOnlySpan<T>`; span types as extension-method receivers and in generic type inference |
-| 11 | 15 | RC1 Sep 2026, GA expected Nov 2026 | preview-only, opt-in updated `unsafe` model narrowing `unsafe` to pointer-indirection operations specifically, not pointer types generally |
-
-Each reference file states its own fallback file, so a project pinned to an older `LangVersion`
-than its target SDK supports can still find the right syntax tier.
+- "Should this parsing method take a `ReadOnlySpan<char>` or a `string`?"
+- "Rent a buffer from `ArrayPool<byte>` for this hot path instead of allocating a new array."
+- "Why can't I store this `ref struct` as a field on my class?"

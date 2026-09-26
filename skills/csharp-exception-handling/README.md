@@ -1,38 +1,34 @@
 # C# Exception Handling
 
-The routing table is in [SKILL.md](SKILL.md).
+Helps you write, review, or port C# exception-handling code: `try`/`catch`/`finally`, exception
+filters, throw expressions, custom exception design, and patterns for `AggregateException` and
+re-throwing across boundaries. Async-specific exception-unwrapping behavior (`await` vs.
+`.Wait()`/`.Result`) is a separate, orthogonal concern this skill doesn't cover.
 
-**`references/`** — version-gated core syntax, oldest to newest
+## When to reach for it
 
-| File | Covers |
+- Designing a custom exception type or exception hierarchy
+- Choosing between `throw;` and `throw ex;` when re-throwing
+- Writing an exception filter (`when` clause) instead of a nested `if` inside `catch`
+- Unwrapping or flattening an `AggregateException` from parallel or blocking-`Task` code
+- Asserting that a specific exception is thrown in a test
+
+## Using it
+
+This skill is model-invoked: it fires automatically when you're writing, reviewing, or porting
+`try`/`catch`/`finally` code, or designing exception types.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `csharp1-try-catch-finally.md` | any target (C# 1.0) — try/catch/finally, Exception-derivation rule |
-| `csharp2-runtimewrappedexception.md` | .NET Framework 2.0+ (C# 2.0) — RuntimeWrappedException auto-wrap |
-| `csharp6-exception-filters.md` | VS 2015+ (C# 6.0) — the `when` exception filter clause |
-| `csharp7-throw-expressions.md` | VS 2017+ (C# 7.0) — throw as an expression |
+| `try`/`catch`/`finally` fundamentals and the `Exception`-derivation rule | [references/csharp1-try-catch-finally.md](references/csharp1-try-catch-finally.md) |
+| `RuntimeWrappedException` auto-wrapping | [references/csharp2-runtimewrappedexception.md](references/csharp2-runtimewrappedexception.md) |
+| Exception filters (the `when` clause) | [references/csharp6-exception-filters.md](references/csharp6-exception-filters.md) |
+| `throw` as an expression | [references/csharp7-throw-expressions.md](references/csharp7-throw-expressions.md) |
 
-```text
-specialized/                      cross-cutting patterns, applicable across versions
-  exception-filters-in-depth.md
-  custom-exception-design.md
-  aggregateexception-and-flattening.md
-  exceptiondispatchinfo-and-rethrow-patterns.md
-  generic-exception-handling-helpers.md
-  testing-with-exception-handling.md
-```
+## Example prompts
 
-## Version coverage
-
-| .NET | C# | GA | Exception-handling-relevant additions |
-| --- | --- | --- | --- |
-| .NET Framework 1.0/1.1 | C# 1.0 | Jan 2002 | `try`/`catch`/`finally`; thrown/caught types must derive from `System.Exception` |
-| .NET Framework 2.0 | C# 2.0 | Nov 2005 | CLR auto-wraps non-CLS-compliant throws in `RuntimeWrappedException`, so `catch (Exception ex)` observes them |
-| .NET Framework 4.0 | — (BCL, not language) | 2010 | `AggregateException` (Task Parallel Library) |
-| .NET Framework 4.5 | — (BCL, not language) | Aug 2012 | `ExceptionDispatchInfo.Capture`/`.Throw()` |
-| .NET Framework 4.6 / .NET Core 1.x | C# 6.0 | Jul 2015 | Exception filters (`when`) |
-| .NET Framework 4.6.2 / .NET Core 1.x | C# 7.0 | Mar 2017 | Throw expressions |
-| — | C# 3.0–5.0, 8.0–15 | — | No exception-handling-specific language changes |
-
-<!-- Keep this table's rows in sync with SKILL.md's routing table — same tiers, same order.
-     On a maintenance pass, re-check the previously-newest row's GA/RC status before appending
-     a new one. -->
+- "Should I use `throw;` or `throw ex;` here to preserve the stack trace?"
+- "Write an exception filter that only catches this error when the status code is 429."
+- "How do I flatten and inspect the inner exceptions of this `AggregateException`?"

@@ -1,25 +1,41 @@
 # Telerik JustMock
 
-Guidance on Telerik JustMock, a .NET mocking framework with a profiler-based Elevated Mocking mode
-— the routing table (by task, not JustMock version) is in [SKILL.md](SKILL.md).
+Telerik JustMock is a .NET mocking framework that can mock ordinary interfaces and virtual members
+like any other mocking library, and (through a profiler-based "Elevated Mocking" mode) can also
+mock static members, sealed classes, and non-virtual members that other frameworks can't touch. This
+skill covers the `Mock.Create`/Arrange-Act-Assert API, enabling elevated mocking when a target needs
+it, and mocking async methods.
 
-**`references/`** — one file per topic, not per JustMock version
+> [!NOTE]
+> JustMock carries a non-standard license. Research current edition, trial, and pricing terms
+> independently before adopting it for a project.
 
-| File | Covers |
+## When to reach for it
+
+- Writing an ordinary JustMock test with `Mock.Create<T>()` and Arrange/Act/Assert.
+- A mock target is a static class, a sealed class, or a non-virtual member, and you need to decide
+  whether elevated mocking is required and how to enable it.
+- Mocking a `Task`/`Task<T>`-returning method and reasoning about how `ConfigureAwait` behaves in a
+  mocked async chain.
+- Deciding whether a given mocking need is even possible on JustMock Lite, or requires the
+  commercial edition's profiler.
+
+## Using it
+
+This skill is model-invoked: it fires automatically when the situation matches, such as writing or
+reviewing JustMock-based unit tests. You can also invoke it directly as `/dotnet-justmock`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `core-concepts.md` | `Mock.Create<T>()`, Arrange/Act/Assert, `Arg.IsAny<T>()`, matchers, occurrence checks |
-| `elevated-mocking-setup.md` | Profiler environment variables, mocking static/sealed classes and non-virtual members |
-| `mocking-async-methods.md` | `ReturnsAsync`/`ThrowsAsync`, `Task`/`Task<T>` mocks, `ConfigureAwait` behavior in mocked chains |
-| `testing.md` | Structuring tests around JustMock-mocked dependencies |
+| Mock.Create, Arrange, Act, Mock.Assert, Arg.IsAny | [references/core-concepts.md](references/core-concepts.md) |
+| Enabling and configuring profiler-based Elevated Mocking | [references/elevated-mocking-setup.md](references/elevated-mocking-setup.md) |
+| ReturnsAsync/ThrowsAsync and ConfigureAwait in mocked chains | [references/mocking-async-methods.md](references/mocking-async-methods.md) |
+| Structuring tests around JustMock-mocked dependencies | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-Telerik JustMock only — creating and arranging mocks for .NET unit tests, including its
-profiler-based Elevated Mocking mode. Out of scope: other mocking frameworks, and Telerik's other
-tooling products (Test Studio, Fiddler, UI component libraries), which are separate products from
-JustMock.
-
-Each reference file notes a version-sensitive fact inline (verified package versions); version is
-not the file-splitting axis for this skill (see [SKILL.md](SKILL.md) for why).
-
-JustMock carries a non-standard license — research current terms independently before adopting it.
+- "Write a JustMock test that mocks IOrderRepository.FindAsync and asserts it was called once."
+- "I need to mock a static method on a legacy class: does that require elevated mocking?"
+- "Mock this async method so it throws, and verify the caller handles the exception correctly."

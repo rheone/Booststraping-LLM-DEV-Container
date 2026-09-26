@@ -1,43 +1,37 @@
 # C# Pattern Matching
 
-Reference for C# pattern matching and switch expressions — `is`-expressions, switch-statement and
-switch-expression patterns, `when` guards, property/positional/relational/logical/list patterns,
-and pattern matching on generic types — from the pre-C#7 era with no pattern matching at all
-through C# 15's closed-hierarchy switch exhaustiveness. The routing table is in
-[SKILL.md](SKILL.md).
+Helps you write, review, or port C# code that matches a value's run-time shape (its type,
+constant value, properties, or elements) against a declarative pattern instead of a chain of
+`if`/cast/index checks, in both `is`-expressions and `switch`.
 
-**`references/`** — version-gated core syntax, oldest to newest
+## When to reach for it
 
-| File | Covers |
+- Choosing a switch expression over a switch statement (or vice versa)
+- Diagnosing a non-exhaustive-switch warning (`CS8509`)
+- Combining patterns with `and`/`or`/`not`/`when` without tripping over precedence
+- Matching on a list's shape and elements with list and slice patterns
+- Matching on a generic type or type parameter
+
+## Using it
+
+This skill is model-invoked: it fires automatically when you're writing, reviewing, or porting
+`is`/`switch` pattern code, or combining pattern kinds.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `pre-csharp7-manual-type-checks.md` | before C# 7.0 — no pattern matching; `as`-plus-null-check and constant-only `switch` |
-| `csharp7-is-and-switch-patterns.md` | C# 7.0 — declaration/constant/var patterns, pattern-capable switch statement, `when` guards |
-| `csharp7.1-generic-type-parameter-patterns.md` | C# 7.1 — pattern matching on a generic type parameter |
-| `csharp8-switch-expressions-and-recursive-patterns.md` | C# 8.0 — switch expressions, property/positional/tuple patterns |
-| `csharp9-relational-and-logical-patterns.md` | C# 9.0 — relational patterns, `and`/`or`/`not` combinators, bare type patterns |
-| `csharp10-extended-property-patterns.md` | C# 10 — dot-notation nested property patterns |
-| `csharp11-list-and-slice-patterns.md` | C# 11 — list patterns, slice pattern `..` |
-| `csharp15-closed-hierarchy-exhaustiveness.md` | C# 15 — `closed` classes, compiler-verified switch exhaustiveness over a hierarchy |
+| No pattern matching: `as`-plus-null-check, constant-only switch | [references/pre-csharp7-manual-type-checks.md](references/pre-csharp7-manual-type-checks.md) |
+| Declaration/constant/var patterns, pattern-capable switch, `when` guards | [references/csharp7-is-and-switch-patterns.md](references/csharp7-is-and-switch-patterns.md) |
+| Pattern matching on a generic type parameter | [references/csharp7.1-generic-type-parameter-patterns.md](references/csharp7.1-generic-type-parameter-patterns.md) |
+| Switch expressions, property/positional/tuple patterns | [references/csharp8-switch-expressions-and-recursive-patterns.md](references/csharp8-switch-expressions-and-recursive-patterns.md) |
+| Relational patterns, `and`/`or`/`not` combinators | [references/csharp9-relational-and-logical-patterns.md](references/csharp9-relational-and-logical-patterns.md) |
+| Extended (dot-notation) property patterns | [references/csharp10-extended-property-patterns.md](references/csharp10-extended-property-patterns.md) |
+| List patterns and the slice pattern (`..`) | [references/csharp11-list-and-slice-patterns.md](references/csharp11-list-and-slice-patterns.md) |
+| `closed` classes and compiler-verified switch exhaustiveness | [references/csharp15-closed-hierarchy-exhaustiveness.md](references/csharp15-closed-hierarchy-exhaustiveness.md) |
 
-**`specialized/`** — cross-cutting patterns, applicable across versions
+## Example prompts
 
-| File | Covers |
-| --- | --- |
-| `switch-expressions-vs-statements.md` | when to use which, exhaustiveness, the discard arm, CS8509 |
-| `list-and-slice-patterns-in-depth.md` | nested element patterns, slicing with a shape constraint, jagged list patterns |
-| `pattern-combinators-nesting-and-when-clauses.md` | `when` vs. combinators, precedence pitfalls, deep nesting, generic-type matching |
-| `testing-with-pattern-matching.md` | pattern matching as a test-authoring tool |
-
-## Version coverage
-
-| .NET | C# | GA | Pattern-matching-relevant additions |
-| --- | --- | --- | --- |
-| .NET Framework / .NET Core 1.x and earlier | 1.0 – 6.0 | — | none — no pattern matching exists |
-| VS 2017 / .NET Framework 4.6.1+, .NET Core 1.x+ | 7.0 | March 2017 | declaration/constant/var patterns, pattern-capable `switch` statement, `when` guards |
-| .NET Core 2.0+ | 7.1 | August 2017 | pattern matching on a generic type parameter |
-| .NET Core 3.0+ | 8.0 | September 2019 | switch expressions, property/positional/tuple patterns |
-| .NET 5+ | 9.0 | November 2020 | relational patterns, `and`/`or`/`not` logical combinators, bare type patterns |
-| .NET 6+ | 10 | November 2021 | extended (dot-notation) property patterns |
-| .NET 7+ | 11 | November 2022 | list patterns, slice patterns (needs .NET Standard 2.1+/.NET Core 3.0+ for `System.Index`/`Range`) |
-| .NET 8 / .NET 9 / .NET 10 | 12 / 13 / 14 | Nov 2023 / Nov 2024 / Nov 2025 | none — no pattern-matching syntax added in any of these three releases |
-| .NET 11 (RC1 as of Sept 2026; GA expected Nov 2026) | 15 | RC | `closed` classes: compiler-verified exhaustive `switch` over a class hierarchy, no discard arm required |
+- "Rewrite this if/else type-checking chain as a switch expression."
+- "Why does the compiler say this switch expression isn't exhaustive?"
+- "Match a list where the first two elements are known and the rest is a `Span<int>` slice."

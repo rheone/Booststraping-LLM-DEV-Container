@@ -57,10 +57,9 @@ latest C# version.
 7. **Write `SKILL.md`** from
    [assets/templates/SKILL.md.tmpl](../assets/templates/SKILL.md.tmpl): a quick-start example that
    compiles on every tier, a routing table (target → C# version → reference file), and the
-   specialized-pattern list. **Write `README.md`** from
-   [assets/templates/README.md.tmpl](../assets/templates/README.md.tmpl), mirroring the same file
-   tree as plain text — use a markdown table for any file listing that carries a per-file
-   description; reserve a plain list for a listing that's names only.
+   specialized-pattern list. **Write `README.md`** per
+   [readme-template.md](readme-template.md) — a human-facing page (summary, when to reach for it,
+   how it's invoked, example prompts), not a mirror of `SKILL.md`'s routing table.
 
 8. **Apply insularity.** Read [insularity.md](insularity.md) and apply it to every place any file
    in this skill names another skill or compares itself to one, whichever repo it lives in.

@@ -1,35 +1,38 @@
-# Dependency Injection
+# Dependency Injection (Microsoft.Extensions.DependencyInjection)
 
-Guidance on `Microsoft.Extensions.DependencyInjection`, the built-in .NET dependency injection
-container — the routing table (by situation) is in [SKILL.md](SKILL.md).
+Guidance on the built-in .NET dependency injection container: service lifetimes, registration
+patterns, resolution and constructor conventions, startup validation, and pitfalls like captive
+dependencies.
 
-**`references/`** — one file per concern
+## When to reach for it
 
-| File | Covers |
+- You're deciding whether a service should be registered as singleton, scoped, or transient.
+- You're debugging an exception thrown while building or resolving from the service provider.
+- You're reviewing a registration for a captive dependency, a service-locator anti-pattern, or a
+  service that should be keyed instead of duplicated.
+
+## Using it
+
+This skill fires automatically when your request involves registering services, choosing a
+lifetime, or debugging a DI startup exception. You can also invoke it directly with
+`/dotnet-dependency-injection`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `core-concepts.md` | IServiceCollection, ServiceDescriptor, BuildServiceProvider, IServiceProvider, IServiceScope / IServiceScopeFactory |
-| `lifetimes.md` | AddSingleton / AddScoped / AddTransient — semantics and disposal behavior for each |
-| `registration-patterns.md` | instance registration, factory delegates, keyed services (AddKeyedSingleton/Scoped/Transient), TryAdd / TryAddEnumerable, open generics |
-| `resolution-and-constructors.md` | resolving IEnumerable\<T>, constructor-injection conventions, multiple/ambiguous constructors |
-| `validation-and-errors.md` | ValidateOnBuild, ValidateScopes (ServiceProviderOptions), common startup DI exceptions and what they mean |
-| `options-pattern.md` | IOptions\<T> / IOptionsSnapshot\<T> / IOptionsMonitor\<T> |
-| `extensibility-and-hosting.md` | ASP.NET Core builder.Services vs. standalone generic host; IServiceProviderFactory\<TContainerBuilder> extension point |
-| `pitfalls.md` | captive dependencies, service-locator anti-pattern, over-registering as singleton |
-| `testing.md` | minimal ServiceCollection for tests, ValidateOnBuild in test setup, preferring constructor injection over container resolution in unit tests |
+| `IServiceCollection`, `ServiceDescriptor`, `BuildServiceProvider`, `IServiceProvider`, scopes | [references/core-concepts.md](references/core-concepts.md) |
+| `AddSingleton`/`AddScoped`/`AddTransient`: semantics and disposal for each | [references/lifetimes.md](references/lifetimes.md) |
+| Instance and factory-delegate registration, keyed services, `TryAdd`/`TryAddEnumerable`, open generics | [references/registration-patterns.md](references/registration-patterns.md) |
+| Resolving `IEnumerable<T>`, constructor-injection conventions, ambiguous constructors | [references/resolution-and-constructors.md](references/resolution-and-constructors.md) |
+| `ValidateOnBuild`/`ValidateScopes`, decoding startup DI exceptions | [references/validation-and-errors.md](references/validation-and-errors.md) |
+| `IOptions<T>`/`IOptionsSnapshot<T>`/`IOptionsMonitor<T>` through DI | [references/options-pattern.md](references/options-pattern.md) |
+| ASP.NET Core vs. standalone generic-host usage, the third-party container extension point | [references/extensibility-and-hosting.md](references/extensibility-and-hosting.md) |
+| Captive dependencies, service-locator anti-pattern, over-registering as singleton | [references/pitfalls.md](references/pitfalls.md) |
+| Building a minimal `ServiceCollection` for tests | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-The built-in `Microsoft.Extensions.DependencyInjection` container only (current stable release
-**10.0.12**, shipping with **.NET 10**, part of the
-[dotnet/runtime](https://github.com/dotnet/runtime) repository under the .NET Foundation). Covers
-core types, all three lifetimes, every built-in registration pattern including keyed services and
-open generics, resolution and constructor conventions, startup validation, the options pattern,
-ASP.NET Core and standalone generic-host usage, the generic third-party-container extension point,
-common pitfalls, and test-time usage.
-
-Out of scope: any specific third-party DI container's API, AOP/interception, property injection,
-XML-based configuration, and `IConfiguration`/configuration-provider mechanics beyond what's needed
-to explain how `IOptions<T>` binds through DI. See [SKILL.md](SKILL.md) for the full out-of-scope
-list and rationale.
-
-This skill is self-contained: it does not assume any other skill is installed.
+- "Should this repository be scoped or singleton given it depends on a DbContext?"
+- "I'm getting an exception when building the service provider. Help me decode it."
+- "Register this cache client as a keyed service so I can resolve two different instances."

@@ -1,40 +1,48 @@
 # AutoMapper
 
-Task-organized guidance on the AutoMapper NuGet package — the routing table (by task, not
-AutoMapper or C# version) is in [SKILL.md](SKILL.md).
+AutoMapper is a convention-based library for mapping one object shape to another, typically an
+entity to a DTO. This skill covers setting up profiles and DI registration, configuring individual
+member mappings, projecting queries with `ProjectTo`, and validating that a mapping configuration is
+actually satisfiable.
 
-**`references/`** — one file per topic, not per version
+> [!NOTE]
+> AutoMapper carries a non-standard license as of v15.0. Research current licensing terms
+> independently before adopting it for a project.
 
-| File | Covers |
+## When to reach for it
+
+- Setting up a `Profile` and `CreateMap` for a new entity-to-DTO mapping, or registering AutoMapper
+  with `AddAutoMapper`.
+- A property doesn't map the way you expect and you need `ForMember`, `ForPath`, or a custom value
+  resolver.
+- Projecting an `IQueryable<T>` (for example, from EF Core) straight to a DTO shape with
+  `ProjectTo` instead of loading full entities first.
+- A mapping exception shows up at runtime and you want to catch it earlier with
+  `AssertConfigurationIsValid`.
+- Deciding whether AutoMapper is even the right tool for a given mapping, versus writing it by hand.
+
+## Using it
+
+This skill is model-invoked: it fires automatically when the situation matches, such as reviewing an
+AutoMapper profile or debugging a mapping exception. You can also invoke it directly as
+`/dotnet-automapper`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `core-concepts.md` | CreateMap, Profile, IMapper, MapperConfiguration, AddAutoMapper dependency-injection registration |
-| `member-mapping.md` | flattening/unflattening conventions, ForMember, ForPath, ForAllMembers |
-| `custom-resolvers-converters.md` | IValueResolver, IMemberValueResolver, IValueConverter, ITypeConverter |
-| `conditional-and-null-handling.md` | Condition, PreCondition, null substitution (NullSubstitute), BeforeMap/AfterMap, BeforeMapAction/AfterMapAction |
-| `collections-and-nested-objects.md` | collection mapping, nested object mapping, polymorphic maps (Include/IncludeBase) |
-| `queryable-projection.md` | ProjectTo for IQueryable\<T> / EF Core, deferred execution, differences from Map |
-| `configuration-validation.md` | AssertConfigurationIsValid, CompileMappings |
-| `testing.md` | unit testing profiles, AssertConfigurationIsValid in tests, testing custom resolvers, testing DI registration |
-| `pitfalls-and-alternatives.md` | common failure modes, the "should you use AutoMapper at all" community debate, when to prefer manual mapping |
+| CreateMap, Profile, IMapper, DI registration | [references/core-concepts.md](references/core-concepts.md) |
+| Flattening/unflattening, ForMember, ForPath, ForAllMembers | [references/member-mapping.md](references/member-mapping.md) |
+| Custom value resolvers, value converters, type converters | [references/custom-resolvers-converters.md](references/custom-resolvers-converters.md) |
+| Conditional mapping, null substitution, before/after map hooks | [references/conditional-and-null-handling.md](references/conditional-and-null-handling.md) |
+| Mapping collections and nested object graphs | [references/collections-and-nested-objects.md](references/collections-and-nested-objects.md) |
+| Projecting IQueryable with ProjectTo | [references/queryable-projection.md](references/queryable-projection.md) |
+| Validating configuration is fully satisfiable | [references/configuration-validation.md](references/configuration-validation.md) |
+| Testing mapping profiles and resolvers | [references/testing.md](references/testing.md) |
+| Common failure modes and when to skip AutoMapper entirely | [references/pitfalls-and-alternatives.md](references/pitfalls-and-alternatives.md) |
 
-## Scope
+## Example prompts
 
-AutoMapper (the `AutoMapper` NuGet package and its DI extension, now merged into the core package
-since v13.0) only. Out of scope: other mapping libraries (Mapperly, Mapster — named only as
-alternatives in `pitfalls-and-alternatives.md`), MediatR, and ORM internals beyond what
-`ProjectTo` itself touches.
-
-Each reference file notes an AutoMapper version fact inline where relevant (e.g. "since v13.0");
-version is not the file-splitting axis for this skill (see SKILL.md for why).
-
-AutoMapper carries a non-standard license as of v15.0 — research current terms independently
-before adopting it for a project.
-
-## Verified facts (as of 2026-09-25)
-
-- **Current latest release: AutoMapper 16.2.0** (published July 2, 2026), targeting .NET 8.0+,
-  .NET Standard 2.0, and .NET Framework 4.7.1+. Source: the NuGet Gallery package page
-  (nuget.org/packages/automapper).
-
-These facts were verified via live web search against nuget.org at the time this skill was
-written; re-verify before relying on exact version numbers.
+- "Set up an AutoMapper profile that maps Order to OrderDto, flattening the Customer's name."
+- "This ProjectTo call is pulling back more columns than I expect: what's going on?"
+- "Add a test that asserts this AutoMapper configuration is valid at startup."

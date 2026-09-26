@@ -1,33 +1,39 @@
 # Dapper
 
-Task-organized guidance on Dapper — the routing table (by task, not Dapper version) is in
-[SKILL.md](SKILL.md).
+Dapper is the micro-ORM that adds mapping-aware query methods directly onto `IDbConnection`. This
+skill covers writing and parameterizing Dapper queries, mapping multi-table joins, calling stored
+procedures, and avoiding its common performance and SQL-injection pitfalls.
 
-**`references/`** — one file per topic, not per version
+## When to reach for it
 
-| File | Covers |
+- Writing a query with `Query`/`QueryAsync`/`QueryFirstOrDefault`/`Execute` and deciding how the
+  connection should open and close around it.
+- Mapping the result of a join across two or more types, or pulling multiple result sets out of one
+  command.
+- Passing parameters into a query, especially when tempted to concatenate a value into the SQL
+  string instead.
+- Calling a stored procedure or wrapping a sequence of Dapper calls in a transaction.
+- Deciding whether a query should buffer its results or stream them, or diagnosing a slow query path.
+
+## Using it
+
+This skill is model-invoked: it fires automatically when the situation matches, such as reviewing a
+Dapper query or debugging a parameterization bug. You can also invoke it directly as
+`/dotnet-dapper`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `core-concepts.md` | Query, QueryAsync, QueryFirstOrDefault, Execute, ExecuteScalar; connection lifecycle |
-| `parameterization.md` | anonymous-object parameters, DynamicParameters, output parameters, table-valued parameters |
-| `multi-mapping-and-multiple-results.md` | multi-mapping a join across types, splitOn, QueryMultiple for multiple result sets |
-| `stored-procedures-and-transactions.md` | CommandType.StoredProcedure, IDbTransaction |
-| `buffered-queries-and-performance.md` | buffered vs. unbuffered (streaming) queries, SQL-injection pitfalls, query-plan-cache considerations |
-| `testing.md` | Testing code that calls Dapper |
+| Query/QueryAsync/Execute and connection lifecycle | [references/core-concepts.md](references/core-concepts.md) |
+| Anonymous-object and DynamicParameters, output and table-valued parameters | [references/parameterization.md](references/parameterization.md) |
+| Mapping joins across types and reading multiple result sets | [references/multi-mapping-and-multiple-results.md](references/multi-mapping-and-multiple-results.md) |
+| Stored procedures and transactions | [references/stored-procedures-and-transactions.md](references/stored-procedures-and-transactions.md) |
+| Buffered vs. unbuffered queries, SQL-injection and performance pitfalls | [references/buffered-queries-and-performance.md](references/buffered-queries-and-performance.md) |
+| Testing code that calls Dapper | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-Dapper (the `Dapper` NuGet package) as an extension-method layer over `IDbConnection`. Out of scope:
-any specific ADO.NET provider's own connection setup, and schema migration/change-tracking, which
-Dapper does not provide.
-
-Each reference file notes a Dapper version fact inline where relevant; version is not the
-file-splitting axis for this skill (see SKILL.md for why).
-
-## Verified facts (as of 2026-09-26)
-
-- **Current latest release: Dapper 2.1.89** (published September 23, 2026). Source: the NuGet
-  Gallery package page (nuget.org/packages/dapper).
-- **License: Apache-2.0.** Source: the NuGet Gallery package page's license metadata.
-
-These facts were verified via live web search against nuget.org at the time this skill was written;
-re-verify before relying on the exact version number.
+- "Write a Dapper query that joins orders to customers and maps the result to an OrderSummary."
+- "Is it safe to build this WHERE clause by concatenating the search term into the SQL string?"
+- "Call this stored procedure with Dapper and wrap it in a transaction."

@@ -1,41 +1,42 @@
 # System.Text.Json
 
-Guidance on `System.Text.Json` for C#/.NET — the routing table (by task, not by .NET version) is
-in [SKILL.md](SKILL.md).
+This skill covers `System.Text.Json` for C#/.NET: serializing and deserializing JSON, shaping the
+output with attributes and naming policies, writing custom converters, source-generated
+serialization, and handling polymorphic and DOM-based JSON.
 
-**`references/`** — one file per topic/concern
+## When to reach for it
 
-| File | Covers |
+- Serializing or deserializing JSON and getting unexpected casing, missing properties, or an
+  unexpected shape back.
+- Choosing between reflection-based serialization and source-generated serialization for
+  AOT/trimming or startup-performance reasons.
+- Writing a custom `JsonConverter<T>` for a type the default serializer can't handle.
+- Serializing or deserializing a polymorphic hierarchy with `[JsonPolymorphic]`/`[JsonDerivedType]`.
+- Working with `JsonDocument`/`JsonElement`/`JsonNode` or the low-level `Utf8JsonReader`/
+  `Utf8JsonWriter` APIs directly.
+
+## Using it
+
+This skill fires automatically when your request involves JSON serialization in C#. You can also
+invoke it directly with `/dotnet-system-text-json`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `core-serialization.md` | JsonSerializer.Serialize/Deserialize, JsonSerializerOptions, sync vs. stream/async APIs |
-| `attributes.md` | JsonPropertyName, JsonIgnore, JsonInclude, JsonConstructor, JsonPropertyOrder, JsonNumberHandling, [JsonConverter] |
-| `naming-policies.md` | JsonNamingPolicy (CamelCase, KebabCase, SnakeCase), custom naming policies |
-| `custom-converters.md` | JsonConverter\<T>, JsonConverterFactory for generic/open-generic types |
-| `source-generation.md` | JsonSerializerContext, [JsonSerializable], [JsonSourceGenerationOptions], reflection vs. source-gen |
-| `polymorphism.md` | [JsonPolymorphic], [JsonDerivedType] |
-| `type-handling.md` | nullable reference types, records/init-only, required members, DateTime/DateOnly/TimeOnly, enums, non-string-keyed dictionaries |
-| `dom-and-low-level.md` | JsonDocument/JsonElement vs. JsonNode, Utf8JsonWriter/Utf8JsonReader |
-| `pitfalls.md` | case sensitivity, circular references, ReferenceHandler.Preserve, large-payload performance, Newtonsoft.Json behavioral deltas |
-| `testing.md` | testing custom converters, snapshot/golden-file testing, testing source-generated contexts, round-trip patterns |
+| `JsonSerializer.Serialize`/`Deserialize`, `JsonSerializerOptions`, sync vs. stream/async | [references/core-serialization.md](references/core-serialization.md) |
+| `JsonPropertyName`, `JsonIgnore`, `JsonInclude`, `JsonConstructor`, `JsonNumberHandling` | [references/attributes.md](references/attributes.md) |
+| Naming policies: camelCase, kebab-case, snake_case, custom | [references/naming-policies.md](references/naming-policies.md) |
+| Writing `JsonConverter<T>`/`JsonConverterFactory` implementations | [references/custom-converters.md](references/custom-converters.md) |
+| `JsonSerializerContext`, `[JsonSerializable]`, reflection vs. source-gen tradeoffs | [references/source-generation.md](references/source-generation.md) |
+| `[JsonPolymorphic]`/`[JsonDerivedType]` polymorphic serialization | [references/polymorphism.md](references/polymorphism.md) |
+| Records, init-only, required members, `DateOnly`/`TimeOnly`, enums, dictionaries | [references/type-handling.md](references/type-handling.md) |
+| `JsonDocument`/`JsonElement`/`JsonNode`, `Utf8JsonReader`/`Utf8JsonWriter` | [references/dom-and-low-level.md](references/dom-and-low-level.md) |
+| Case sensitivity, circular references, `ReferenceHandler.Preserve` | [references/pitfalls.md](references/pitfalls.md) |
+| Testing custom converters and source-generated contexts | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-`System.Text.Json` itself: the serializer, its attributes, options, source-generation mode, the
-DOM/low-level reader/writer types, and testing patterns for code built on top of it. Out of scope:
-other serialization libraries (mentioned only for a concrete, factual behavioral contrast in
-`pitfalls.md`) and ASP.NET Core's JSON configuration layer, which is framework glue rather than
-part of the library.
-
-Each reference file notes a feature's version-introduced fact inline; version is not the
-file-splitting axis for this skill (see [SKILL.md](SKILL.md) for why).
-
-## Verified version (as of 2026-09-25)
-
-- **Latest `System.Text.Json` NuGet package: 10.0.12** (published 2026-09-08), matching the
-  monthly-patch cadence of the **.NET 10** runtime it ships alongside.
-- **.NET 10** is the current release; it shipped **2025-11-11** as a **Long Term Support (LTS)**
-  release, supported until **2028-11-10**. .NET 10 includes C# 14.
-- `System.Text.Json` is part of the shared framework in every .NET 10 app by default (no package
-  reference needed when targeting `net10.0`+); the standalone NuGet package exists for consumers
-  targeting older TFMs or .NET Standard/.NET Framework, or who want a newer minor version than
-  their target framework ships.
+- "Deserialize this JSON into a record with `required` members and camelCase property names."
+- "Should I switch this API's serialization to source-generated for AOT, and what do I lose?"
+- "Write a custom converter for a type that serializes as a plain string instead of an object."

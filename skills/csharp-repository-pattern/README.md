@@ -1,26 +1,41 @@
-# C# Repository Pattern
+# Repository Pattern
 
-Reference for the Repository design pattern in C#: abstracting data access behind a collection-like
-interface so application/domain code depends on a contract, not a data-access technology. The
-routing table (by situation) is in [SKILL.md](SKILL.md).
+You put a collection-like interface between application/domain code and however data actually gets
+stored and retrieved, so callers ask for an entity the same way they'd pull one out of an in-memory
+list. It covers a generic `IRepository<T>` base, the generic-versus-per-aggregate question,
+`IQueryable<T>` leaky-abstraction risk, and specification-based queries as an alternative to a
+growing pile of narrow methods.
 
-**`references/`** — one file per concern, not per package or version — Repository is a structural
-data-access pattern with nothing to version-pin
+## When to reach for it
 
-| File | Covers |
+- You're shaping a data-access interface for domain or application code and want callers insulated
+  from the actual storage technology.
+- You're reviewing an `IRepository<T>` and suspect it's leaking ORM-specific query capability
+  through a method that returns `IQueryable<T>`.
+- Your repository interface has accumulated many single-purpose query methods and you're deciding
+  whether to replace them with something more composable.
+- You need a fake or in-memory repository so a unit test doesn't depend on real storage.
+
+## Using it
+
+This skill is model-invoked: it fires automatically when your prompt matches its situation, such as
+designing a data-access interface or writing a fake repository for a test. You can also invoke it
+directly as `/csharp-repository-pattern`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `philosophy-and-structure.md` | the pattern's shape; the generic `IRepository<T>` base (Add/Get/Update/Delete/Query) |
-| `generic-vs-specific-repositories.md` | one generic repository vs. a specific repository per aggregate — the tradeoffs on each side |
-| `iqueryable-and-leaky-abstractions.md` | `IQueryable<T>`-returning methods and the risk of leaking ORM-specific query capability through the interface |
-| `specification-based-queries.md` | a specification object as an alternative to accumulating many narrow query methods |
-| `extending-with-new-repositories.md` | adding a repository for a new aggregate without touching existing repositories or consumers |
-| `testing-with-fake-repositories.md` | testing code that depends on a repository via an in-memory/fake implementation |
+| The pattern's shape and the generic `IRepository<T>` base | [references/philosophy-and-structure.md](references/philosophy-and-structure.md) |
+| One generic repository vs. a repository per aggregate | [references/generic-vs-specific-repositories.md](references/generic-vs-specific-repositories.md) |
+| `IQueryable<T>`-returning methods and leaky abstractions | [references/iqueryable-and-leaky-abstractions.md](references/iqueryable-and-leaky-abstractions.md) |
+| Replacing narrow query methods with specification-based queries | [references/specification-based-queries.md](references/specification-based-queries.md) |
+| Adding a repository for a new aggregate | [references/extending-with-new-repositories.md](references/extending-with-new-repositories.md) |
+| Testing code that depends on a repository via a fake | [references/testing-with-fake-repositories.md](references/testing-with-fake-repositories.md) |
 
-## Scope
+## Example prompts
 
-A structural data-access pattern, not a package — there is no version or license to track. Guidance
-applies to any C# codebase regardless of the underlying data-access technology; the generic form
-uses generics (C# 2.0 onward), and `IQueryable<T>` guidance applies from .NET Framework 3.5 onward.
-
-Out of scope: any specific ORM's or data-access library's actual API, and cross-repository
-transaction/unit-of-work coordination. See [SKILL.md](SKILL.md) for the full out-of-scope list.
+- "How should I shape a repository interface for my `Order` aggregate so the domain layer doesn't
+  know what's storing it?"
+- "Is returning `IQueryable<Customer>` from this repository method a leaky abstraction?"
+- "I need a fake `IRepository<Product>` for a unit test: what's the right shape for it?"

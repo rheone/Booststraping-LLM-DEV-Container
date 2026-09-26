@@ -1,28 +1,43 @@
 # C# Chain of Responsibility Pattern
 
-Reference for the Chain of Responsibility design pattern in C#: a linked chain of handler objects,
-each deciding whether to process a request itself or pass it along. The routing table (by
-situation) is in [SKILL.md](SKILL.md).
+Chain of Responsibility links a series of handler objects together and passes a request along the
+chain until one of them handles it, or every handler has had a chance to look at it. This skill
+covers building and extending a handler chain, choosing between short-circuit and always-continue
+semantics, and testing the chain's routing behavior.
 
-**`references/`** — one file per concern, not per package or version — Chain of Responsibility is
-a behavioral pattern with nothing to version-pin
+## When to reach for it
 
-| File | Covers |
+- You're writing a sequence of validators, approvers, or filters where any one of them might handle
+  a request and stop the rest from running.
+- You're reviewing or building an approval or escalation workflow where a request moves up a chain
+  until someone acts on it.
+- You need to decide how strict a chain's handler ordering and termination rules should be, or
+  whether it should always run every handler regardless of outcome.
+
+## Using it
+
+This skill is model-invoked: it activates automatically when the conversation touches a linked
+chain of handlers, an approval/escalation flow, or deciding between short-circuiting and
+always-continue dispatch. You can also invoke it directly by asking for it or typing
+`/csharp-chain-of-responsibility-pattern`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `philosophy-and-structure.md` | handler roles, the basic linked-handler shape, when to reach for the pattern |
-| `generic-handler.md` | a reusable `IHandler<TRequest, TResponse>` interface |
-| `building-the-chain.md` | assembling the chain via explicit composition or registration order |
-| `short-circuit-vs-always-continue.md` | stopping at the first handler that acts vs. running every handler |
-| `chain-vs-pipeline.md` | comparison with an always-continue, explicit-next-delegate processing pipeline, as a design concept |
-| `extending-with-new-handlers.md` | adding a new handler without touching existing handlers or the chain's consumer |
-| `testing-handlers.md` | testing chain routing behavior; testing one handler in isolation |
+| Handler roles, the basic linked-handler shape, and when the pattern fits | [references/philosophy-and-structure.md](references/philosophy-and-structure.md) |
+| A reusable generic handler interface | [references/generic-handler.md](references/generic-handler.md) |
+| Assembling the chain through explicit composition or registration order | [references/building-the-chain.md](references/building-the-chain.md) |
+| Stopping at the first handler that acts versus running every handler | [references/short-circuit-vs-always-continue.md](references/short-circuit-vs-always-continue.md) |
+| How the chain's semantics relate to an always-continue, explicit-next-delegate pipeline | [references/chain-vs-pipeline.md](references/chain-vs-pipeline.md) |
+| Adding a new handler without touching existing ones | [references/extending-with-new-handlers.md](references/extending-with-new-handlers.md) |
+| Testing chain routing behavior and testing one handler in isolation | [references/testing-handlers.md](references/testing-handlers.md) |
 
-## Scope
+## Example prompts
 
-A behavioral design pattern, not a package — there is no version or license to track. Guidance
-applies to any C# codebase; the pattern has been expressible since C# 1.0, and the generic handler
-form uses generics (C# 2.0 onward).
-
-Out of scope: any specific framework's request-processing pipeline implementation, and any specific
-dependency-injection container's registration API. See [SKILL.md](SKILL.md) for the full
-out-of-scope list.
+- "I have three validators that each might reject a request. Help me chain them so the first
+  rejection stops the rest."
+- "Should this approval workflow short-circuit at the first approver, or run every approver and
+  collect all their responses?"
+- "I need to add a new handler to this chain without touching the existing ones or their
+  registration order."

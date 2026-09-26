@@ -1,46 +1,37 @@
 # C# Source Generators
 
-Reference for authoring Roslyn source generators — `ISourceGenerator` and `IIncrementalGenerator`,
-the pipeline API, diagnostics, incremental caching, and project setup/packaging. The routing table
-is in [SKILL.md](SKILL.md).
+Helps you write, review, or debug a Roslyn source generator, choosing between `ISourceGenerator`
+and `IIncrementalGenerator`, building an incremental pipeline, reporting diagnostics, and setting up
+or packaging the generator project. Organized by .NET SDK/Roslyn version rather than C# language
+version, since a generator's API surface is gated by the compiler host that loads it.
 
-This skill is organized by **.NET SDK / Roslyn package version**, not by C# language version — see
-the version axis note at the top of [SKILL.md](SKILL.md) for why.
+## When to reach for it
 
-**`references/`** — version-gated core API, oldest to newest
+- Choosing between the legacy `ISourceGenerator` API and the modern `IIncrementalGenerator` pipeline
+- Building an incremental pipeline with `ForAttributeWithMetadataName` and `RegisterSourceOutput`
+- Diagnosing why a generator's incremental caching isn't working (unnecessary re-runs on every keystroke)
+- Reporting a `Diagnostic` from a generator, mapped back to the user's source
+- Setting up or packaging a generator project for NuGet distribution
 
-| File | Covers |
+## Using it
+
+This skill is model-invoked: it fires automatically when you're writing, reviewing, or debugging a
+Roslyn source generator.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `pre-net5-external-codegen.md` | below .NET 5 SDK — T4 templates or external MSBuild-driven codegen |
-| `net5-isourcegenerator.md` | .NET 5 SDK (Roslyn 3.8) — ISourceGenerator, GeneratorExecutionContext, ISyntaxReceiver |
-| `net6-iincrementalgenerator.md` | .NET 6 SDK (Roslyn 4.0) — IIncrementalGenerator, the pipeline API |
-| `net7-forattributewithmetadataname.md` | .NET 7 SDK (Roslyn 4.3) — ForAttributeWithMetadataName, WithTrackingName |
-| `net8-interceptors-preview.md` | .NET 8 SDK (Roslyn 4.8) — interceptors, preview, opt-in |
-| `net9-interceptors-stable.md` | .NET 9 SDK (Roslyn 4.12) — interceptors stable, GetInterceptableLocation |
-| `net10-embedded-attribute-definitions.md` | .NET 10 SDK (Roslyn 4.14) — AddEmbeddedAttributeDefinition |
+| No generator API: T4 templates or external codegen | [references/pre-net5-external-codegen.md](references/pre-net5-external-codegen.md) |
+| `ISourceGenerator`, `GeneratorExecutionContext`, `ISyntaxReceiver` | [references/net5-isourcegenerator.md](references/net5-isourcegenerator.md) |
+| `IIncrementalGenerator` and the pipeline API | [references/net6-iincrementalgenerator.md](references/net6-iincrementalgenerator.md) |
+| `ForAttributeWithMetadataName`, `WithTrackingName` | [references/net7-forattributewithmetadataname.md](references/net7-forattributewithmetadataname.md) |
+| Interceptors (preview, opt-in) | [references/net8-interceptors-preview.md](references/net8-interceptors-preview.md) |
+| Interceptors (stable) | [references/net9-interceptors-stable.md](references/net9-interceptors-stable.md) |
+| `AddEmbeddedAttributeDefinition` | [references/net10-embedded-attribute-definitions.md](references/net10-embedded-attribute-definitions.md) |
 
-**`specialized/`** — cross-cutting patterns, applicable across versions
+## Example prompts
 
-| File | Covers |
-| --- | --- |
-| `testing-a-source-generator.md` | CSharpGeneratorDriver, snapshot testing, asserting incremental caching |
-| `incremental-pipeline-and-equatable-models.md` | cache correctness, ISymbol/SyntaxNode leakage, `EquatableArray<T>` |
-| `diagnostics-from-a-generator.md` | DiagnosticDescriptor, severity, mapping diagnostics to user source |
-| `generator-project-setup-and-packaging.md` | IsRoslynComponent, EnforceExtendedAnalyzerRules, multi-targeting, NuGet packaging |
-| `generics-in-generated-code.md` | reading/emitting generic type parameters and constraints |
-
-## Version coverage
-
-| .NET SDK | Roslyn package | GA | Source-generator-relevant additions |
-| --- | --- | --- | --- |
-| Below .NET 5 | — | — | No generator API; T4 templates or an external, MSBuild-driven codegen tool |
-| .NET 5 | 3.8 | November 2020 | `ISourceGenerator`, `GeneratorExecutionContext`, `ISyntaxReceiver`/`ISyntaxContextReceiver`, `AddSource`, `OutputItemType="Analyzer"` project setup |
-| .NET 6 | 4.0 | November 2021 | `IIncrementalGenerator`, `IncrementalGeneratorInitializationContext`, the pipeline API (`CreateSyntaxProvider`, `Select`/`Where`/`Collect`/`Combine`), `RegisterSourceOutput`/`RegisterPostInitializationOutput` |
-| .NET 7 | 4.3 | November 2022 | `ForAttributeWithMetadataName`, `WithTrackingName` for incrementality testing |
-| .NET 8 | 4.8 | November 2023 | Interceptors (preview only; `InterceptorsPreviewNamespaces` opt-in; raw file/line/column `[InterceptsLocation]`) |
-| .NET 9 | 4.12 | November 2024 | Interceptors stabilize (no opt-in needed); `GetInterceptableLocation`/`InterceptableLocation` replace the raw position triple |
-| .NET 10 | 4.14 | November 2025 | `AddEmbeddedAttributeDefinition` — fixes marker-attribute `CS0436` duplication across `InternalsVisibleTo`-linked projects |
-| .NET 11 | — | RC as of Sept 2026; GA expected Nov 2026 | No generator-API-specific change found (verified via search) — C# 15's language features (native unions, collection-expression arguments) don't touch the generator API surface |
-
-<!-- Keep this table's rows in sync with SKILL.md's routing table -- same tiers, same order.
-     On a maintenance pass, re-check .NET 11's RC/GA status before appending a new row. -->
+- "Should I write this as an `ISourceGenerator` or an `IIncrementalGenerator`?"
+- "Why does my incremental generator re-run its whole pipeline on every keystroke?"
+- "Report a diagnostic from my generator that points back to the attribute the user wrote."

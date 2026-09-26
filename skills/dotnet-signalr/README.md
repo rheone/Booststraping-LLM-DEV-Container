@@ -1,35 +1,39 @@
 # ASP.NET Core SignalR
 
-Task-organized guidance on ASP.NET Core SignalR — the routing table (by task, not SignalR version)
-is in [SKILL.md](SKILL.md).
+SignalR pushes real-time messages between an ASP.NET Core server and connected clients over
+WebSockets (falling back to Server-Sent Events or long polling), in either direction. This skill
+covers writing hubs, managing groups and connections, securing hubs, connecting from a .NET
+client, streaming, and scaling out across multiple server instances.
 
-**`references/`** — one file per topic, not per version
+## When to reach for it
 
-| File | Covers |
+- You're writing a `Hub` or `Hub<T>` and deciding how to send a message to all clients, the caller, a group, or a specific user.
+- Clients need to join or leave a group, or you need to react to a connection or disconnection.
+- A hub needs to be restricted to authenticated or authorized users.
+- You're connecting from a .NET client and want automatic reconnect handled cleanly.
+- You're streaming data from server to client (or client to server) instead of sending one message at a time.
+- More than one server instance is running behind a load balancer and clients need messages regardless of which instance they're connected to.
+
+## Using it
+
+This skill is model-invoked: it fires automatically when your prompt touches writing or reviewing
+a SignalR hub, the .NET client, streaming, hub authorization, or backplane scale-out. You can also
+invoke it directly by name.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `hubs-and-messaging.md` | Hub, Hub\<T> strongly-typed hubs, Clients.All/Caller/Group/User/Others |
-| `groups-and-connections.md` | Groups.AddToGroupAsync/RemoveFromGroupAsync, OnConnectedAsync/OnDisconnectedAsync, connection IDs |
-| `authentication-and-authorization.md` | [Authorize] on a hub/hub method, hub authentication via the access token query string, policy-based hub authorization |
-| `dotnet-client.md` | HubConnectionBuilder, WithAutomaticReconnect, connection lifecycle events |
-| `streaming.md` | IAsyncEnumerable/ChannelReader server-to-client streaming, client-to-server streaming parameters |
-| `scaling-out-backplane.md` | Redis backplane for multi-instance deployments |
-| `testing.md` | Testing hub logic |
+| `Hub`, `Hub<T>` strongly-typed hubs, `Clients.All`/`Caller`/`Group`/`User`/`Others` | [references/hubs-and-messaging.md](references/hubs-and-messaging.md) |
+| Adding/removing connections from groups, connect/disconnect lifecycle | [references/groups-and-connections.md](references/groups-and-connections.md) |
+| `[Authorize]` on a hub or hub method, access-token authentication, policy-based authorization | [references/authentication-and-authorization.md](references/authentication-and-authorization.md) |
+| `HubConnectionBuilder`, `WithAutomaticReconnect`, connection lifecycle events | [references/dotnet-client.md](references/dotnet-client.md) |
+| Server-to-client and client-to-server streaming | [references/streaming.md](references/streaming.md) |
+| A Redis backplane for multi-instance deployments | [references/scaling-out-backplane.md](references/scaling-out-backplane.md) |
+| Testing hub logic | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-ASP.NET Core SignalR (the `Microsoft.AspNetCore.SignalR` server APIs and
-`Microsoft.AspNetCore.SignalR.Client` .NET client). Out of scope: transport-level protocol internals
-beyond SignalR's own configuration surface, and Azure SignalR Service as a managed offering — this
-skill covers self-hosting SignalR with a Redis backplane for scale-out.
-
-Each reference file notes a SignalR version fact inline where relevant; version is not the
-file-splitting axis for this skill (see SKILL.md for why).
-
-## Verified facts (as of 2026-09-26)
-
-- **Current latest release: Microsoft.AspNetCore.SignalR.Client 10.0.12** (part of the ASP.NET Core
-  10.0 shared framework release train), MIT-licensed. Source: the NuGet Gallery package page
-  (nuget.org/packages/microsoft.aspnetcore.signalr.client).
-
-These facts were verified via live web search against nuget.org at the time this skill was written;
-re-verify before relying on the exact version number.
+- "Write a chat hub that broadcasts a message to everyone in a group."
+- "Secure this hub so only authenticated users can connect."
+- "Set up a Redis backplane so SignalR works across two load-balanced server instances."

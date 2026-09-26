@@ -1,27 +1,36 @@
 # xUnit.net
 
-Guidance on xUnit.net, a third-party unit testing framework for C#/.NET — the routing table (by
-situation, not by xUnit version) is in [SKILL.md](SKILL.md).
+xUnit.net is a third-party unit testing framework for .NET built around plain attributes rather than
+inherited base classes. This skill covers writing `[Fact]` and `[Theory]` tests, sharing setup and
+teardown across tests, and diagnosing tests that run in an unexpected order or interfere with each
+other under parallel execution.
 
-**`references/`** — one file per category, not per xUnit version
+## When to reach for it
 
-| File | Covers |
+- Writing your first test in a class and deciding between `[Fact]` and `[Theory]`.
+- Sharing expensive setup across tests in a class, or across multiple test classes.
+- Running the same test logic against a table of inputs with `[InlineData]` or `[MemberData]`.
+- Tests fail intermittently, run in an order you didn't expect, or seem to interfere with each other.
+- Verifying that a custom `DataAttribute` or shared fixture you wrote actually behaves correctly.
+
+## Using it
+
+This skill is model-invoked: it fires automatically when the situation matches, such as writing or
+reviewing xUnit test classes. You can also invoke it directly as `/dotnet-xunit`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `core-concepts.md` | `[Fact]`, `[Theory]`, test discovery, project setup, xunit.v3 vs. the legacy v2 line |
-| `test-lifecycle.md` | Constructor/`IDisposable` per-test setup and teardown, `IClassFixture<T>`, `ICollectionFixture<T>`, `IAsyncLifetime` |
-| `data-driven-tests.md` | `[InlineData]`, `[MemberData]`, `[ClassData]` |
-| `assertions.md` | `Assert.*` catalog, fluent assertion library options |
-| `parallelization-and-collections.md` | Test collections, `[Collection]`, parallelization defaults and controls, `ITestOutputHelper` |
-| `testing-your-test-infrastructure.md` | Testing custom `DataAttribute` sources and shared fixture setup/teardown |
+| Fact/Theory, test discovery, project setup | [references/core-concepts.md](references/core-concepts.md) |
+| Constructor/IDisposable lifecycle, IClassFixture, ICollectionFixture | [references/test-lifecycle.md](references/test-lifecycle.md) |
+| InlineData, MemberData, ClassData | [references/data-driven-tests.md](references/data-driven-tests.md) |
+| The Assert catalog and fluent assertion alternatives | [references/assertions.md](references/assertions.md) |
+| Test collections and parallelization behavior | [references/parallelization-and-collections.md](references/parallelization-and-collections.md) |
+| Verifying a custom data attribute or fixture behaves correctly | [references/testing-your-test-infrastructure.md](references/testing-your-test-infrastructure.md) |
 
-## Scope
+## Example prompts
 
-xUnit.net's attribute-based test-authoring model (`xunit.v3`/`xunit.v3.core`, and the legacy
-`xunit`/`xunit.core` v2 line): test discovery, lifecycle, data-driven tests, assertions, and
-collection/parallelization behavior. Out of scope: third-party fluent assertion libraries' full API
-surface, mocking/substitution libraries, and database reset strategies between tests — see
-[SKILL.md](SKILL.md#out-of-scope) for the full list.
-
-Each reference file notes a version-introduced fact inline; version is not the file-splitting axis
-for this skill (see [SKILL.md](SKILL.md) for why). Current stable release as of this writing:
-xunit.v3 4.0.1 (core framework 3.2.2).
+- "Should this test be a Fact or a Theory, given it only asserts one case right now?"
+- "Set up an IClassFixture so these tests share one expensive setup instead of rebuilding it per test."
+- "These tests pass individually but fail when run together: what's colliding?"

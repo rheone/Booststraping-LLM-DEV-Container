@@ -1,28 +1,38 @@
 # .NET-to-ELK Integration
 
-Guidance on shipping structured logs from a .NET application into the Elastic Stack
-(Elasticsearch/Kibana) — the routing table (by task, not Elastic Stack version) is in
-[SKILL.md](SKILL.md).
+This skill covers shipping structured logs from a .NET application into the Elastic Stack
+(Elasticsearch/Kibana) for centralized search and analysis: choosing a shipping path, mapping
+fields correctly, and correlating logs with distributed traces.
 
-**`references/`** — one file per topic, not per Elastic Stack version
+## When to reach for it
 
-| File | Covers |
+- Adding centralized logging from a .NET app to an Elastic Stack deployment for the first time.
+- Deciding between the `Elastic.Serilog.Sinks` package, the community `Serilog.Sinks.Elasticsearch`
+  sink, or shipping logs via OpenTelemetry instead.
+- Mapping structured log properties onto Elastic Common Schema (ECS) fields correctly.
+- Configuring data-stream index naming and rollover with Index Lifecycle Management (ILM).
+- Correlating an application log entry with the distributed trace/span it happened inside.
+
+## Using it
+
+This skill fires automatically when your request involves shipping .NET logs to Elasticsearch or
+Kibana, or choosing/configuring an Elastic sink. You can also invoke it directly with
+`/dotnet-elk-integration`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `current-recommended-approach.md` | `Elastic.Serilog.Sinks` vs. community `Serilog.Sinks.Elasticsearch` vs. OpenTelemetry-based shipping |
-| `serilog-elasticsearch-sink-setup.md` | Wiring up `Elastic.Serilog.Sinks`, authentication, data streams |
-| `ecs-structured-fields.md` | Elastic Common Schema (ECS) field mapping for structured log properties |
-| `index-naming-and-rollover.md` | Data-stream naming (`type-dataset-namespace`), Index Lifecycle Management (ILM) rollover |
-| `trace-correlation.md` | Correlating log entries with distributed-trace/span IDs |
-| `testing.md` | Testing logging configuration, enrichment, and field mapping |
+| Choosing the current shipping path vs. an older alternative | [references/current-recommended-approach.md](references/current-recommended-approach.md) |
+| Wiring up `Elastic.Serilog.Sinks`, authentication, data streams | [references/serilog-elasticsearch-sink-setup.md](references/serilog-elasticsearch-sink-setup.md) |
+| Elastic Common Schema (ECS) field mapping for log properties | [references/ecs-structured-fields.md](references/ecs-structured-fields.md) |
+| Data-stream naming and Index Lifecycle Management (ILM) rollover | [references/index-naming-and-rollover.md](references/index-naming-and-rollover.md) |
+| Correlating log entries with trace/span IDs | [references/trace-correlation.md](references/trace-correlation.md) |
+| Testing logging configuration, enrichment, and field mapping | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-Shipping and mapping structured logs from a .NET application directly into Elasticsearch/Kibana.
-Out of scope: Logstash-specific pipeline/filter authoring, Kibana dashboard/visualization
-authoring beyond field-mapping considerations, and Elasticsearch cluster infrastructure/capacity
-planning.
-
-Each reference file states which shipping approach is current and verified as of this writing
-versus an older but still-functioning alternative — this space has shifted more than once, so
-version/currency is called out explicitly rather than presented as settled (see
-[SKILL.md](SKILL.md) for why).
+- "What's the current recommended way to ship logs from a .NET app into Elasticsearch?"
+- "My log properties aren't showing up under the ECS field names Kibana expects. How do I fix the
+  mapping?"
+- "Set up index rollover so our application logs don't grow into one giant index."

@@ -1,31 +1,44 @@
 # Autofac
 
-Guidance on Autofac, a third-party IoC/dependency-injection container for C#/.NET — the routing
-table (by situation, not by Autofac/C# version) is in [SKILL.md](SKILL.md).
+Guidance on Autofac, the third-party IoC/dependency-injection container for .NET that predates
+`Microsoft.Extensions.DependencyInjection` and is still widely used for its module system, named
+and keyed registrations, and richer lifetime-scope model.
 
-**`references/`** — one file per category, not per Autofac/C# version
+## When to reach for it
 
-| File | Covers |
+- Wiring up a `ContainerBuilder` for the first time, or reviewing whether a container setup is
+  sound.
+- Deciding how long a registered service should live (`SingleInstance` vs.
+  `InstancePerLifetimeScope` vs. a nested scope), and why a resolved instance is misbehaving.
+- Tracking down a captive dependency, an over-scoped singleton, or a disposal surprise in code that
+  resolves through Autofac.
+- Organizing registrations across a large application or class library with `Autofac.Module`, or
+  swapping Autofac in as the ASP.NET Core container.
+
+## Using it
+
+This skill is model-invoked: it fires automatically when you're writing, reviewing, or debugging
+code that registers or resolves services through Autofac's `ContainerBuilder`/`IContainer`/
+`ILifetimeScope` API. You can also invoke it directly by name.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `core-concepts.md` | ContainerBuilder, RegisterType, RegisterInstance, Build(), IContainer, Resolve\<T>/TryResolve\<T> |
-| `registration-syntax.md` | As\<T>, AsSelf, AsImplementedInterfaces, named/keyed registrations, open generics |
-| `lifetime-scopes.md` | InstancePerDependency, SingleInstance, InstancePerLifetimeScope, InstancePerMatchingLifetimeScope, InstancePerRequest, nested scopes, disposal |
-| `modules.md` | Autofac.Module, Load(ContainerBuilder), modules vs. plain registration calls |
-| `property-method-injection.md` | PropertiesAutowired, InjectProperties, method injection |
-| `decorators-interceptors.md` | RegisterDecorator, EnableInterfaceInterceptors, EnableClassInterceptors |
-| `aspnetcore-integration.md` | UseServiceProviderFactory(AutofacServiceProviderFactory), ConfigureContainer |
-| `assembly-scanning.md` | RegisterAssemblyTypes, Where/As conventions |
-| `relationship-types.md` | Lazy\<T>, Func\<T>, Owned\<T>, circular dependencies |
-| `common-pitfalls.md` | captive dependencies, over-scoping, disposal surprises |
-| `testing-with-autofac.md` | minimal test containers, verifying registrations resolve, testing modules in isolation, when to skip the container |
+| ContainerBuilder, RegisterType, RegisterInstance, Build(), Resolve\<T>/TryResolve\<T> | [references/core-concepts.md](references/core-concepts.md) |
+| As\<T>, AsSelf, AsImplementedInterfaces, named/keyed registrations, open generics | [references/registration-syntax.md](references/registration-syntax.md) |
+| InstancePerDependency, SingleInstance, InstancePerLifetimeScope, nested scopes, disposal | [references/lifetime-scopes.md](references/lifetime-scopes.md) |
+| Organizing registrations with Autofac.Module | [references/modules.md](references/modules.md) |
+| Property and method injection instead of constructor injection | [references/property-method-injection.md](references/property-method-injection.md) |
+| Decorators and interceptors for cross-cutting behavior | [references/decorators-interceptors.md](references/decorators-interceptors.md) |
+| Replacing the built-in ASP.NET Core container with Autofac | [references/aspnetcore-integration.md](references/aspnetcore-integration.md) |
+| Registering many types at once by convention | [references/assembly-scanning.md](references/assembly-scanning.md) |
+| Lazy\<T>, Func\<T>, Owned\<T>, and circular dependency resolution | [references/relationship-types.md](references/relationship-types.md) |
+| Captive dependencies, over-scoping, disposal surprises | [references/common-pitfalls.md](references/common-pitfalls.md) |
+| Unit/integration testing code that depends on Autofac | [references/testing-with-autofac.md](references/testing-with-autofac.md) |
 
-## Scope
+## Example prompts
 
-Autofac's core container API (`Autofac` package) and its official ASP.NET Core hosting bridge
-(`Autofac.Extensions.DependencyInjection`). Out of scope: `Microsoft.Extensions.DependencyInjection`
-internals, legacy framework-specific Autofac packages (WCF, OWIN, MVC5), and general DI theory not
-specific to Autofac's API.
-
-Each reference file notes a version-introduced fact inline; version is not the file-splitting axis
-for this skill (see [SKILL.md](SKILL.md) for why). Current stable release as of this writing:
-9.3.4.
+- "Why is my `SingleInstance` service holding a stale scoped dependency?"
+- "Show me how to register a module that groups all my repository types."
+- "Swap ASP.NET Core's built-in container for Autofac in this project."

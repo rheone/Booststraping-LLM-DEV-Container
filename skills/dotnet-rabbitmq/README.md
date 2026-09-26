@@ -1,27 +1,39 @@
 # RabbitMQ.Client
 
-Guidance on RabbitMQ.Client, the official third-party .NET client for RabbitMQ — the routing table
-(by situation, not by RabbitMQ.Client/C# version) is in [SKILL.md](SKILL.md).
+RabbitMQ.Client is the official .NET client for talking to a RabbitMQ broker directly: opening
+connections and channels, declaring exchanges and queues, publishing with delivery confirmation,
+and consuming with explicit acknowledgment. This skill covers the fully async `IConnection`/
+`IChannel` API surface, dead-lettering and retry patterns, and connection resiliency.
 
-**`references/`** — one file per category, not per RabbitMQ.Client/C# version
+## When to reach for it
 
-| File | Covers |
+- You're opening your first connection and channel and want the disposal order right.
+- You need to declare the exchange/queue/binding topology a producer or consumer depends on.
+- You're publishing a message and need to know it actually reached the broker, not just left the client.
+- You're deciding between manual and automatic acknowledgment while consuming.
+- A message keeps failing and needs to retry or land in a dead-letter queue instead of disappearing.
+- The connection needs to survive a network blip or broker restart without manual reconnect code.
+
+## Using it
+
+This skill is model-invoked: it fires automatically when your prompt touches connecting to,
+publishing to, or consuming from RabbitMQ through the `RabbitMQ.Client` package. You can also
+invoke it directly by name.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `connection-and-channel-lifecycle.md` | ConnectionFactory, CreateConnectionAsync, CreateChannelAsync, disposal order |
-| `topology.md` | ExchangeDeclareAsync, QueueDeclareAsync, QueueBindAsync, exchange types |
-| `publishing-with-confirms.md` | BasicPublishAsync, PublisherConfirmationsEnabled, mandatory/returned messages |
-| `consuming.md` | AsyncEventingBasicConsumer, BasicConsumeAsync, BasicAckAsync/BasicNackAsync, ack strategy |
-| `dead-lettering-and-retry.md` | x-dead-letter-exchange/routing-key, TTL-based retry queues, quorum queue dead-lettering |
-| `connection-resiliency.md` | AutomaticRecoveryEnabled, TopologyRecoveryEnabled, NetworkRecoveryInterval, recovery events |
-| `testing-with-rabbitmq.md` | Faking the channel interface, a real broker in a container, testing consumer handlers |
+| `ConnectionFactory`, `CreateConnectionAsync`, `CreateChannelAsync`, disposal order | [references/connection-and-channel-lifecycle.md](references/connection-and-channel-lifecycle.md) |
+| `ExchangeDeclareAsync`, `QueueDeclareAsync`, `QueueBindAsync`, exchange types | [references/topology.md](references/topology.md) |
+| `BasicPublishAsync`, `PublisherConfirmationsEnabled`, mandatory/returned messages | [references/publishing-with-confirms.md](references/publishing-with-confirms.md) |
+| `AsyncEventingBasicConsumer`, `BasicConsumeAsync`, manual vs. automatic ack | [references/consuming.md](references/consuming.md) |
+| Dead-letter exchanges, TTL-based retry queues, quorum queue dead-lettering | [references/dead-lettering-and-retry.md](references/dead-lettering-and-retry.md) |
+| `AutomaticRecoveryEnabled`, `TopologyRecoveryEnabled`, recovery event handlers | [references/connection-resiliency.md](references/connection-resiliency.md) |
+| Faking the channel interface vs. testing against a real broker in a container | [references/testing-with-rabbitmq.md](references/testing-with-rabbitmq.md) |
 
-## Scope
+## Example prompts
 
-The `RabbitMQ.Client` package's async `IConnection`/`IChannel` API surface (7.x) for connecting,
-declaring topology, publishing, and consuming over classic AMQP 0-9-1. Out of scope: broker-side
-administration, AMQP 1.0 support, and message serialization format choices layered on top of the
-raw message body.
-
-Each reference file notes a version-introduced fact inline; version is not the file-splitting axis
-for this skill (see [SKILL.md](SKILL.md) for why the 7.x API shape is the one documented
-throughout). Current stable release as of this writing: 7.2.2.
+- "Set up a durable queue and publish a message to it with confirms enabled."
+- "My consumer isn't acking messages correctly: help me switch it to manual ack."
+- "Add a dead-letter exchange so failed messages retry three times before landing in a parking-lot queue."

@@ -1,33 +1,40 @@
-# C# Vertical Slice Architecture
+# Vertical Slice Architecture
 
-Guidance on Vertical Slice Architecture (VSA) as a C#/.NET code-organization pattern — organize by
-feature/use-case, not by technical layer. The routing table (by situation) is in
-[SKILL.md](SKILL.md).
+Guidance on organizing C#/.NET code by feature instead of by technical layer. It covers what a
+slice contains, how the pattern relates to CQRS, and where its tradeoffs (duplication,
+granularity, adoption cost) actually bite in a real codebase.
 
-**`references/`** — one file per concern/topic, not per package version — VSA is an architectural style with nothing to version-pin
+## When to reach for it
 
-| File | Covers |
+- You're deciding how to lay out a new feature's code and weighing a `Features/CreateOrder/`
+  folder against splitting it across `Controllers/`, `Services/`, and `Repositories/`.
+- You're reviewing an existing `Features/` folder and want to check its granularity or spot
+  shared-kernel creep.
+- You're deciding whether to introduce vertical slices into an existing layered codebase, one
+  feature at a time, and want to know where that adoption tends to get hard.
+
+## Using it
+
+This skill fires automatically when your request involves describing a feature layout, asking
+about slice-vs-layer tradeoffs, or asking how VSA relates to CQRS. You can also invoke it directly
+with `/csharp-vertical-slice-architecture`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `philosophy-and-organization.md` | core philosophy, "screaming architecture", slice contents, folder/namespace conventions, contrast with layered/onion/clean architecture |
-| `cqrs-relationship.md` | VSA (organization axis) vs. CQRS (read/write axis) — precise, non-conflating treatment of how they compose |
-| `slice-anatomy.md` | generic request/handler/response shape, sizing a slice |
-| `cross-cutting-concerns.md` | sharing validation/logging/persistence without re-layering; minimal base abstractions and pipeline-style composition |
-| `data-access-patterns.md` | query-object-per-slice vs. shared repository, tradeoffs |
-| `fit-and-adoption.md` | when VSA fits vs. doesn't; incremental adoption into an existing layered codebase |
-| `pitfalls.md` | duplication vs. the wrong abstraction, inconsistent slice granularity, shared-kernel creep |
-| `testing.md` | unit-testing handler logic vs. integration-testing a slice end to end; test organization mirroring Features/ |
+| Core philosophy, "screaming architecture," folder and naming conventions | [references/philosophy-and-organization.md](references/philosophy-and-organization.md) |
+| How VSA and CQRS relate, and where they don't require each other | [references/cqrs-relationship.md](references/cqrs-relationship.md) |
+| The shape of an individual slice: request, handler, response, sizing | [references/slice-anatomy.md](references/slice-anatomy.md) |
+| Sharing validation, logging, or persistence across slices without re-layering | [references/cross-cutting-concerns.md](references/cross-cutting-concerns.md) |
+| Query-object-per-slice vs. a shared repository for data access | [references/data-access-patterns.md](references/data-access-patterns.md) |
+| Whether VSA fits a project, and introducing it incrementally | [references/fit-and-adoption.md](references/fit-and-adoption.md) |
+| Code smells: duplication vs. premature abstraction, inconsistent granularity, shared-kernel creep | [references/pitfalls.md](references/pitfalls.md) |
+| Testing a slice: unit vs. integration, test folder structure | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-An architectural pattern, not a package — there is no version or license to pin, and no NuGet
-package this skill tracks. Guidance is cross-checked against Jimmy Bogard's original formulation of
-the pattern and current (2026) community practice rather than a single source.
-
-This skill is **tool-agnostic by design**: it never names or depends on a specific mediator, DI,
-validation, or ORM library, since VSA as a pattern requires none of them. Every mechanism described
-(handler dispatch, validation pipelines, persistence context) is generic — apply it with whatever
-libraries a given project already uses.
-
-Out of scope: Domain-Driven Design tactical patterns (compatible with VSA but not required by it)
-and microservice/service-boundary decomposition (VSA organizes code within one deployable unit, not
-across network boundaries). See [SKILL.md](SKILL.md) for the full out-of-scope list.
+- "I'm starting a new 'cancel order' feature. Should this live in its own folder or spread
+  across Controllers/Services/Repositories?"
+- "How does Vertical Slice Architecture relate to CQRS? Do I need a mediator library for either?"
+- "Review this Features/CreateOrder folder and tell me if it's grown too many responsibilities."
