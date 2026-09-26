@@ -1,0 +1,22 @@
+# Common Exceptions — Lookup by Type
+
+Start here when debugging a thrown exception. Each entry points to the reference file with the real fix — this file is intentionally just a fast triage index, not the full explanation.
+
+| Exception | Likely cause | Go to |
+|---|---|---|
+| `LazyInitializationException` | Lazy property/collection accessed after the owning session closed | `lazy-loading-and-fetching.md` § Session Boundary Failures — the real fix is almost always the session boundary, not a local workaround |
+| `StaleObjectStateException` | Optimistic concurrency conflict — another transaction updated the row since this entity was loaded | `caching-and-concurrency.md` § Optimistic concurrency — this is usually correct behavior to handle, not a bug to suppress |
+| `NonUniqueObjectException` | Attempting to attach/save an entity with an ID that already has a different object instance tracked in this session's identity map — usually from mixing a detached entity back in incorrectly | `glossary.md` (persistent/detached/transient) — check whether `Merge` should've been used instead of `Update`/`SaveOrUpdate` |
+| `TransientObjectException` | Saving an entity that references another transient (never-saved) entity without cascade configured to handle it | `cascade-and-relationships.md` — either add appropriate cascade or save the referenced entity first |
+| `ObjectNotFoundException` | `session.Load<T>(id)` was used and the proxy's first real access found no matching row | `lazy-loading-and-fetching.md` § Get vs Load — consider whether `Get` (returns null) was actually the right call instead |
+| `GenericADOException` (wrapping a DB-level error) | Often schema/mapping drift, or a constraint violation. Check the inner exception first — this wrapper obscures the real DB error if you don't unwrap it | `schema-mapping-roundtrip.md` — run the drift detector if the inner exception mentions a column/table |
+| `QueryException` mentioning a property/path that "could not be resolved" | HQL/QueryOver referencing a property name that doesn't match the mapping, or a typo in a string-based HQL query | `query-strategy.md` |
+| `MappingException` at startup (`SessionFactory` build failure) | Usually a mapping/entity mismatch — missing mapping for a referenced type, or a `Component`/collection misconfiguration | `mapping-conventions.md` — read the full inner message, it usually names the exact offending mapping |
+| A LINQ query throws `NotSupportedException` at execution | The LINQ provider couldn't translate part of the expression (see the pitfalls list) | `query-strategy.md` § LINQ provider translation pitfalls |
+| Silent data corruption (wrong value in wrong column, no exception at all) | Frequently a `ICompositeUserType` property-order mismatch, or an `Inverse()`/cascade misconfiguration causing partial writes | `custom-user-types.md` or `cascade-and-relationships.md` depending on what's involved — this category is the most dangerous because nothing throws |
+| Changes silently never persist, no exception | `FlushMode.Manual` set with no matching explicit `Flush()` call on the path that needed it | `session-lifecycle.md` § FlushMode |
+| `NHibernate.HibernateException` / `InvalidOperationException` mentioning the session being "in use" or state that looks corrupted, often intermittent | Two operations ran concurrently against the same `ISession` (commonly `Task.WhenAll` over two calls sharing one session) | `async-patterns.md` — this is a concurrency bug, not a data bug; it won't reproduce consistently |
+| App is slow/unresponsive under load with no clear exception (thread pool starvation) | Sync-over-async (`.Result`/`.Wait()`) somewhere in the NHibernate call chain tying up thread pool threads | `async-patterns.md`, run `scripts/detect_sync_over_async.py` |
+| `ObjectDisposedException` on a session/command, specifically in async code | The session was disposed (e.g. its `using` block or DI scope ended) while an awaited operation against it was still logically in flight, often after an `await` resumed on a different point in the async state machine than expected | `async-patterns.md` and `session-lifecycle.md` — same root cause as `LazyInitializationException` above, just surfacing through the async path instead |
+
+If an exception isn't in this table, check the inner exception chain fully before assuming NHibernate itself is at fault — a large fraction of "NHibernate exceptions" are actually the underlying ADO.NET provider or DB constraint surfacing through a wrapper.
