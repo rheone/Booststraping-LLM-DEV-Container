@@ -1,27 +1,38 @@
 # Quartz.NET
 
-Guidance on Quartz.NET, the job scheduling library for .NET — the routing table (by task, not
-Quartz.NET version) is in [SKILL.md](SKILL.md).
+Quartz.NET schedules jobs to run once, on a recurring cadence, or according to a cron expression,
+inside an ASP.NET Core or generic host application. This skill covers implementing `IJob`,
+choosing between cron and simple triggers, the scheduler lifecycle, passing data into a job, and
+misfire handling.
 
-**`references/`** — one file per topic, not per Quartz.NET version
+## When to reach for it
 
-| File | Covers |
+- You're deciding between a cron trigger and a simple trigger for a recurring job.
+- A job needs parameters passed in at schedule time and you're reaching for `JobDataMap`.
+- The scheduler missed a fire time (the process was down, a job ran long) and you need to pick a misfire policy.
+- You're wiring Quartz into a host app's DI container and want jobs to resolve scoped dependencies correctly.
+- You want a test around a job's execution logic or a DI-registered schedule.
+
+## Using it
+
+This skill is model-invoked: it fires automatically when your prompt touches scheduling a job,
+triggers, the scheduler lifecycle, or Quartz's DI integration. You can also invoke it directly by
+name.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `jobs.md` | `IJob`, `Execute`, `IJobExecutionContext` |
-| `triggers.md` | Cron triggers, simple triggers, and their scheduling semantics |
-| `scheduler.md` | `ISchedulerFactory`, `IScheduler`, starting/stopping/pausing |
-| `job-data-maps.md` | `JobDataMap`, passing parameters into a job at schedule and trigger level |
-| `misfire-handling.md` | Misfire instructions per trigger type and when to choose each |
-| `dependency-injection.md` | `AddQuartz`, `AddQuartzHostedService`, resolving DI-scoped dependencies in a job |
-| `testing.md` | Testing `IJob` implementations and DI-registered schedules |
+| `IJob`, `Execute`, `IJobExecutionContext` | [references/jobs.md](references/jobs.md) |
+| Cron triggers, simple triggers, and their scheduling semantics | [references/triggers.md](references/triggers.md) |
+| `ISchedulerFactory`, `IScheduler`, starting/stopping/pausing | [references/scheduler.md](references/scheduler.md) |
+| `JobDataMap`, passing parameters into a job at schedule and trigger level | [references/job-data-maps.md](references/job-data-maps.md) |
+| Misfire instructions per trigger type and when to choose each | [references/misfire-handling.md](references/misfire-handling.md) |
+| `AddQuartz`, `AddQuartzHostedService`, resolving scoped dependencies in a job | [references/dependency-injection.md](references/dependency-injection.md) |
+| Testing `IJob` implementations and DI-registered schedules | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-Quartz.NET only — in-process job scheduling: jobs, triggers, the scheduler lifecycle, and DI
-integration. Out of scope: multi-node scheduler clustering and building a custom job store (see
-[SKILL.md](SKILL.md) for why).
-
-Each reference file notes a version-introduced fact inline; version is not the file-splitting axis
-for this skill. Quartz.NET 4.x requires .NET 10 and folds `Quartz.Extensions.Hosting`/
-`Quartz.Extensions.DependencyInjection` into the main `Quartz` package — an application on an
-earlier .NET version uses the 3.x package layout instead.
+- "Schedule a job that runs every morning at 8am using a cron trigger."
+- "Pass a customer ID into this job through the JobDataMap."
+- "The scheduler was down over the weekend and missed a fire: what misfire instruction stops it from running the job three times to catch up?"

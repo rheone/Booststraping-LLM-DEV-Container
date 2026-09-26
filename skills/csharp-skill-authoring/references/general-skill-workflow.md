@@ -41,9 +41,9 @@ organizing axis is genuinely "what changed at each C# version," use
    scenarios.
 
 6. **Write `SKILL.md`**: a quick-start example, and a routing table (situation/task → reference
-   file). **Write `README.md`**, mirroring the same file tree — use a markdown table for any file
-   listing that carries a per-file description; reserve a plain list for a listing that's names
-   only.
+   file). **Write `README.md`** per [readme-template.md](readme-template.md) — a human-facing page
+   (summary, when to reach for it, how it's invoked, example prompts), not a mirror of `SKILL.md`'s
+   routing table.
 
 7. **Apply insularity.** Read [insularity.md](insularity.md) and apply it to every file: no
    comparing this skill to another, no naming another skill without an explicit, stated dependency.

@@ -1,27 +1,40 @@
 # MassTransit
 
-Guidance on MassTransit, the distributed application framework for .NET — the routing table (by
-task, not MassTransit version) is in [SKILL.md](SKILL.md).
+MassTransit gives a .NET service a transport-agnostic way to publish and consume messages, make
+request/response calls, and run long-lived process state as sagas, without hand-rolling
+broker-specific plumbing. This skill covers the `AddMassTransit` registration pattern, writing
+consumers, retry and fault handling, and testing message-driven code.
 
-**`references/`** — one file per topic, not per MassTransit version
+> [!NOTE]
+> MassTransit carries non-standard licensing considerations that vary by major version. Research current terms independently before adopting it.
 
-| File | Covers |
+## When to reach for it
+
+- You're wiring up a bus in DI and deciding which transport (`UsingInMemory`, `UsingRabbitMq`, etc.) fits your setup.
+- You need a consumer for a message type and aren't sure how MassTransit discovers and dispatches to it.
+- A message keeps failing and you need to decide between a retry policy and letting it land on the error queue.
+- You're modeling a long-running process (an order workflow, a multi-step approval) as a saga.
+- You want to assert that a consumer published, consumed, or faulted on a message in a test.
+
+## Using it
+
+This skill is model-invoked: it fires automatically when your prompt touches MassTransit buses,
+consumers, request/response, retries, or sagas. You can also invoke it directly by name.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `core-concepts.md` | `IBus`, `IPublishEndpoint`, `ISendEndpoint`, `ConsumeContext<T>`, message delivery |
-| `consumers.md` | Message contracts, `IConsumer<T>`, consumer registration and lifetime |
-| `transport-configuration.md` | `AddMassTransit`, the generic `UsingXxx`/`ConfigureEndpoints` pattern |
-| `request-response.md` | `IRequestClient<T>`, request timeouts, responding from a consumer |
-| `retry-and-error-handling.md` | `UseMessageRetry`, fault messages, the `_error` queue, `IConsumer<Fault<T>>` |
-| `sagas.md` | `MassTransitStateMachine`, saga instances, correlation — conceptual overview |
-| `testing.md` | The in-memory test harness, asserting publish/consume/fault behavior |
+| `IBus`, `IPublishEndpoint`, `ISendEndpoint`, and how a message reaches a consumer | [references/core-concepts.md](references/core-concepts.md) |
+| Defining a message contract and writing an `IConsumer<T>` | [references/consumers.md](references/consumers.md) |
+| Registering `AddMassTransit` and configuring a transport | [references/transport-configuration.md](references/transport-configuration.md) |
+| Request/response with `IRequestClient<T>` | [references/request-response.md](references/request-response.md) |
+| Configuring retries, handling faults, and the error queue | [references/retry-and-error-handling.md](references/retry-and-error-handling.md) |
+| Sagas and state machines for long-running processes | [references/sagas.md](references/sagas.md) |
+| Testing consumers, publishers, and saga behavior | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-MassTransit only — message-based communication between .NET services via publish/subscribe,
-request/response, and saga-driven process state. Out of scope: broker-specific administrative
-configuration (a specific transport's own topology, connection, or infrastructure settings) and a
-full saga state-machine deep dive (see [SKILL.md](SKILL.md) for why).
-
-Each reference file notes a version-introduced fact inline; version is not the file-splitting axis
-for this skill. MassTransit carries non-standard licensing considerations that vary by major
-version — research current terms independently before adopting it for a commercial project.
+- "Write a consumer for an `OrderSubmitted` message and register it with MassTransit."
+- "This message keeps ending up on the error queue: help me figure out why the retry isn't catching it."
+- "Model a saga for an order that needs payment confirmation before it ships."

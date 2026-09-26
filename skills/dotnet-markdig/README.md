@@ -1,25 +1,37 @@
 # Markdig
 
-Guidance on Markdig, the CommonMark-compliant Markdown processor for .NET — the routing table (by
-task, not Markdig version) is in [SKILL.md](SKILL.md).
+Guidance on Markdig, the CommonMark-compliant Markdown processor for .NET built around a
+configurable parsing/rendering pipeline, covering pipeline setup, common extensions, rendering,
+custom extensions, and AST manipulation.
 
-**`references/`** — one file per topic, not per Markdig version
+## When to reach for it
 
-| File | Covers |
+- Building a `MarkdownPipeline` and deciding between `UseAdvancedExtensions()` and opting into
+  extensions individually.
+- Enabling pipe tables, task lists, auto-links, or YAML frontmatter in parsed Markdown.
+- Converting Markdown to HTML or to plain text.
+- Writing a custom block or inline parser/renderer as an `IMarkdownExtension`.
+- Walking or mutating the parsed `MarkdownDocument` AST directly.
+
+## Using it
+
+This skill is model-invoked: it fires automatically when you're parsing or rendering Markdown in a
+.NET project, choosing Markdig extensions, or inspecting a parsed AST. You can also invoke it
+directly by name.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `pipeline-configuration.md` | `MarkdownPipelineBuilder`, `UseAdvancedExtensions()`, opting into extensions individually, `Build()` |
-| `common-extensions.md` | Pipe tables, task lists, auto-links, YAML frontmatter |
-| `rendering-html-and-text.md` | `Markdown.ToHtml`, `HtmlRenderer`, `Markdown.ToPlainText` |
-| `custom-extensions.md` | `IMarkdownExtension`, custom block/inline parsers and renderers |
-| `ast-manipulation.md` | `MarkdownDocument`, `Descendants<T>()`, walking and mutating the parsed tree |
-| `testing.md` | Testing Markdown-to-HTML/text conversions and custom extensions |
+| MarkdownPipelineBuilder, UseAdvancedExtensions(), opting into extensions individually, Build() | [references/pipeline-configuration.md](references/pipeline-configuration.md) |
+| Pipe tables, task lists, auto-links, YAML frontmatter | [references/common-extensions.md](references/common-extensions.md) |
+| Markdown.ToHtml, HtmlRenderer, Markdown.ToPlainText | [references/rendering-html-and-text.md](references/rendering-html-and-text.md) |
+| IMarkdownExtension, custom block/inline parsers and renderers | [references/custom-extensions.md](references/custom-extensions.md) |
+| MarkdownDocument, Descendants\<T>(), walking and mutating the parsed tree | [references/ast-manipulation.md](references/ast-manipulation.md) |
+| Testing Markdown-to-HTML/text conversions and custom extensions | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-Markdig only — parsing and rendering Markdown text in .NET. Out of scope: editor/preview UI
-controls, fenced-code syntax highlighting beyond the CSS class Markdig emits, and math/LaTeX
-rendering (no built-in Markdig extension covers it).
-
-Each reference file notes a version-sensitive fact inline (e.g. which extensions
-`UseAdvancedExtensions()` does and doesn't include); version is not the file-splitting axis for
-this skill (see [SKILL.md](SKILL.md) for why).
+- "Set up a Markdig pipeline with pipe tables and YAML frontmatter enabled."
+- "Extract the YAML frontmatter from this Markdown file before rendering it."
+- "Write a custom Markdig extension that turns `:emoji:` shortcodes into Unicode characters."

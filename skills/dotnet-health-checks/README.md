@@ -1,30 +1,35 @@
 # ASP.NET Core Health Checks
 
-Guidance on `Microsoft.Extensions.Diagnostics.HealthChecks` — the routing table (by situation) is in
-[SKILL.md](SKILL.md).
+Guidance on `Microsoft.Extensions.Diagnostics.HealthChecks` for reporting an app's status, and the
+status of what it depends on, to whatever is watching it: a load balancer, a container
+orchestrator, or an uptime monitor.
 
-**`references/`** — one file per concern
+## When to reach for it
 
-| File | Covers |
+- You're adding a `/health` or `/healthz` endpoint to an ASP.NET Core app.
+- You're wiring up separate Kubernetes liveness and readiness probes.
+- You're writing a custom `IHealthCheck` for a database, cache, message broker, or downstream API,
+  or debugging why a check reports unhealthy and never recovers.
+
+## Using it
+
+This skill fires automatically when your request involves adding a health check endpoint, writing
+a custom check, or wiring up orchestrator probes. You can also invoke it directly with
+`/dotnet-health-checks`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `core-concepts.md` | `IHealthCheck`, `HealthCheckResult`, `AddHealthChecks`/`AddCheck`/`AddCheck<T>` registration |
-| `endpoint-configuration.md` | `MapHealthChecks`, `HealthCheckOptions` (status codes, response writer, caching headers), restricting endpoint access |
-| `tags-and-filtering.md` | tagging checks, `HealthCheckOptions.Predicate`, separate readiness/liveness endpoints, startup-gated readiness |
-| `external-dependency-checks.md` | the generic registration pattern for a dependency check, timeouts, `failureStatus`, the community-package ecosystem |
-| `orchestrator-integration.md` | what liveness vs. readiness means to a container orchestrator, and the consequence of mixing them up |
-| `testing.md` | unit-testing an `IHealthCheck`, integration-testing the mapped endpoint, testing a custom response writer |
+| `IHealthCheck`, `HealthCheckResult`, `AddHealthChecks`/`AddCheck`/`AddCheck<T>` registration | [references/core-concepts.md](references/core-concepts.md) |
+| `MapHealthChecks`, `HealthCheckOptions` (status codes, response writer, caching headers) | [references/endpoint-configuration.md](references/endpoint-configuration.md) |
+| Tagging checks, `HealthCheckOptions.Predicate`, separate readiness/liveness endpoints | [references/tags-and-filtering.md](references/tags-and-filtering.md) |
+| The generic registration pattern for a dependency check, timeouts, `failureStatus` | [references/external-dependency-checks.md](references/external-dependency-checks.md) |
+| What liveness vs. readiness means to a container orchestrator | [references/orchestrator-integration.md](references/orchestrator-integration.md) |
+| Unit-testing an `IHealthCheck` and integration-testing the mapped endpoint | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-`Microsoft.Extensions.Diagnostics.HealthChecks` (current stable release **10.0.12**, shipping
-alongside **.NET 10**, part of the [dotnet/aspnetcore](https://github.com/dotnet/aspnetcore)
-repository). Covers `IHealthCheck` implementation, registration, endpoint mapping and response
-customization, tag-based filtering for readiness/liveness separation, the generic pattern for
-external-dependency checks, the community-package ecosystem at a generic level, orchestrator
-integration concepts, and testing.
-
-Out of scope: Application Performance Monitoring / distributed tracing, and any specific
-community-maintained check package's own configuration API. See [SKILL.md](SKILL.md) for the full
-out-of-scope list and rationale.
-
-This skill is self-contained: it does not assume any other skill is installed.
+- "Add a health check endpoint that verifies the database connection."
+- "Split my health checks into separate liveness and readiness endpoints for Kubernetes."
+- "Write a custom IHealthCheck for our downstream payments API with a timeout."

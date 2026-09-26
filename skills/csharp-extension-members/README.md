@@ -1,40 +1,34 @@
 # C# Extension Members
 
-Reference for C# extension methods and extension members: from the classic `this`-parameter form
-(C# 3.0 / .NET Framework 3.5) through extension properties, static extension members, and
-operators (C# 14 / .NET 10), and extension indexers (C# 15 / .NET 11). Includes the pre-C#3
-fallback pattern for .NET Framework 1.0–2.0, generic extension members, and a reference on writing
-extension methods/members as test-authoring tools. The routing table is in [SKILL.md](SKILL.md).
+Helps you write, review, or port extension methods and extension members in C#, from the classic
+`this`-parameter form through the newer block-based `extension(...)` syntax that adds properties,
+static members, operators, and indexers.
 
-**`references/`** — version-gated core syntax, oldest to newest
+## When to reach for it
 
-| File | Covers |
+- Adding a method, property, or operator to a type you can't or don't want to modify directly
+- Choosing between classic extension-method syntax and the newer `extension` block syntax
+- Targeting multiple C# language versions from the same library
+- Writing a generic extension member
+- Resolving ambiguity when classic and new-style extension members coexist on the same type
+
+## Using it
+
+This skill is model-invoked: it fires automatically when you're writing, reviewing, or porting
+extension methods or extension members.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `pre-csharp3-no-extensions.md` | .NET Framework 1.0–2.0 — no extension mechanism (fallback pattern) |
-| `csharp3-extension-methods.md` | .NET Framework 3.5 – .NET 9 (C# 3.0–13) — classic `this` syntax |
-| `csharp8-nullable-extensions.md` | .NET Core 3.0+ (C# 8.0+) — nullable annotations |
-| `csharp14-extension-members.md` | .NET 10 (C# 14) — extension blocks: properties, statics, operators |
-| `csharp15-extension-indexers.md` | .NET 11 RC1+ (C# 15) — extension indexers |
+| No extension mechanism: the pre-C# 3 fallback pattern | [references/pre-csharp3-no-extensions.md](references/pre-csharp3-no-extensions.md) |
+| Classic `this`-parameter extension methods | [references/csharp3-extension-methods.md](references/csharp3-extension-methods.md) |
+| Nullable annotations on extension methods | [references/csharp8-nullable-extensions.md](references/csharp8-nullable-extensions.md) |
+| Extension blocks: properties, static members, operators | [references/csharp14-extension-members.md](references/csharp14-extension-members.md) |
+| Extension indexers | [references/csharp15-extension-indexers.md](references/csharp15-extension-indexers.md) |
 
-```text
-specialized/                      cross-cutting patterns, applicable across versions
-  generic-extension-members.md
-  extension-properties.md
-  static-extension-members.md
-  extension-operators.md
-  fluent-and-linq-style-patterns.md
-  resolution-and-coexistence-rules.md
-  testing-extension-members.md      extension methods/members as test-authoring tools
-```
+## Example prompts
 
-## Version coverage
-
-| .NET | C# | GA | Extension-member support |
-| --- | --- | --- | --- |
-| Framework 1.0 – 2.0 | 1.0 – 2.0 | 2002 – 2005 | none |
-| Framework 3.5 – .NET 9 | 3.0 – 13 | 2007 – Nov 2024 | classic extension methods |
-| .NET 10 | 14 | Nov 2025 | + extension properties, static members, operators |
-| .NET 11 | 15 | RC1 Sept 2026, GA expected Nov 2026 | + extension indexers |
-
-Each reference file states its own fallback file, so a project pinned to an older `LangVersion`
-than its target SDK supports can still find the right syntax tier.
+- "Add an `IsNullOrBlank` extension method on `string`."
+- "Can I write a static extension property with the new extension block syntax?"
+- "Why is the compiler picking the wrong overload between my classic and new-style extension methods?"

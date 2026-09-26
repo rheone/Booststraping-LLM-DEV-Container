@@ -1,25 +1,38 @@
 # Serilog
 
-Guidance on Serilog, the structured logging library for .NET — the routing table (by task, not
-Serilog version) is in [SKILL.md](SKILL.md).
+Serilog is the structured logging library for .NET built around named properties in log events
+rather than plain-text messages. This skill covers configuring `LoggerConfiguration`, wiring up
+sinks and enrichers, and integrating Serilog into an ASP.NET Core host.
 
-**`references/`** — one file per topic, not per Serilog version
+## When to reach for it
 
-| File | Covers |
+- Setting up `LoggerConfiguration` for a new project or deciding between a static `Log.Logger` and
+  an injected logger.
+- Choosing or configuring a sink (console, file, rolling files) and getting its options right.
+- Writing a log message and deciding what to destructure with `@` versus stringify with `$`.
+- Silencing a noisy log source with a per-source-context minimum-level override or a sub-logger.
+- Wiring `UseSerilogRequestLogging` into an ASP.NET Core pipeline.
+
+## Using it
+
+This skill fires automatically when your request matches Serilog configuration, sinks, structured
+logging, or enrichment. You can also invoke it directly with `/dotnet-serilog`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `core-concepts.md` | `LoggerConfiguration`, `Log.Logger`, the static vs. injected logger choice |
-| `structured-logging.md` | message templates, named properties, `@` destructuring, `$` stringification |
-| `sinks.md` | `WriteTo.Console`, `WriteTo.File`, rolling files, general sink-configuration shape |
-| `enrichers.md` | `Enrich.FromLogContext`, built-in enrichers, custom `ILogEventEnricher` |
-| `levels-and-filtering.md` | minimum level, per-source overrides, sub-loggers, `Filter.ByExcluding` |
-| `aspnetcore-integration.md` | `UseSerilog`, `UseSerilogRequestLogging`, two-stage initialization |
-| `testing.md` | asserting on emitted log events, in-memory sinks, avoiding brittle message-string assertions |
+| `LoggerConfiguration`, `Log.Logger`, static vs. injected logger | [references/core-concepts.md](references/core-concepts.md) |
+| Message templates, named properties, `@`/`$` destructuring | [references/structured-logging.md](references/structured-logging.md) |
+| Console/file sinks, rolling files, general sink shape | [references/sinks.md](references/sinks.md) |
+| Built-in and custom `ILogEventEnricher` enrichment | [references/enrichers.md](references/enrichers.md) |
+| Minimum level, per-source overrides, sub-loggers, filtering | [references/levels-and-filtering.md](references/levels-and-filtering.md) |
+| `UseSerilog`, `UseSerilogRequestLogging`, two-stage init | [references/aspnetcore-integration.md](references/aspnetcore-integration.md) |
+| Asserting on emitted log events without brittle string checks | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-Serilog only — structured event logging within a .NET application. Out of scope: other logging
-libraries, distributed-tracing pipeline setup beyond what an enricher attaches to an event, and
-administering the backend service a sink writes to (see [SKILL.md](SKILL.md) for why).
-
-Each reference file notes a version-introduced fact inline (e.g. Serilog.AspNetCore's current
-10.0.0 release); version is not the file-splitting axis for this skill (see [SKILL.md](SKILL.md)).
+- "Set up Serilog to log to the console and a rolling file, and enrich every event with the
+  machine name."
+- "Our ASP.NET Core app logs every health check ping at Information. How do I quiet that down?"
+- "How do I write a test that asserts a specific structured property was logged?"

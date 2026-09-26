@@ -1,28 +1,44 @@
-# C# Unit of Work Pattern
+# Unit of Work Pattern
 
-Guidance on the Unit of Work design pattern in C# — tracking a set of changes across multiple
-repository/data-access operations and committing them to a store as one atomic operation. The
-routing table (by situation) is in [SKILL.md](SKILL.md).
+You track a set of changes made across multiple repository or data-access operations in memory and
+commit them to a store as one atomic operation. It covers an `IUnitOfWork` interface coordinating
+several repositories against a shared connection, ambient versus explicit transactions, rollback on
+partial failure, and recognizing when a change-tracking data-access context already gives you the
+pattern.
 
-**`references/`** — one file per concern/topic, not per package version — Unit of Work is a design
-pattern with nothing to version-pin
+## When to reach for it
 
-| File | Covers |
+- A single business operation needs to write to more than one repository and you need those writes
+  to succeed or fail together.
+- You're designing or reviewing an `IUnitOfWork` abstraction and want to get the coordination
+  contract right.
+- You're deciding between an ambient transaction and one your code opens and commits explicitly, or
+  need a rollback strategy for a partial failure.
+- You already have a change-tracking data-access context and want to know whether you need a
+  bespoke unit-of-work class layered on top of it at all.
+
+## Using it
+
+This skill is model-invoked: it fires automatically when your prompt matches its situation, such as
+coordinating multiple repository writes or reviewing transaction handling. You can also invoke it
+directly as `/csharp-unit-of-work-pattern`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `core-concept-and-motivation.md` | the problem (partial writes leaving a store inconsistent), the pattern's shape, when you need it vs. when a single repository call already suffices |
-| `unit-of-work-interface-and-repositories.md` | an `IUnitOfWork` interface coordinating multiple `IRepository<T>` instances against one shared connection/session, a single `SaveChanges` |
-| `generic-unit-of-work.md` | a reusable, type-parameterized `IUnitOfWork` base and repository factory |
-| `transactions-ambient-vs-explicit.md` | `TransactionScope`-style ambient transactions vs. an explicit transaction the unit of work opens/commits itself; rollback on partial failure |
-| `change-tracking-contexts-as-unit-of-work.md` | why a change-tracking data-access context (queued inserts/updates/deletes flushed by one save call) is already a unit of work |
-| `testing.md` | testing code that depends on `IUnitOfWork` — fakes, verifying atomicity, the two or three most common test shapes |
-| `extending.md` | adding a new repository or atomic operation without breaking existing callers |
+| The problem and when you need the pattern | [references/core-concept-and-motivation.md](references/core-concept-and-motivation.md) |
+| An `IUnitOfWork` interface coordinating multiple repositories | [references/unit-of-work-interface-and-repositories.md](references/unit-of-work-interface-and-repositories.md) |
+| A reusable, type-parameterized unit-of-work base | [references/generic-unit-of-work.md](references/generic-unit-of-work.md) |
+| Ambient vs. explicit transactions, and rollback on failure | [references/transactions-ambient-vs-explicit.md](references/transactions-ambient-vs-explicit.md) |
+| Recognizing a change-tracking context as already a unit of work | [references/change-tracking-contexts-as-unit-of-work.md](references/change-tracking-contexts-as-unit-of-work.md) |
+| Testing code that depends on `IUnitOfWork` | [references/testing.md](references/testing.md) |
+| Adding a new repository or atomic operation | [references/extending.md](references/extending.md) |
 
-## Scope
+## Example prompts
 
-A design pattern, not a package — there is no version or license to pin, and no NuGet package this
-skill tracks. Every mechanism described (repository coordination, transaction handling, change
-tracking) is generic — apply it with whatever data-access technology a given project already uses.
-
-Out of scope: distributed transactions across independent databases/services, and the internal
-query-method design of an individual repository beyond what coordinating it under one save call
-requires. See [SKILL.md](SKILL.md) for the full out-of-scope list.
+- "I'm updating an `Order` and decrementing `InventoryItem` stock in the same operation. How do I
+  make sure both writes commit together or neither does?"
+- "Should my `IUnitOfWork` open its own transaction, or rely on an ambient `TransactionScope`?"
+- "My data context already tracks changes and flushes them on `SaveChanges`. Do I actually need a
+  separate unit-of-work class on top of that?"

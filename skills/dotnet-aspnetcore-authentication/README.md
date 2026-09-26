@@ -1,28 +1,40 @@
 # ASP.NET Core Authentication
 
-Guidance on ASP.NET Core's authentication and authorization middleware — the routing table (by task)
-is in [SKILL.md](SKILL.md).
+Guidance on ASP.NET Core's built-in authentication and authorization middleware: the scheme model
+behind `AddAuthentication`, the built-in cookie and JWT bearer handlers, `ClaimsPrincipal`
+construction, and policy-based authorization with `[Authorize]`.
 
-**`references/`** — one file per topic
+## When to reach for it
 
-| File | Covers |
+- You're wiring up authentication schemes for a new ASP.NET Core app, or adding a second scheme
+  alongside an existing one.
+- You're debugging why a request comes back `401` when you expected `403`, or the reverse.
+- You're defining a policy that requires a specific claim or role, or writing a custom
+  `AuthenticationHandler<TOptions>` for a credential type with no built-in scheme.
+
+## Using it
+
+This skill fires automatically when your request involves wiring up authentication, debugging a
+401/403 response, or defining an authorization policy. You can also invoke it directly with
+`/dotnet-aspnetcore-authentication`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `authentication-schemes.md` | `AddAuthentication`, scheme registration, default-scheme properties, middleware ordering |
-| `cookie-authentication.md` | `AddCookie`, sign-in/sign-out, redirect-vs-status-code behavior |
-| `jwt-bearer-authentication.md` | `AddJwtBearer`, `TokenValidationParameters`, validation events |
-| `claims-and-principals.md` | `ClaimsPrincipal`/`ClaimsIdentity` construction and reading, `IClaimsTransformation` |
-| `authorization-attributes.md` | `[Authorize]`/`[AllowAnonymous]`, `RequireAuthorization()`/`AllowAnonymous()`, 401 vs. 403 |
-| `policy-based-authorization.md` | `AddAuthorizationBuilder`, `RequireClaim`/`RequireRole`, custom `IAuthorizationRequirement` handlers, resource-based authorization |
-| `custom-authentication-handlers.md` | `AuthenticationHandler<TOptions>` for credential types with no built-in scheme |
-| `multi-scheme-setups.md` | Combining cookie and JWT bearer (or any two schemes) in one app |
-| `testing.md` | Testing requirement handlers, policies, and `[Authorize]`-guarded endpoints |
+| `AddAuthentication`, scheme registration, default-scheme properties | [references/authentication-schemes.md](references/authentication-schemes.md) |
+| Cookie-based sign-in for a browser-facing app | [references/cookie-authentication.md](references/cookie-authentication.md) |
+| JWT bearer validation for an API | [references/jwt-bearer-authentication.md](references/jwt-bearer-authentication.md) |
+| Building or reading `ClaimsPrincipal`/`ClaimsIdentity`, transforming claims | [references/claims-and-principals.md](references/claims-and-principals.md) |
+| `[Authorize]`/`[AllowAnonymous]` and their minimal API equivalents | [references/authorization-attributes.md](references/authorization-attributes.md) |
+| Named policies with `AddAuthorizationBuilder`, claim/role requirements, custom handlers | [references/policy-based-authorization.md](references/policy-based-authorization.md) |
+| Writing a custom `AuthenticationHandler<TOptions>` | [references/custom-authentication-handlers.md](references/custom-authentication-handlers.md) |
+| Combining cookie and JWT (or any two schemes) in one app | [references/multi-scheme-setups.md](references/multi-scheme-setups.md) |
+| Testing policies, requirement handlers, and `[Authorize]`-guarded endpoints | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-ASP.NET Core's own authentication scheme model, built-in cookie and JWT bearer handlers, and
-policy-based authorization. Out of scope: any specific external identity provider or
-identity-server product (this skill documents the framework abstractions any such integration sits
-on top of, not a provider's own configuration surface), and user account storage/management.
-
-Each reference file notes a version-specific fact inline where one applies; version is not the
-file-splitting axis for this skill (see [SKILL.md](SKILL.md) for why).
+- "Set up JWT bearer authentication for this API and require an 'Administrator' role on the
+  admin endpoints."
+- "Why is my endpoint returning 403 instead of 401 when there's no token at all?"
+- "I need cookie sign-in for the browser-facing pages and JWT for the API, in the same app."

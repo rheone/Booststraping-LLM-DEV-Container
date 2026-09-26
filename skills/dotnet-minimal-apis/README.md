@@ -1,24 +1,35 @@
 # Minimal APIs
 
-Guidance on ASP.NET Core Minimal APIs — the routing table (by task) is in [SKILL.md](SKILL.md).
+Guidance on ASP.NET Core Minimal APIs: route registration, parameter binding, endpoint filters,
+route groups, typed results, and request validation.
 
-**`references/`** — one file per topic
+## When to reach for it
 
-| File | Covers |
+- You're writing or reviewing a minimal API endpoint.
+- You're debugging a parameter-binding ambiguity, such as two complex-type parameters on one
+  handler with no explicit `[FromBody]`.
+- You're grouping related endpoints under a shared prefix or filter, or deciding how to shape and
+  validate a response.
+
+## Using it
+
+This skill fires automatically when your request involves writing an endpoint, debugging binding,
+or adding a filter or route group. You can also invoke it directly with `/dotnet-minimal-apis`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `route-registration.md` | `MapGet`/`MapPost`/etc., route constraints, `.WithName`/`.WithSummary`/`.WithTags` |
-| `parameter-binding.md` | Implicit binding rules, `[FromRoute]`/`[FromQuery]`/`[FromServices]`/`[FromBody]`, `BindAsync`, `[AsParameters]` |
-| `endpoint-filters.md` | `IEndpointFilter`, filter registration, ordering, group-level filters |
-| `route-groups.md` | `MapGroup`, shared prefixes/filters/metadata, nesting |
-| `typed-results.md` | `TypedResults`, `Results<T1,T2>` union return types, OpenAPI accuracy |
-| `request-validation.md` | Manual validation, data annotations, filter-based validation |
-| `testing.md` | Unit testing handlers/filters, integration testing with `WebApplicationFactory` |
+| `MapGet`/`MapPost`/etc., route constraints, `.WithName`/`.WithSummary`/`.WithTags` | [references/route-registration.md](references/route-registration.md) |
+| Implicit binding rules, `[FromRoute]`/`[FromQuery]`/`[FromServices]`/`[FromBody]`, `BindAsync`, `[AsParameters]` | [references/parameter-binding.md](references/parameter-binding.md) |
+| `IEndpointFilter`, filter registration and ordering | [references/endpoint-filters.md](references/endpoint-filters.md) |
+| `MapGroup`, shared prefixes/filters/metadata, nesting | [references/route-groups.md](references/route-groups.md) |
+| `TypedResults`, `Results<T1,T2>` union return types | [references/typed-results.md](references/typed-results.md) |
+| Manual validation, data annotations, filter-based validation | [references/request-validation.md](references/request-validation.md) |
+| Unit and integration testing endpoints and filters | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-ASP.NET Core Minimal APIs as their own convention: routing, binding, filters, grouping, typed
-results, and validation. Out of scope: content negotiation/formatting beyond the default JSON
-shape, and OpenAPI document generation configuration itself.
-
-Each reference file notes a version-specific fact inline where one applies; version is not the
-file-splitting axis for this skill (see [SKILL.md](SKILL.md) for why).
+- "Write a minimal API endpoint that creates an order and returns a typed result."
+- "Why is this handler failing to bind two complex parameters at once?"
+- "Group these order-related endpoints under /orders with a shared validation filter."

@@ -1,28 +1,39 @@
 # C# Command Pattern
 
-Reference for the Command design pattern in C#: encapsulating a request as an object with an
-`Execute` method, so it can be queued, logged, parameterized, or undone independently of whoever
-invokes it. The routing table (by situation) is in [SKILL.md](SKILL.md).
+The Command pattern turns a request ("do this operation, with this data") into an object in its
+own right, instead of a direct method call. Once a request is an object, you can hold onto it,
+queue it, log it, undo it, or hand it to code that has no idea what the operation actually does.
+This skill covers parameterized commands, undo/redo history, a generic result-producing command,
+and the lightweight delegate-based alternative.
 
-**`references/`** — one file per concern, not per package or version — Command is a behavioral
-pattern with nothing to version-pin
+## When to reach for it
 
-| File | Covers |
+- You're building an undo/redo stack and need each user action captured as a reversible object.
+- You're implementing a macro or batch-command feature that replays a sequence of operations.
+- You need a queued or auditable operation: something that gets created now and executed, logged,
+  or replayed later.
+- You're deciding between a full `ICommand` class and a plain delegate for a given operation.
+
+## Using it
+
+This skill is model-invoked: it activates automatically when the conversation touches undo/redo,
+queued or auditable operations, or a UI action modeled as "each button press is a command object".
+You can also invoke it directly by asking for it or typing `/csharp-command-pattern`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `philosophy-and-structure.md` | command, invoker, receiver roles; the basic `ICommand` shape; when to reach for the pattern |
-| `parameterized-commands.md` | commands that carry their own request data via constructor parameters |
-| `undo-redo-and-history.md` | reversible commands, a command history stack, redo after undo |
-| `generic-command-with-result.md` | `ICommand<TResult>` for commands that produce a value |
-| `delegate-based-commands.md` | `Action`/`Func`-based lightweight commands versus the full object form |
-| `extending-with-new-commands.md` | adding a new command type without touching existing invokers or commands |
-| `testing-commands.md` | testing an invoker against a fake command; testing a command's own execute/undo logic |
+| Command, invoker, and receiver roles; the basic `ICommand` shape | [references/philosophy-and-structure.md](references/philosophy-and-structure.md) |
+| Commands that carry their own request data via constructor parameters | [references/parameterized-commands.md](references/parameterized-commands.md) |
+| Reversible commands, a command history stack, and redo after undo | [references/undo-redo-and-history.md](references/undo-redo-and-history.md) |
+| A generic `ICommand<TResult>` for commands that produce a value | [references/generic-command-with-result.md](references/generic-command-with-result.md) |
+| `Action`/`Func`-based lightweight commands versus the full object form | [references/delegate-based-commands.md](references/delegate-based-commands.md) |
+| Adding a new command type without touching existing invokers | [references/extending-with-new-commands.md](references/extending-with-new-commands.md) |
+| Testing an invoker against a fake command, and testing a command's own logic | [references/testing-commands.md](references/testing-commands.md) |
 
-## Scope
+## Example prompts
 
-A behavioral design pattern, not a package — there is no version or license to track. Guidance
-applies to any C# codebase; the object-based form has been expressible since C# 1.0, delegate-based
-commands became lightweight with anonymous methods (C# 2.0) and lambda expressions (C# 3.0), and
-`ICommand<TResult>` uses generics (C# 2.0 onward).
-
-Out of scope: any specific mediator or messaging library's dispatch mechanism, and CQRS as a
-broader architectural style. See [SKILL.md](SKILL.md) for the full out-of-scope list.
+- "I need an undo/redo stack for these editing operations. Help me model each one as a command."
+- "Should this button action be a full `ICommand` class or just a delegate?"
+- "Help me add a macro feature that replays a batch of commands in sequence."

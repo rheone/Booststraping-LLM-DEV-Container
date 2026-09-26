@@ -1,28 +1,39 @@
 # OpenTelemetry for .NET
 
-Guidance on OpenTelemetry for .NET, a vendor-neutral observability SDK covering traces, metrics, and
-logs — the routing table (by situation, not by version) is in [SKILL.md](SKILL.md).
+OpenTelemetry for .NET is a vendor-neutral observability SDK spanning traces, metrics, and logs.
+This skill covers wiring up the SDK, adding instrumentation, creating your own spans and metrics,
+and exporting telemetry to a backend.
 
-**`references/`** — one file per category, not per version
+## When to reach for it
 
-| File | Covers |
+- Wiring `AddOpenTelemetry()`/`WithTracing`/`WithMetrics`/`WithLogging` into a new service.
+- Adding an instrumentation library like `AddAspNetCoreInstrumentation` or
+  `AddHttpClientInstrumentation` and understanding what it captures automatically.
+- Creating a custom span with `ActivitySource`/`Activity` or a custom metric with `Meter`.
+- Debugging a distributed trace that's broken or disconnected across service boundaries.
+- Choosing and configuring an exporter (OTLP, console, or a vendor-specific backend).
+
+## Using it
+
+This skill fires automatically when your request involves OpenTelemetry setup, instrumentation, or
+distributed tracing in a .NET service. You can also invoke it directly with
+`/dotnet-opentelemetry`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `core-concepts.md` | The three signals, package layout, `AddOpenTelemetry()`, `ConfigureResource`, `WithTracing`/`WithMetrics`/`WithLogging` |
-| `instrumentation-libraries.md` | `AddAspNetCoreInstrumentation`, `AddHttpClientInstrumentation`, other `OpenTelemetry.Instrumentation.*` packages |
-| `custom-tracing.md` | `ActivitySource`, `Activity`, tags, events, status, parent/child span relationships |
-| `custom-metrics.md` | `Meter`, `Counter<T>`, `Histogram<T>`, `UpDownCounter<T>`, `ObservableGauge<T>`, tag cardinality |
-| `exporters.md` | `AddOtlpExporter`, `AddConsoleExporter`, vendor-specific backends in general |
-| `context-propagation.md` | W3C Trace Context, `traceparent`, `Baggage`, non-HTTP transport propagation |
-| `testing-with-opentelemetry.md` | `ActivityListener`, `MeterListener`, verifying your own instrumentation without a real exporter |
+| The three signals, `AddOpenTelemetry()`, `ConfigureResource` | [references/core-concepts.md](references/core-concepts.md) |
+| `AddAspNetCoreInstrumentation`, `AddHttpClientInstrumentation`, other instrumentation packages | [references/instrumentation-libraries.md](references/instrumentation-libraries.md) |
+| `ActivitySource`/`Activity`, tags, events, span status | [references/custom-tracing.md](references/custom-tracing.md) |
+| `Meter`, `Counter<T>`, `Histogram<T>`, `UpDownCounter<T>`, `ObservableGauge<T>` | [references/custom-metrics.md](references/custom-metrics.md) |
+| `AddOtlpExporter`, `AddConsoleExporter`, vendor backends | [references/exporters.md](references/exporters.md) |
+| W3C Trace Context, `traceparent`, `Baggage` propagation | [references/context-propagation.md](references/context-propagation.md) |
+| Verifying instrumentation with `ActivityListener`/`MeterListener` | [references/testing-with-opentelemetry.md](references/testing-with-opentelemetry.md) |
 
-## Scope
+## Example prompts
 
-The `OpenTelemetry`/`OpenTelemetry.Api`/`OpenTelemetry.Extensions.Hosting` SDK packages, official
-`OpenTelemetry.Instrumentation.*` auto-instrumentation packages, and the built-in `OpenTelemetryProtocol`
-and console exporters. Out of scope: the OpenTelemetry Collector's own configuration, any specific
-observability backend's product-specific features, and sampling-strategy tuning beyond why
-`StartActivity` can return `null`.
-
-Each reference file notes a version-introduced fact inline; version is not the file-splitting axis
-for this skill (see [SKILL.md](SKILL.md) for why). Current stable release as of this writing:
-1.19.1.
+- "Add OpenTelemetry tracing and metrics to this ASP.NET Core API and export via OTLP."
+- "I need a custom span around this database call with a tag for the query name."
+- "Traces from service A never show up as children of service B's traces. What's wrong with
+  context propagation?"

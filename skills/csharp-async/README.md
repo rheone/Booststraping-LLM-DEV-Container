@@ -1,50 +1,37 @@
-# C# Async
+# C# Async and Await
 
-Reference for C# asynchronous programming: pre-language-support APM/EAP/bare-TAP patterns
-(.NET Framework 1.0+) through `async`/`await` itself (C# 5.0 / .NET Framework 4.5), `await` in
-`catch`/`finally` (C# 6.0), generalized async return types enabling `ValueTask<T>` (C# 7.0),
-`async Main` (C# 7.1), async streams and async disposal (C# 8.0 / .NET Core 3.0), per-method
-`AsyncMethodBuilder` (C# 10 / .NET 6), and `ref`/`unsafe` in async methods (C# 13 / .NET 9). The
-routing table is in [SKILL.md](SKILL.md).
+Helps you write, review, or port asynchronous C# code (`async`/`await`, `Task`/`ValueTask`, async
+streams, cancellation, and `ConfigureAwait`) across the full history of .NET's async patterns,
+from the pre-`async` APM/EAP era through the latest language and runtime changes.
 
-**`references/`** — version-gated core syntax, oldest to newest
+## When to reach for it
 
-| File | Covers |
+- Deciding whether a method should return `Task<T>` or `ValueTask<T>`
+- Threading a `CancellationToken` correctly through a chain of async calls
+- Producing or consuming an `IAsyncEnumerable<T>` async stream with `await foreach`
+- Porting old `BeginX`/`EndX` or event-based async code to `async`/`await`
+- Deciding where `ConfigureAwait(false)` belongs in a library vs. an application
+
+## Using it
+
+This skill is model-invoked: it fires automatically when the situation matches, such as writing,
+reviewing, or porting async code, or choosing between async return types.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `pre-csharp5-apm-eap-tap.md` | .NET Fx 1.0 – 4.0 (C# 1.0 – 4.0) — APM, EAP, bare Task/ContinueWith |
-| `csharp5-async-await.md` | .NET Fx 4.5+ (C# 5.0+) — the universal baseline |
-| `csharp6-await-in-catch-finally.md` | .NET Fx 4.6+ (C# 6.0+) — await inside catch/finally |
-| `csharp7-task-like-types.md` | .NET Core 1.0+ / .NET Fx 4.6.2+ (C# 7.0+) — generalized async return types, `ValueTask<T>` |
-| `csharp7.1-async-main.md` | .NET Core 2.0+ (C# 7.1+) — async Main |
-| `csharp8-async-streams.md` | .NET Core 3.0+ (C# 8.0+) — `IAsyncEnumerable<T>`, await foreach, await using |
-| `csharp10-async-method-builder-on-methods.md` | .NET 6+ (C# 10+) — [AsyncMethodBuilder] on methods |
-| `csharp13-ref-unsafe-in-async.md` | .NET 9+ (C# 13+) — ref locals and unsafe contexts in async methods |
+| Pre-`async` APM/EAP/bare-Task patterns | [references/pre-csharp5-apm-eap-tap.md](references/pre-csharp5-apm-eap-tap.md) |
+| `async`/`await` fundamentals (the universal baseline) | [references/csharp5-async-await.md](references/csharp5-async-await.md) |
+| `await` inside `catch`/`finally` | [references/csharp6-await-in-catch-finally.md](references/csharp6-await-in-catch-finally.md) |
+| Task-like return types and `ValueTask<T>` | [references/csharp7-task-like-types.md](references/csharp7-task-like-types.md) |
+| `async Main` entry points | [references/csharp7.1-async-main.md](references/csharp7.1-async-main.md) |
+| Async streams, `await foreach`, `await using` | [references/csharp8-async-streams.md](references/csharp8-async-streams.md) |
+| Per-method `AsyncMethodBuilder` | [references/csharp10-async-method-builder-on-methods.md](references/csharp10-async-method-builder-on-methods.md) |
+| `ref`/`unsafe` inside async methods | [references/csharp13-ref-unsafe-in-async.md](references/csharp13-ref-unsafe-in-async.md) |
 
-```text
-specialized/                                   cross-cutting patterns, applicable across versions
-  cancellation-with-cancellationtoken.md
-  configureawait-and-synchronization-context.md
-  generic-async-methods-and-task-of-t.md
-  async-disposal-patterns.md
-  exception-handling-in-async-code.md
-  testing-async-code.md
-  runtime-async-performance.md
-```
+## Example prompts
 
-## Version coverage
-
-| .NET | C# | GA | Async-relevant additions |
-| --- | --- | --- | --- |
-| Framework 1.0 – 4.0 | 1.0 – 4.0 | 2002 – 2010 | no language async support: APM (`BeginX`/`EndX`, .NET Fx 1.0), EAP (`MethodAsync` + `MethodCompleted`, .NET Fx 2.0), bare `Task`/`Task<T>` composed by hand with `ContinueWith` (.NET Fx 4.0) |
-| Framework 4.5 | 5.0 | Aug 2012 | `async`/`await` keywords; `Task`/`Task<T>` become directly awaitable |
-| Framework 4.6 | 6.0 | Jul 2015 | `await` allowed inside `catch`/`finally` blocks |
-| Core 1.0+ / Framework 4.6.2+ | 7.0 | Mar 2017 | generalized async return types (task-like types); enables `ValueTask<T>` (shipped as a BCL type in .NET Core 2.0, Aug 2017) |
-| Core 2.0 | 7.1 | Aug 2017 | `async Main` entry point |
-| Core 3.0 | 8.0 | Sep 2019 | `IAsyncEnumerable<T>`, `await foreach`, async streams; `IAsyncDisposable`, `await using` |
-| 6 | 10 | Nov 2021 | `[AsyncMethodBuilder]` attribute allowed on individual methods (not just types) |
-| 9 | 13 | Nov 2024 | `ref` locals and `unsafe` contexts permitted inside async methods (and iterators) |
-| 10 | 14 | Nov 2025 | no new async-specific language syntax |
-| 11 | 15 | RC1 Sep 2026, GA expected Nov 2026 | no new async-specific language syntax; ships Runtime Async as a separate, non-syntax runtime/codegen feature — see [specialized/runtime-async-performance.md](specialized/runtime-async-performance.md) |
-
-Each reference file states its own fallback file, so a project pinned to an older `LangVersion`
-than its target SDK supports can still find the right syntax tier.
+- "Should this repository method return `Task<Order>` or `ValueTask<Order>`?"
+- "Convert this old `BeginRead`/`EndRead` pair to `async`/`await`."
+- "How do I thread a `CancellationToken` through this async pipeline properly?"

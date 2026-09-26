@@ -1,36 +1,39 @@
 # gRPC for .NET
 
-Task-organized guidance on gRPC for .NET — the routing table (by task, not version) is in
-[SKILL.md](SKILL.md).
+gRPC for .NET defines a service contract in a `.proto` file and generates the server base class and
+client stub from it, using `Grpc.AspNetCore` to host the service and `Grpc.Net.Client` to call it.
+This skill covers the four RPC patterns, the .NET client, interceptors, deadlines/cancellation, and
+error handling.
 
-**`references/`** — one file per topic, not per version
+## When to reach for it
 
-| File | Covers |
+- You're writing a `.proto` file and need the generated C# code to come out right.
+- You're implementing a server method and deciding between unary, server-streaming, client-streaming, or bidirectional-streaming.
+- You're calling a gRPC service from .NET and setting up the channel and client stub.
+- You need a client or server interceptor for logging, auth headers, or retries.
+- A call needs a deadline so a hung or slow server doesn't block the caller indefinitely.
+- You're raising or handling an `RpcException` and choosing the right `StatusCode`.
+
+## Using it
+
+This skill is model-invoked: it fires automatically when your prompt touches defining a gRPC
+service contract, implementing or calling a gRPC method, interceptors, deadlines, or error status
+handling. You can also invoke it directly by name.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `proto-and-codegen.md` | .proto syntax basics, `<Protobuf>` MSBuild item, generated base classes/client stubs |
-| `server-implementation.md` | unary, server-streaming, client-streaming, and bidirectional-streaming service methods |
-| `dotnet-client.md` | GrpcChannel, GrpcChannelOptions, the generated client stub, channel reuse |
-| `interceptors.md` | Interceptor base class, client and server interceptors |
-| `deadlines-and-cancellation.md` | CallOptions.Deadline, CancellationToken propagation |
-| `error-handling.md` | RpcException, Status and StatusCode, mapping exceptions to statuses |
-| `testing.md` | Testing a gRPC service and client code |
+| `.proto` syntax basics, the `<Protobuf>` MSBuild item, generated base classes/client stubs | [references/proto-and-codegen.md](references/proto-and-codegen.md) |
+| Unary, server-streaming, client-streaming, and bidirectional-streaming service methods | [references/server-implementation.md](references/server-implementation.md) |
+| `GrpcChannel`, `GrpcChannelOptions`, the generated client stub, channel reuse | [references/dotnet-client.md](references/dotnet-client.md) |
+| The `Interceptor` base class, client and server interceptors | [references/interceptors.md](references/interceptors.md) |
+| `CallOptions.Deadline`, `CancellationToken` propagation | [references/deadlines-and-cancellation.md](references/deadlines-and-cancellation.md) |
+| `RpcException`, `Status`/`StatusCode`, mapping exceptions to statuses | [references/error-handling.md](references/error-handling.md) |
+| Testing a gRPC service and client code | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-gRPC for .NET (`Grpc.AspNetCore` for the server, `Grpc.Net.Client` for the client, plus the shared
-`Grpc.Core.Api`/`Google.Protobuf` code-generation surface). Out of scope: Protocol Buffers wire-format
-internals and the standalone `protoc` CLI beyond MSBuild integration, and HTTP/2 transport
-configuration beyond gRPC's own channel/Kestrel options.
-
-Each reference file notes a version fact inline where relevant; version is not the file-splitting
-axis for this skill (see SKILL.md for why).
-
-## Verified facts (as of 2026-09-26)
-
-- **Current latest release: Grpc.AspNetCore 2.83.0 and Grpc.Net.Client 2.83.0** (a prerelease
-  2.84.0-pre1 exists ahead of it). Apache-2.0-licensed (the `grpc/grpc-dotnet` repository's license).
-  Source: the NuGet Gallery package pages (nuget.org/packages/grpc.aspnetcore,
-  nuget.org/packages/grpc.net.client) and the `grpc/grpc-dotnet` GitHub repository's `LICENSE` file.
-
-These facts were verified via live web search against nuget.org and github.com at the time this
-skill was written; re-verify before relying on the exact version number.
+- "Define a proto service for a greeter and generate the C# server and client code."
+- "Add a client interceptor that attaches an auth token to every outgoing call."
+- "This unary call hangs when the server is slow: add a deadline so it fails fast instead."

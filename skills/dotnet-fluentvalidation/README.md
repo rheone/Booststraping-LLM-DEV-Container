@@ -1,27 +1,41 @@
 # FluentValidation
 
-Guidance on FluentValidation, the strongly-typed validation library for .NET — the routing table
-(by task, not FluentValidation version) is in [SKILL.md](SKILL.md).
+Guidance on FluentValidation, the .NET library for expressing validation rules as fluent C# code
+instead of data-annotation attributes, covering rule authoring, conditional and async rules,
+nested/collection validation, ASP.NET Core wiring, and testing validators.
 
-**`references/`** — one file per topic, not per FluentValidation version
+## When to reach for it
 
-| File | Covers |
+- Writing or reviewing an `AbstractValidator<T>` and its `RuleFor` chains.
+- A built-in validator doesn't fit and you need a custom rule (`Must`, `Custom`, or a reusable
+  `PropertyValidator`).
+- A rule should only apply under certain conditions, or needs to check something asynchronously
+  (a database lookup, an API call).
+- Validating a nested object or a collection property, or wiring validators into ASP.NET Core
+  endpoints.
+- Deciding how to test a validator's rule set with `TestValidate`.
+
+## Using it
+
+This skill is model-invoked: it fires automatically when you're writing, reviewing, or debugging
+FluentValidation validators, or wiring validation into ASP.NET Core. You can also invoke it
+directly by name.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `core-concepts.md` | `AbstractValidator<T>`, `RuleFor`, built-in validators, `ValidationResult`/`ValidationFailure` |
-| `custom-validators.md` | `Must`, `Custom`/`CustomAsync`, reusable `PropertyValidator<T,TProperty>` |
-| `conditional-validation.md` | `When`, `Unless`, `WhenAsync`, shared conditions across multiple rules |
-| `async-validation.md` | `MustAsync`, `CustomAsync`, `ValidateAsync`, mixing sync and async rules |
-| `nested-and-collections.md` | `SetValidator`, `RuleForEach`, validating child objects and collection items |
-| `aspnetcore-integration.md` | manual validation, minimal APIs, endpoint filters, `ProblemDetails`, deprecated auto-validation |
-| `localization.md` | `LanguageManager`, resource-based message translation, per-culture overrides |
-| `testing.md` | `TestValidate`, asserting on specific properties and error codes |
+| AbstractValidator\<T>, RuleFor, built-in validators, ValidationResult/ValidationFailure | [references/core-concepts.md](references/core-concepts.md) |
+| Must, Custom/CustomAsync, reusable PropertyValidator\<T,TProperty> | [references/custom-validators.md](references/custom-validators.md) |
+| When, Unless, WhenAsync, and sharing a condition across rules | [references/conditional-validation.md](references/conditional-validation.md) |
+| MustAsync, CustomAsync, ValidateAsync, mixing sync and async rules | [references/async-validation.md](references/async-validation.md) |
+| SetValidator, RuleForEach, validating child objects and collection items | [references/nested-and-collections.md](references/nested-and-collections.md) |
+| Manual validation, minimal APIs, endpoint filters, ProblemDetails, deprecated auto-validation | [references/aspnetcore-integration.md](references/aspnetcore-integration.md) |
+| Translating validation messages for different cultures | [references/localization.md](references/localization.md) |
+| Unit testing a validator's rules with TestValidate | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-FluentValidation only — building and running validation rule sets against C# objects. Out of
-scope: data annotation attributes, domain invariant enforcement inside entities, and client-side
-validation (see [SKILL.md](SKILL.md) for why).
-
-Each reference file notes a version-introduced fact inline (e.g. the v12 minimum-.NET-8 target,
-the v11.1 `Results.ValidationProblem` helper); version is not the file-splitting axis for this
-skill (see [SKILL.md](SKILL.md)).
+- "Write a FluentValidation validator for this order request DTO."
+- "Make this rule only run when the customer type is Business."
+- "How do I hook FluentValidation into a minimal API endpoint and return ProblemDetails?"

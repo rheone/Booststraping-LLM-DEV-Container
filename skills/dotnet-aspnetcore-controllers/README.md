@@ -1,26 +1,36 @@
 # ASP.NET Core Controllers
 
-Guidance on controller-based ASP.NET Core Web APIs — the routing table (by task) is in
-[SKILL.md](SKILL.md).
+Guidance on controller-based ASP.NET Core Web APIs: `ControllerBase` and `[ApiController]`'s
+conventions, attribute routing, model binding, action filters, model validation, and content
+negotiation.
 
-**`references/`** — one file per topic
+## When to reach for it
 
-| File | Covers |
+- You're writing or reviewing a controller-based API endpoint.
+- You're debugging an unexpected automatic `400` response, or a model-binding surprise on an
+  action parameter.
+- You're adding an action filter, or configuring how a controller negotiates its response format.
+
+## Using it
+
+This skill fires automatically when your request involves writing a controller, debugging model
+binding or validation, or adding a filter. You can also invoke it directly with
+`/dotnet-aspnetcore-controllers`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `controllers-and-apicontroller.md` | `ControllerBase`, `[ApiController]`'s conventions, registering controller services |
-| `attribute-routing.md` | `[Route]`/`[HttpGet]`/etc., route constraints, naming routes for URL generation |
-| `model-binding.md` | `[FromRoute]`/`[FromQuery]`/`[FromBody]`/`[FromServices]`/`[FromHeader]`/`[FromForm]`, inference under `[ApiController]`, custom model binders |
-| `action-filters.md` | `IActionFilter`/`IAsyncActionFilter`, registration, the MVC filter pipeline's stage ordering |
-| `model-validation.md` | `ModelState`, automatic 400 under `[ApiController]`, `IValidatableObject` |
-| `content-negotiation.md` | Output/input formatters, `[Produces]`, `[ProducesResponseType]` |
-| `testing.md` | Unit testing controllers/filters, integration testing with `WebApplicationFactory` |
+| `ControllerBase`, `[ApiController]`'s conventions, registering controller services | [references/controllers-and-apicontroller.md](references/controllers-and-apicontroller.md) |
+| `[Route]`/`[HttpGet]`/etc., route constraints, naming routes for URL generation | [references/attribute-routing.md](references/attribute-routing.md) |
+| Binding parameters from route/query/body/services, custom model binders | [references/model-binding.md](references/model-binding.md) |
+| `IActionFilter`/`IAsyncActionFilter` and the MVC filter pipeline's stage ordering | [references/action-filters.md](references/action-filters.md) |
+| `ModelState`, the automatic 400 under `[ApiController]`, `IValidatableObject` | [references/model-validation.md](references/model-validation.md) |
+| Output/input formatters, `[Produces]`, `[ProducesResponseType]` | [references/content-negotiation.md](references/content-negotiation.md) |
+| Unit and integration testing controllers and filters | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-Controller-based ASP.NET Core Web APIs as their own convention: `ControllerBase`/`[ApiController]`,
-attribute routing, model binding, action filters, model validation, and content negotiation. Out of
-scope: Razor views/Pages and other MVC-page-rendering concerns, and OpenAPI document generation
-configuration itself.
-
-Each reference file notes a version-specific fact inline where one applies; version is not the
-file-splitting axis for this skill (see [SKILL.md](SKILL.md) for why).
+- "Why does this endpoint return 400 before my action code even runs?"
+- "Add an action filter that logs every request handled by this controller."
+- "Should this parameter be bound with [FromQuery] or [FromBody] here?"

@@ -1,29 +1,38 @@
-# Channels
+# Channels (System.Threading.Channels)
 
-Guidance on `System.Threading.Channels`, the BCL's async-first producer-consumer data structure —
-the routing table (by situation) is in [SKILL.md](SKILL.md).
+This skill covers `System.Threading.Channels`, the BCL's async-first, thread-safe producer-consumer
+data structure: creating channels, writing and reading with backpressure, and shutting a pipeline
+down cleanly.
 
-**`references/`** — one file per concern
+## When to reach for it
 
-| File | Covers |
+- Building an async producer-consumer pipeline or a work queue between async tasks.
+- Throttling a fast producer against a slow consumer with a bounded channel.
+- Deciding what should happen when a bounded channel fills up: wait, drop oldest, drop newest, or
+  drop the write.
+- Debugging a channel that never completes, or a consumer that stops reading before all items are
+  processed.
+- Signaling completion correctly when more than one producer writes to the same channel.
+
+## Using it
+
+This skill fires automatically when your request involves an async producer-consumer pipeline or
+`System.Threading.Channels` specifically. You can also invoke it directly with
+`/dotnet-channels`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `core-api.md` | `Channel.CreateUnbounded`/`CreateBounded`, `ChannelWriter<T>`, `ChannelReader<T>`, `SingleReader`/`SingleWriter` options |
-| `producer-consumer-patterns.md` | single/multiple producers and consumers, fan-out consumption, correctly signaling completion with more than one producer |
-| `backpressure-and-bounded-channels.md` | bounded channels, `BoundedChannelFullMode` (`Wait`/`DropOldest`/`DropNewest`/`DropWrite`), sizing capacity |
-| `completion-and-shutdown.md` | `Complete()`/`Completion`, propagating an exception through a channel, a graceful-shutdown checklist |
-| `blockingcollection-contrast.md` | factual API-design contrast with `System.Collections.Concurrent.BlockingCollection<T>` |
-| `testing.md` | asserting on pipeline output, testing completion/exception propagation, testing backpressure |
+| `Channel.CreateUnbounded`/`CreateBounded`, `ChannelWriter<T>`/`ChannelReader<T>` | [references/core-api.md](references/core-api.md) |
+| Single/multiple producers and consumers, fan-out, multi-producer completion signaling | [references/producer-consumer-patterns.md](references/producer-consumer-patterns.md) |
+| Bounded channels, `BoundedChannelFullMode`, sizing capacity | [references/backpressure-and-bounded-channels.md](references/backpressure-and-bounded-channels.md) |
+| `Complete()`/`Completion`, propagating an exception, graceful shutdown | [references/completion-and-shutdown.md](references/completion-and-shutdown.md) |
+| Factual API-design contrast with `BlockingCollection<T>` | [references/blockingcollection-contrast.md](references/blockingcollection-contrast.md) |
+| Testing pipeline output, completion, and backpressure | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-`System.Threading.Channels` (current stable release **10.0.12**, shipping with **.NET 10**; in-box
-since .NET Core 3.0, available as a standalone package targeting .NET Standard 2.0+ for earlier
-targets). Covers channel creation, the writer/reader API surface, single- and multi-producer/consumer
-patterns, backpressure via bounded channels, completion and graceful shutdown, the factual contrast
-with `BlockingCollection<T>`, and testing channel-based code.
-
-Out of scope: general `async`/`await`/`Task` fundamentals, and `System.IO.Pipelines` (a separate
-byte-buffer-oriented API for stream parsing). See [SKILL.md](SKILL.md) for the full out-of-scope
-list and rationale.
-
-This skill is self-contained: it does not assume any other skill is installed.
+- "Build a producer-consumer pipeline where one task reads files and another processes them."
+- "My bounded channel deadlocks under load. How do I stop the producer from blocking forever?"
+- "How do I make sure every producer finishes before the channel calls itself complete?"

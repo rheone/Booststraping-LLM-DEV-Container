@@ -1,41 +1,36 @@
 # C# Nullable Reference Types
 
-Reference for the nullable-reference-types (NRT) language feature and the compile-time static
-flow analysis it's built on. The routing table is in [SKILL.md](SKILL.md).
+Helps you write, review, or port code under C#'s nullable reference types (NRT) feature: the
+`#nullable` directive, `?` annotations on reference types, the null-forgiving `!` operator, and the
+compiler's flow analysis, as a purely compile-time, advisory static-analysis layer over ordinary
+reference types.
 
-**`references/`** — version-gated core syntax, oldest to newest
+## When to reach for it
 
-| File | Covers |
+- Deciding `?` vs. a plain reference type on a member, parameter, or generic type parameter
+- Diagnosing or suppressing a nullable warning without masking a real bug
+- Planning an incremental migration of an existing codebase onto NRT
+- Reasoning about whether the compiler will narrow a value's nullability after a null check
+- Writing NRT-aware test fixtures or assertions
+
+## Using it
+
+This skill is model-invoked: it fires automatically when you're writing, reviewing, or porting
+`#nullable`-aware code, or planning a migration to nullable reference types.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `pre-csharp8-nullable-oblivious.md` | pre-2019 (C# 1.0-7.x) — no NRT; every reference type implicitly nullable, defensive checks by convention |
-| `csharp8-nullable-reference-types.md` | C# 8.0 — `#nullable`/`<Nullable>`, `?` on reference types, `!`, flow-analysis narrowing, `where T : notnull` |
-| `csharp9-unconstrained-generic-nullability.md` | C# 9.0 — unconstrained T?, [MemberNotNull]/[MemberNotNullWhen], null-conditional-chain ! |
-| `csharp10-flow-analysis-and-defaults.md` | C# 10 — more accurate flow analysis; SDK templates default to Nullable enable |
-| `csharp11-required-members.md` | C# 11 — required members satisfy definite assignment without a constructor |
-| `csharp15-nullable-exhaustive-switch.md` | C# 15 (RC) — nullable-governed switch exhaustiveness requires a null arm |
+| No NRT: every reference type implicitly nullable | [references/pre-csharp8-nullable-oblivious.md](references/pre-csharp8-nullable-oblivious.md) |
+| `#nullable`, `?`, `!`, flow-analysis narrowing (the baseline) | [references/csharp8-nullable-reference-types.md](references/csharp8-nullable-reference-types.md) |
+| Unconstrained generic `T?`, `[MemberNotNull]`/`[MemberNotNullWhen]` | [references/csharp9-unconstrained-generic-nullability.md](references/csharp9-unconstrained-generic-nullability.md) |
+| More accurate flow analysis, nullable-by-default templates | [references/csharp10-flow-analysis-and-defaults.md](references/csharp10-flow-analysis-and-defaults.md) |
+| `required` members satisfying definite assignment | [references/csharp11-required-members.md](references/csharp11-required-members.md) |
+| Nullable-governed exhaustive switch | [references/csharp15-nullable-exhaustive-switch.md](references/csharp15-nullable-exhaustive-switch.md) |
 
-**`specialized/`** — cross-cutting patterns, applicable across versions
+## Example prompts
 
-| File | Covers |
-| --- | --- |
-| `generic-type-parameters-and-nullability.md` | `T?` as `Nullable<T>` vs. nullable reference, `notnull` vs. unconstrained `T`, oblivious type arguments |
-| `migrating-to-nullable-reference-types.md` | incremental enabling, annotations/warnings staging, warning-as-error promotion |
-| `null-forgiving-operator-pitfalls.md` | legitimate uses of ! vs. code smell / bug-masking uses |
-| `testing-with-nullable-reference-types.md` | NRT as a test-authoring concern: assertion-library narrowing, non-null fixture builders |
-
-## Version coverage
-
-| .NET | C# | GA | NRT-relevant additions |
-| --- | --- | --- | --- |
-| Any pre-.NET-Core-3.0 target | 1.0 – 7.x | — | No nullable reference types; every reference type implicitly nullable, `?` reserved for `Nullable<T>` |
-| .NET Core 3.0 | 8.0 | September 2019 | Nullable reference types introduced: `#nullable`/`<Nullable>`, `?` on reference types, `!`, flow-analysis narrowing, `where T : notnull`, the nullable-analysis attribute family (`[NotNull]`, `[MaybeNull]`, `[NotNullWhen]`, `[MaybeNullWhen]`, `[AllowNull]`, `[DisallowNull]`, `[NotNullIfNotNull]`, `[DoesNotReturn]`, `[DoesNotReturnIf]`) |
-| .NET 5 | 9.0 | November 2020 | Unconstrained type parameter `T?` annotations, `[MemberNotNull]`/`[MemberNotNullWhen]` attributes, null-conditional-chain `!` support |
-| .NET 6 | 10 | November 2021 | More accurate definite-assignment/null-state flow analysis; new SDK project templates default to `<Nullable>enable</Nullable>` |
-| .NET 7 | 11 | November 2022 | `required` members satisfy definite assignment for non-nullable members without a constructor |
-| .NET 8 | 12 | November 2023 | No NRT-specific change |
-| .NET 9 | 13 | November 2024 | No NRT-specific change |
-| .NET 10 | 14 | November 2025 | No NRT-specific change |
-| .NET 11 | 15 | RC1 Sept 2026; GA expected Nov 2026 | Nullable-governed `switch` exhaustiveness requires an explicit `null` arm |
-
-<!-- Keep this table's rows in sync with SKILL.md's routing table -- same tiers, same order.
-     On a maintenance pass, re-check C# 15's RC/GA status before appending a new row. -->
+- "Should this parameter be `string?` or `string` here?"
+- "Why is the compiler still warning about a possible null after my null check?"
+- "Help me plan an incremental rollout of nullable reference types across this project."

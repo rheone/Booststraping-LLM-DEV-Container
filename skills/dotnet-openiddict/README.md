@@ -1,28 +1,38 @@
 # OpenIddict
 
-Guidance on OpenIddict, the OAuth 2.0/OpenID Connect server and validation library for .NET — the
-routing table (by task) is in [SKILL.md](SKILL.md).
+Guidance on OpenIddict, the OAuth 2.0/OpenID Connect server and token-validation library for .NET:
+server and validation setup, the authorization code, client credentials, and refresh token flows,
+scope and claim configuration, and integrating with ASP.NET Core Identity.
 
-**`references/`** — one file per topic
+## When to reach for it
 
-| File | Covers |
+- You're standing up an OAuth 2.0/OIDC authorization server with OpenIddict.
+- You're adding a new grant type to an existing OpenIddict server, or configuring token validation
+  on a resource server.
+- You're debugging why a claim isn't showing up in an issued token, or wiring OpenIddict to an
+  existing ASP.NET Core Identity user store.
+
+## Using it
+
+This skill fires automatically when your request involves configuring an OpenIddict server or
+validation, implementing a flow, or debugging token contents. You can also invoke it directly with
+`/dotnet-openiddict`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `server-configuration.md` | `AddOpenIddict`/`AddCore`/`AddServer`, storage backend, signing/encryption certificates |
-| `validation-configuration.md` | `AddValidation`, local vs. remote (introspection) token validation |
-| `authorization-code-flow.md` | PKCE-protected authorization code flow, authorization/token endpoint handlers, client registration |
-| `client-credentials-flow.md` | Service-to-service token issuance, confidential client registration |
-| `refresh-token-flow.md` | Refresh token issuance, rotation, explicit revocation |
-| `scopes-and-claims.md` | Scope registration, per-client scope permissions, claim destinations |
-| `identity-integration.md` | Backing OpenIddict with ASP.NET Core Identity as the user store |
-| `testing.md` | Integration-testing token endpoints and flow enforcement |
+| `AddOpenIddict`/`AddCore`/`AddServer`, storage backend, signing/encryption certificates | [references/server-configuration.md](references/server-configuration.md) |
+| `AddValidation`, local vs. remote (introspection) token validation | [references/validation-configuration.md](references/validation-configuration.md) |
+| The authorization code flow with PKCE | [references/authorization-code-flow.md](references/authorization-code-flow.md) |
+| The client credentials flow for service-to-service tokens | [references/client-credentials-flow.md](references/client-credentials-flow.md) |
+| Refresh tokens, rotation, and explicit revocation | [references/refresh-token-flow.md](references/refresh-token-flow.md) |
+| Scope registration, per-client scope permissions, claim destinations | [references/scopes-and-claims.md](references/scopes-and-claims.md) |
+| Backing OpenIddict with ASP.NET Core Identity as the user store | [references/identity-integration.md](references/identity-integration.md) |
+| Testing token endpoints and flow enforcement | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-OpenIddict's server (`AddServer`) and validation (`AddValidation`) components: flow configuration,
-scope/claim setup, token validation, and the seam with ASP.NET Core Identity as a user store. Out of
-scope: ASP.NET Core Identity's own API surface beyond that seam, other OAuth 2.0/OIDC server
-implementations, and ASP.NET Core's general authentication model beyond what OpenIddict's own
-registration requires.
-
-Each reference file notes a version-specific fact inline where one applies; version is not the
-file-splitting axis for this skill (see [SKILL.md](SKILL.md) for why).
+- "Set up OpenIddict with the client credentials flow for service-to-service calls."
+- "Why isn't my custom claim making it into the access token?"
+- "Wire OpenIddict's user store to our existing ASP.NET Core Identity setup."

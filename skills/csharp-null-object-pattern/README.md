@@ -1,26 +1,39 @@
-# C# Null Object Pattern
+# Null Object Pattern
 
-Guidance on the Null Object design pattern in C# — providing a do-nothing implementation of an
-interface so call sites never need a null check for missing behavior. The routing table (by
-situation) is in [SKILL.md](SKILL.md).
+You give a "no behavior here" case a real implementation of an interface instead of a null
+reference, so callers stop branching on null to find out whether anything is actually configured.
+It covers the classic shape, a shared singleton versus a per-call instance, a reusable generic
+base, and how the pattern sits next to nullable reference types.
 
-**`references/`** — one file per concern/topic, not per package version — Null Object is a design
-pattern with nothing to version-pin
+## When to reach for it
 
-| File | Covers |
+- Every call site that uses an optional collaborator (a logger, a notifier, a cache) repeats the
+  same `collaborator?.DoThing()` or `if (collaborator != null)` check.
+- You're designing a fallback for an interface where "do nothing" is a legitimate, meaningful
+  outcome, not a sign something went wrong.
+- You're deciding whether a genuinely absent value belongs to a null object (absent *behavior*) or
+  to nullable-reference-type handling (absent *data*).
+
+## Using it
+
+This skill is model-invoked: it fires automatically when your prompt matches its situation, such as
+asking how to remove a scattered null check or design a no-op implementation. You can also invoke
+it directly as `/csharp-null-object-pattern`.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `core-concept-and-motivation.md` | the problem (repeated null checks for optional behavior), the pattern's shape, when it fits and when it doesn't |
-| `singleton-vs-per-call-instances.md` | a shared stateless singleton instance vs. constructing a fresh null object per call |
-| `generic-null-object-base.md` | a reusable, type-parameterized null-object base/factory for interfaces sharing a common shape |
-| `nullable-reference-types-interaction.md` | how the pattern (no null check needed for absent behavior) relates to nullable reference types (the compiler flags a missing null check) |
-| `testing.md` | using a null object as a trivial test double, and testing code that falls back to one |
-| `extending.md` | adding a new no-op implementation or a new interface member without breaking existing callers |
+| The problem and the pattern's basic shape | [references/core-concept-and-motivation.md](references/core-concept-and-motivation.md) |
+| Shared singleton instance vs. a fresh instance per call | [references/singleton-vs-per-call-instances.md](references/singleton-vs-per-call-instances.md) |
+| A reusable, type-parameterized null-object base | [references/generic-null-object-base.md](references/generic-null-object-base.md) |
+| How the pattern relates to nullable reference types | [references/nullable-reference-types-interaction.md](references/nullable-reference-types-interaction.md) |
+| Testing code that depends on a null-object implementation | [references/testing.md](references/testing.md) |
+| Adding a new no-op implementation or interface member | [references/extending.md](references/extending.md) |
 
-## Scope
+## Example prompts
 
-A design pattern, not a package — there is no version or license to pin, and no NuGet package this
-skill tracks. Every example is generic and adapts directly to any interface a project defines with a
-meaningful "do nothing" implementation.
-
-Out of scope: general optional-value handling for data, and dependency-injection container
-registration mechanics. See [SKILL.md](SKILL.md) for the full out-of-scope list.
+- "This service does a null check on `_notifier` before every call. Can I get rid of that with a
+  null object?"
+- "Should my `NullNotifier` be a shared singleton or a new instance each time I need it?"
+- "How do I write a generic null-object base I can reuse across a few different interfaces?"

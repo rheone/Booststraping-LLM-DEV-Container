@@ -1,26 +1,34 @@
-# Generic Math
+# C# Generic Math
 
-Guidance on C#'s generic math feature — `INumber<T>` and the wider numeric interface hierarchy,
-built on static abstract/virtual interface members. The routing table (by task, not version) is in
-[SKILL.md](SKILL.md).
+Helps you write numeric algorithms that work across `int`, `long`, `double`, `decimal`, and custom
+number types without duplicating the logic per type, using `INumber<T>` and the wider .NET numeric
+interface hierarchy built on static abstract/virtual interface members.
 
-**`references/`** — one file per topic, not per C# version
+## When to reach for it
 
-| File | Covers |
+- Writing an algorithm (a sum, an average, a clamp) that should work for any number-like type
+- Deciding which numeric interface (`INumber<T>`, `IFloatingPoint<T>`, `IBinaryInteger<T>`, ...) to constrain a generic parameter to
+- Implementing a custom numeric type, such as a `Fraction` or fixed-point number, against these interfaces
+- Writing or reviewing a static abstract or static virtual interface member
+- Testing a generic-math algorithm across several concrete numeric types at once
+
+## Using it
+
+This skill is model-invoked: it fires automatically when you're writing a numeric algorithm generic
+over `INumber<T>`, choosing a numeric interface constraint, or implementing a custom numeric type.
+
+## What it covers
+
+| Topic | Reference |
 | --- | --- |
-| `writing-generic-numeric-algorithms.md` | Writing methods/types generic over `INumber<T>`; the .NET 9 `TensorPrimitives` extension of the same interfaces |
-| `numeric-interface-hierarchy.md` | `INumberBase<T>`, `INumber<T>`, `ISignedNumber<T>`, `IUnsignedNumber<T>`, `IFloatingPoint<T>`, `IBinaryInteger<T>`, `IBinaryFloatingPointIeee754<T>`, and how they relate |
-| `static-abstract-members.md` | The static abstract/virtual interface members language mechanism generic math depends on |
-| `implementing-a-custom-numeric-type.md` | Implementing the interfaces on a custom type (a `Fraction`, a fixed-point number) |
-| `testing.md` | Testing a generic-math algorithm across multiple `T`, and testing a custom numeric type's interface implementation |
+| Writing methods/types generic over `INumber<T>` | [references/writing-generic-numeric-algorithms.md](references/writing-generic-numeric-algorithms.md) |
+| The numeric interface hierarchy and how the pieces relate | [references/numeric-interface-hierarchy.md](references/numeric-interface-hierarchy.md) |
+| Static abstract/virtual interface members | [references/static-abstract-members.md](references/static-abstract-members.md) |
+| Implementing the interfaces on a custom numeric type | [references/implementing-a-custom-numeric-type.md](references/implementing-a-custom-numeric-type.md) |
+| Testing a generic-math algorithm or custom numeric type | [references/testing.md](references/testing.md) |
 
-## Scope
+## Example prompts
 
-C#'s generic math feature only: the `INumber<T>`-and-friends BCL interface hierarchy and the
-static abstract/virtual interface members language mechanism it's built on. Out of scope: generic
-type/method fundamentals unrelated to numeric constraints, SIMD/vectorization technique in its own
-right, and the non-generic-math API surface of `BigInteger`/`Complex`.
-
-This is a single feature (shipped together in C# 11 / .NET 7) with minor BCL additions since
-(noted inline where relevant); version is not the file-splitting axis for this skill (see
-[SKILL.md](SKILL.md) for why).
+- "Write a `Sum<T>` method that works for `int`, `double`, and `decimal` without overloads."
+- "Which numeric interface should I constrain this generic method to if it only needs comparison and addition?"
+- "Implement `INumber<T>` on my custom `Fraction` type."
