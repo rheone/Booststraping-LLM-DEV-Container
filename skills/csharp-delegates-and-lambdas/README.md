@@ -8,18 +8,21 @@ Framework 4.0), lambda parameter shadowing (C# 8.0), static lambdas and discard 
 natural type inference and explicit return types (C# 10.0), default lambda parameters (C# 12.0), and
 untyped modifier parameters (C# 14.0 / .NET 10). The routing table is in [SKILL.md](SKILL.md).
 
-```text
-references/                                            version-gated core syntax, oldest to newest
-  csharp1-delegates-and-multicast.md                     .NET Fx 1.0+ (C# 1.0+) — the delegate keyword, multicast invocation lists; the universal baseline
-  csharp2-anonymous-methods-and-generic-delegates.md     .NET Fx 2.0+ (C# 2.0+) — anonymous methods, Predicate<T>/Comparison<T>/Converter<TInput,TResult>, method group conversion, closures
-  csharp3-lambdas-and-func-action.md                     .NET Fx 3.5+ (C# 3.0+) — lambda expression syntax, Func<>/Action<> (0-4 parameters)
-  csharp4-variance-and-extended-func-action.md           .NET Fx 4.0+ (C# 4.0+) — in/out variance on generic delegates, Func<>/Action<> extended to 16 parameters
-  csharp8-lambda-parameter-shadowing.md                  .NET Core 3.0+ (C# 8.0+) — a lambda parameter may shadow an enclosing-scope name
-  csharp9-static-lambdas-and-discard-parameters.md       .NET 5+ (C# 9.0+) — static lambdas/anonymous methods, _ discard parameters
-  csharp10-natural-type-and-lambda-annotations.md        .NET 6+ (C# 10.0+) — natural type for var, explicit return types, parameter attributes
-  csharp12-default-lambda-parameters.md                  .NET 8+ (C# 12.0+) — default parameter values on lambdas
-  csharp14-lambda-parameter-modifiers.md                 .NET 10+ (C# 14.0+) — scoped/ref/in/out/ref readonly on a lambda parameter without an explicit type
+**`references/`** — version-gated core syntax, oldest to newest
 
+| File | Covers |
+| --- | --- |
+| `csharp1-delegates-and-multicast.md` | .NET Fx 1.0+ (C# 1.0+) — the delegate keyword, multicast invocation lists; the universal baseline |
+| `csharp2-anonymous-methods-and-generic-delegates.md` | .NET Fx 2.0+ (C# 2.0+) — anonymous methods, `Predicate<T>`/`Comparison<T>`/`Converter<TInput,TResult>`, method group conversion, closures |
+| `csharp3-lambdas-and-func-action.md` | .NET Fx 3.5+ (C# 3.0+) — lambda expression syntax, `Func<>`/`Action<>` (0-4 parameters) |
+| `csharp4-variance-and-extended-func-action.md` | .NET Fx 4.0+ (C# 4.0+) — in/out variance on generic delegates, `Func<>`/`Action<>` extended to 16 parameters |
+| `csharp8-lambda-parameter-shadowing.md` | .NET Core 3.0+ (C# 8.0+) — a lambda parameter may shadow an enclosing-scope name |
+| `csharp9-static-lambdas-and-discard-parameters.md` | .NET 5+ (C# 9.0+) — static lambdas/anonymous methods, _ discard parameters |
+| `csharp10-natural-type-and-lambda-annotations.md` | .NET 6+ (C# 10.0+) — natural type for var, explicit return types, parameter attributes |
+| `csharp12-default-lambda-parameters.md` | .NET 8+ (C# 12.0+) — default parameter values on lambdas |
+| `csharp14-lambda-parameter-modifiers.md` | .NET 10+ (C# 14.0+) — scoped/ref/in/out/ref readonly on a lambda parameter without an explicit type |
+
+```text
 specialized/                                           cross-cutting patterns, applicable across versions
   closures-and-variable-capture.md
   multicast-delegate-invocation-semantics.md

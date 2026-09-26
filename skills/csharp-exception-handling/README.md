@@ -2,13 +2,16 @@
 
 The routing table is in [SKILL.md](SKILL.md).
 
-```text
-references/                       version-gated core syntax, oldest to newest
-  csharp1-try-catch-finally.md      any target (C# 1.0) — try/catch/finally, Exception-derivation rule
-  csharp2-runtimewrappedexception.md .NET Framework 2.0+ (C# 2.0) — RuntimeWrappedException auto-wrap
-  csharp6-exception-filters.md      VS 2015+ (C# 6.0) — the `when` exception filter clause
-  csharp7-throw-expressions.md      VS 2017+ (C# 7.0) — throw as an expression
+**`references/`** — version-gated core syntax, oldest to newest
 
+| File | Covers |
+| --- | --- |
+| `csharp1-try-catch-finally.md` | any target (C# 1.0) — try/catch/finally, Exception-derivation rule |
+| `csharp2-runtimewrappedexception.md` | .NET Framework 2.0+ (C# 2.0) — RuntimeWrappedException auto-wrap |
+| `csharp6-exception-filters.md` | VS 2015+ (C# 6.0) — the `when` exception filter clause |
+| `csharp7-throw-expressions.md` | VS 2017+ (C# 7.0) — throw as an expression |
+
+```text
 specialized/                      cross-cutting patterns, applicable across versions
   exception-filters-in-depth.md
   custom-exception-design.md

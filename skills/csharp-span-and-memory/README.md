@@ -10,19 +10,22 @@ range/`Index` slicing (C# 8.0 / .NET Core 3.0), `ref` fields and `scoped` (C# 11
 and the preview updated `unsafe` model (C# 15 / .NET 11). The routing table is in
 [SKILL.md](SKILL.md).
 
-```text
-references/                                          version-gated core syntax, oldest to newest
-  pre-csharp7-arrays-and-pointers.md                   C# 1.0 – 6.0 — arrays, ArraySegment<T>, unsafe pointers
-  csharp7-ref-returns-and-locals.md                    C# 7.0+ — ref returns, ref locals
-  csharp7.2-ref-struct-and-span.md                     C# 7.2+ — ref struct, in, ref readonly returns, stackalloc; language-vs-BCL split
-  csharp7.3-ref-reassignment-and-stackalloc-init.md    C# 7.3+ — ref reassignment, stackalloc initializer syntax
-  csharp8-span-foreach-and-ranges.md                   C# 8.0+ — pattern-based Dispose(), range/Index slicing
-  csharp11-ref-fields-and-scoped.md                    C# 11+ — ref fields, scoped modifier
-  csharp12-ref-readonly-parameters.md                  C# 12+ — ref readonly parameters
-  csharp13-allows-ref-struct.md                        C# 13+ — allows ref struct anti-constraint
-  csharp14-implicit-span-conversions.md                C# 14+ — implicit Span<T>/ReadOnlySpan<T>/T[] conversions
-  csharp15-unsafe-model-preview.md                     C# 15 preview — updated unsafe model (RC caveat)
+**`references/`** — version-gated core syntax, oldest to newest
 
+| File | Covers |
+| --- | --- |
+| `pre-csharp7-arrays-and-pointers.md` | C# 1.0 – 6.0 — arrays, `ArraySegment<T>`, unsafe pointers |
+| `csharp7-ref-returns-and-locals.md` | C# 7.0+ — ref returns, ref locals |
+| `csharp7.2-ref-struct-and-span.md` | C# 7.2+ — ref struct, in, ref readonly returns, stackalloc; language-vs-BCL split |
+| `csharp7.3-ref-reassignment-and-stackalloc-init.md` | C# 7.3+ — ref reassignment, stackalloc initializer syntax |
+| `csharp8-span-foreach-and-ranges.md` | C# 8.0+ — pattern-based Dispose(), range/Index slicing |
+| `csharp11-ref-fields-and-scoped.md` | C# 11+ — ref fields, scoped modifier |
+| `csharp12-ref-readonly-parameters.md` | C# 12+ — ref readonly parameters |
+| `csharp13-allows-ref-struct.md` | C# 13+ — allows ref struct anti-constraint |
+| `csharp14-implicit-span-conversions.md` | C# 14+ — implicit `Span<T>`/`ReadOnlySpan<T>`/`T[]` conversions |
+| `csharp15-unsafe-model-preview.md` | C# 15 preview — updated unsafe model (RC caveat) |
+
+```text
 specialized/                                         cross-cutting patterns, applicable across versions
   span-vs-memory-vs-readonlymemory.md
   ref-struct-constraints-and-limitations.md

@@ -4,7 +4,7 @@ description: Proactive guidance on System.* / BCL attributes to add while writin
 license: Apache-2.0
 user-invocable: true
 metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
+  author: Robert H. Engelhardt <rheone@gmail.com>
   version: 1.0.0
 ---
 
@@ -27,6 +27,7 @@ files by version tier.
 | Responding to a measured hot path (profiler/benchmark in hand) | `MethodImpl(AggressiveInlining/AggressiveOptimization)`, `SkipLocalsInit` | [references/performance.md](references/performance.md) |
 | Defining a custom attribute class or a bitwise-combinable enum | `AttributeUsage`, `Flags` | [references/attribute-authoring-meta.md](references/attribute-authoring-meta.md) |
 | An analyzer or trimmer/AOT diagnostic is a known false positive | `SuppressMessage`, `UnconditionalSuppressMessage` | [references/analyzer-suppression.md](references/analyzer-suppression.md) |
+| Verifying an attribute is applied correctly, or testing `[Conditional]`/nullable-flow/caller-info behavior | Reflection-based assertions, compile-time vs. runtime distinctions | [references/testing.md](references/testing.md) |
 
 ## Quick start
 
@@ -48,5 +49,4 @@ public static bool TryParse(string? input, [NotNullWhen(true)] out Config? resul
   — a narrow, deep domain of its own with different failure modes than everyday type/member
   annotation.
 - Framework-specific attributes (ASP.NET Core, EF Core, `System.Text.Json`) and test-framework
-  attributes — each belongs to that framework's/tool's own domain, not to a general-purpose
-  BCL-attribute skill.
+  attributes — out of scope regardless of how central they are to a given codebase.

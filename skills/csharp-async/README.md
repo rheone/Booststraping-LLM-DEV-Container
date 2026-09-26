@@ -7,17 +7,20 @@ Reference for C# asynchronous programming: pre-language-support APM/EAP/bare-TAP
 `AsyncMethodBuilder` (C# 10 / .NET 6), and `ref`/`unsafe` in async methods (C# 13 / .NET 9). The
 routing table is in [SKILL.md](SKILL.md).
 
-```text
-references/                                    version-gated core syntax, oldest to newest
-  pre-csharp5-apm-eap-tap.md                     .NET Fx 1.0 – 4.0 (C# 1.0 – 4.0) — APM, EAP, bare Task/ContinueWith
-  csharp5-async-await.md                         .NET Fx 4.5+ (C# 5.0+) — the universal baseline
-  csharp6-await-in-catch-finally.md              .NET Fx 4.6+ (C# 6.0+) — await inside catch/finally
-  csharp7-task-like-types.md                     .NET Core 1.0+ / .NET Fx 4.6.2+ (C# 7.0+) — generalized async return types, ValueTask<T>
-  csharp7.1-async-main.md                        .NET Core 2.0+ (C# 7.1+) — async Main
-  csharp8-async-streams.md                       .NET Core 3.0+ (C# 8.0+) — IAsyncEnumerable<T>, await foreach, await using
-  csharp10-async-method-builder-on-methods.md    .NET 6+ (C# 10+) — [AsyncMethodBuilder] on methods
-  csharp13-ref-unsafe-in-async.md                .NET 9+ (C# 13+) — ref locals and unsafe contexts in async methods
+**`references/`** — version-gated core syntax, oldest to newest
 
+| File | Covers |
+| --- | --- |
+| `pre-csharp5-apm-eap-tap.md` | .NET Fx 1.0 – 4.0 (C# 1.0 – 4.0) — APM, EAP, bare Task/ContinueWith |
+| `csharp5-async-await.md` | .NET Fx 4.5+ (C# 5.0+) — the universal baseline |
+| `csharp6-await-in-catch-finally.md` | .NET Fx 4.6+ (C# 6.0+) — await inside catch/finally |
+| `csharp7-task-like-types.md` | .NET Core 1.0+ / .NET Fx 4.6.2+ (C# 7.0+) — generalized async return types, `ValueTask<T>` |
+| `csharp7.1-async-main.md` | .NET Core 2.0+ (C# 7.1+) — async Main |
+| `csharp8-async-streams.md` | .NET Core 3.0+ (C# 8.0+) — `IAsyncEnumerable<T>`, await foreach, await using |
+| `csharp10-async-method-builder-on-methods.md` | .NET 6+ (C# 10+) — [AsyncMethodBuilder] on methods |
+| `csharp13-ref-unsafe-in-async.md` | .NET 9+ (C# 13+) — ref locals and unsafe contexts in async methods |
+
+```text
 specialized/                                   cross-cutting patterns, applicable across versions
   cancellation-with-cancellationtoken.md
   configureawait-and-synchronization-context.md

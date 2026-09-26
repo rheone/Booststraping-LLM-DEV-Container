@@ -4,13 +4,13 @@ description: Reference for authoring Roslyn C# source generators — ISourceGene
 license: Apache-2.0
 user-invocable: true
 metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
+  author: Robert H. Engelhardt <rheone@gmail.com>
   version: 1.0.0
 ---
 
 # C# Source Generators
 
-**Version axis note:** unlike most skills in this repo, source generators are gated by the
+**Version axis note:** source generators are gated by the
 **.NET SDK / Roslyn (`Microsoft.CodeAnalysis`) package version** at *build* time, not by the
 consuming project's C# `LangVersion`. `ISourceGenerator` and `IIncrementalGenerator` are compiler
 extension points, versioned with the compiler host that loads them — a project can target an old

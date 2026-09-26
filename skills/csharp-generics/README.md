@@ -5,16 +5,19 @@ through variance, value tuples, `notnull`/`unmanaged` constraints, generic math 
 (C# 11 / .NET 7), ref struct type arguments (C# 13 / .NET 9), and generic extension blocks
 (C# 14 / .NET 10, C# 15 / .NET 11). The routing table is in [SKILL.md](SKILL.md).
 
-```text
-references/                            version-gated core syntax, oldest to newest
-  csharp2-generics-fundamentals.md       .NET Framework 2.0+ (C# 2.0+) — the universal baseline
-  csharp4-variance.md                    .NET Framework 4.0+ (C# 4.0+) — out/in variance
-  csharp7-tuples-and-constraints.md      .NET Core 1.0 – .NET Fx 4.7.2 (C# 7.0–7.3) — value tuples, unmanaged/enum/delegate constraints
-  csharp8-nullable-generics.md           .NET Core 3.0+ (C# 8.0+) — notnull constraint, nullable type parameters
-  csharp11-generic-math-and-attributes.md .NET 7 (C# 11) — generic attributes, generic math
-  csharp13-ref-struct-generics.md        .NET 9 (C# 13) — allows ref struct
-  csharp14-generic-extension-blocks.md   .NET 10 / .NET 11 RC1+ (C# 14 / C# 15) — generic extension blocks
+**`references/`** — version-gated core syntax, oldest to newest
 
+| File | Covers |
+| --- | --- |
+| `csharp2-generics-fundamentals.md` | .NET Framework 2.0+ (C# 2.0+) — the universal baseline |
+| `csharp4-variance.md` | .NET Framework 4.0+ (C# 4.0+) — out/in variance |
+| `csharp7-tuples-and-constraints.md` | .NET Core 1.0 – .NET Fx 4.7.2 (C# 7.0–7.3) — value tuples, unmanaged/enum/delegate constraints |
+| `csharp8-nullable-generics.md` | .NET Core 3.0+ (C# 8.0+) — notnull constraint, nullable type parameters |
+| `csharp11-generic-math-and-attributes.md` | .NET 7 (C# 11) — generic attributes, generic math |
+| `csharp13-ref-struct-generics.md` | .NET 9 (C# 13) — allows ref struct |
+| `csharp14-generic-extension-blocks.md` | .NET 10 / .NET 11 RC1+ (C# 14 / C# 15) — generic extension blocks |
+
+```text
 specialized/                           cross-cutting patterns, applicable across versions
   generic-constraints-reference.md
   variance-in-depth.md

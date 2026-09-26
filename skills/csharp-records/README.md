@@ -3,20 +3,24 @@
 Reference for the `record` keyword and the immutability/value-equality patterns it replaces or
 extends. The routing table is in [SKILL.md](SKILL.md).
 
-```text
-references/                                       version-gated core syntax, oldest to newest
-  pre-csharp9-manual-value-types.md                  pre-2020 (C# 1.0-8.0) — hand-written Equals/GetHashCode/ToString and a hand-written copy method
-  csharp9-record-fundamentals.md                     C# 9.0 — record/record class, positional syntax, with-expressions, synthesized equality, inheritance, generic records
-  csharp10-record-structs.md                         C# 10 — record struct, readonly record struct, explicit record class
-  csharp11-required-members-in-records.md            C# 11 — required members on explicit record properties
-  csharp15-closed-record-hierarchies.md              C# 15 (RC) — closed record class hierarchies and exhaustive switch
+**`references/`** — version-gated core syntax, oldest to newest
 
-specialized/                                      cross-cutting patterns, applicable across versions
-  record-equality-semantics-in-depth.md              EqualityContract, shallow copies, stale computed properties, record struct boxing
-  records-vs-classes-vs-structs.md                   decision list: record vs. plain class/struct vs. staged assembly
-  primary-constructors-vs-positional-records.md       C# 12 primary constructors on ordinary types vs. records' own positional syntax
-  testing-with-records.md                            records as a test-authoring tool
-```
+| File | Covers |
+| --- | --- |
+| `pre-csharp9-manual-value-types.md` | pre-2020 (C# 1.0-8.0) — hand-written Equals/GetHashCode/ToString and a hand-written copy method |
+| `csharp9-record-fundamentals.md` | C# 9.0 — record/record class, positional syntax, with-expressions, synthesized equality, inheritance, generic records |
+| `csharp10-record-structs.md` | C# 10 — record struct, readonly record struct, explicit record class |
+| `csharp11-required-members-in-records.md` | C# 11 — required members on explicit record properties |
+| `csharp15-closed-record-hierarchies.md` | C# 15 (RC) — closed record class hierarchies and exhaustive switch |
+
+**`specialized/`** — cross-cutting patterns, applicable across versions
+
+| File | Covers |
+| --- | --- |
+| `record-equality-semantics-in-depth.md` | EqualityContract, shallow copies, stale computed properties, record struct boxing |
+| `records-vs-classes-vs-structs.md` | decision list: record vs. plain class/struct vs. staged assembly |
+| `primary-constructors-vs-positional-records.md` | C# 12 primary constructors on ordinary types vs. records' own positional syntax |
+| `testing-with-records.md` | records as a test-authoring tool |
 
 ## Version coverage
 

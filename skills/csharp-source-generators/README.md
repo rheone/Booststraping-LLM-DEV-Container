@@ -7,23 +7,27 @@ is in [SKILL.md](SKILL.md).
 This skill is organized by **.NET SDK / Roslyn package version**, not by C# language version — see
 the version axis note at the top of [SKILL.md](SKILL.md) for why.
 
-```text
-references/                                        version-gated core API, oldest to newest
-  pre-net5-external-codegen.md                        below .NET 5 SDK — T4 templates or external MSBuild-driven codegen
-  net5-isourcegenerator.md                             .NET 5 SDK (Roslyn 3.8) — ISourceGenerator, GeneratorExecutionContext, ISyntaxReceiver
-  net6-iincrementalgenerator.md                        .NET 6 SDK (Roslyn 4.0) — IIncrementalGenerator, the pipeline API
-  net7-forattributewithmetadataname.md                 .NET 7 SDK (Roslyn 4.3) — ForAttributeWithMetadataName, WithTrackingName
-  net8-interceptors-preview.md                         .NET 8 SDK (Roslyn 4.8) — interceptors, preview, opt-in
-  net9-interceptors-stable.md                          .NET 9 SDK (Roslyn 4.12) — interceptors stable, GetInterceptableLocation
-  net10-embedded-attribute-definitions.md              .NET 10 SDK (Roslyn 4.14) — AddEmbeddedAttributeDefinition
+**`references/`** — version-gated core API, oldest to newest
 
-specialized/                                       cross-cutting patterns, applicable across versions
-  testing-a-source-generator.md                        CSharpGeneratorDriver, snapshot testing, asserting incremental caching
-  incremental-pipeline-and-equatable-models.md         cache correctness, ISymbol/SyntaxNode leakage, EquatableArray<T>
-  diagnostics-from-a-generator.md                      DiagnosticDescriptor, severity, mapping diagnostics to user source
-  generator-project-setup-and-packaging.md             IsRoslynComponent, EnforceExtendedAnalyzerRules, multi-targeting, NuGet packaging
-  generics-in-generated-code.md                        reading/emitting generic type parameters and constraints
-```
+| File | Covers |
+| --- | --- |
+| `pre-net5-external-codegen.md` | below .NET 5 SDK — T4 templates or external MSBuild-driven codegen |
+| `net5-isourcegenerator.md` | .NET 5 SDK (Roslyn 3.8) — ISourceGenerator, GeneratorExecutionContext, ISyntaxReceiver |
+| `net6-iincrementalgenerator.md` | .NET 6 SDK (Roslyn 4.0) — IIncrementalGenerator, the pipeline API |
+| `net7-forattributewithmetadataname.md` | .NET 7 SDK (Roslyn 4.3) — ForAttributeWithMetadataName, WithTrackingName |
+| `net8-interceptors-preview.md` | .NET 8 SDK (Roslyn 4.8) — interceptors, preview, opt-in |
+| `net9-interceptors-stable.md` | .NET 9 SDK (Roslyn 4.12) — interceptors stable, GetInterceptableLocation |
+| `net10-embedded-attribute-definitions.md` | .NET 10 SDK (Roslyn 4.14) — AddEmbeddedAttributeDefinition |
+
+**`specialized/`** — cross-cutting patterns, applicable across versions
+
+| File | Covers |
+| --- | --- |
+| `testing-a-source-generator.md` | CSharpGeneratorDriver, snapshot testing, asserting incremental caching |
+| `incremental-pipeline-and-equatable-models.md` | cache correctness, ISymbol/SyntaxNode leakage, `EquatableArray<T>` |
+| `diagnostics-from-a-generator.md` | DiagnosticDescriptor, severity, mapping diagnostics to user source |
+| `generator-project-setup-and-packaging.md` | IsRoslynComponent, EnforceExtendedAnalyzerRules, multi-targeting, NuGet packaging |
+| `generics-in-generated-code.md` | reading/emitting generic type parameters and constraints |
 
 ## Version coverage
 

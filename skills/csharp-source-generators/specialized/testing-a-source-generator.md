@@ -1,9 +1,7 @@
 # Testing a Source Generator
 
 A source generator's entire job is producing text, so testing one is centrally about testing *what
-it produces and when it re-produces it* — unlike most testing-themed files in this repo's other
-skills, which cover using a language feature to build test fixtures for unrelated code, this file
-is about verifying the generator itself: does it emit the expected source for given input, does it
+it produces and when it re-produces it*: does it emit the expected source for given input, does it
 report the right diagnostics, and does its incremental pipeline actually skip work it should skip.
 Assumes [net6-iincrementalgenerator.md](../references/net6-iincrementalgenerator.md) and, for the
 tracking-name assertions below, [net7-forattributewithmetadataname.md](../references/net7-forattributewithmetadataname.md).

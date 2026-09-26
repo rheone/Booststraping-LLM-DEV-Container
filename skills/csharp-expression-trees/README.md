@@ -7,12 +7,15 @@ DLR-era expansion of manually-buildable node types — `BlockExpression`, `LoopE
 `TryExpression`, `ExpressionVisitor`, `DynamicExpression` — for hand-assembled trees (C# 4.0 /
 .NET Framework 4.0). The routing table is in [SKILL.md](SKILL.md).
 
-```text
-references/                                       version-gated core syntax, oldest to newest
-  pre-csharp3-no-expression-trees.md                 .NET Fx 1.0+ (C# 1.0+) — no Expression<TDelegate> yet; Reflection.Emit or a hand-rolled node/interpreter hierarchy fill the gap
-  csharp3-expression-trees-fundamentals.md           .NET Fx 3.5+ (C# 3.0+) — Expression<TDelegate>, tree-vs-delegate target typing, IQueryable<T> provider translation, single-expression manual construction
-  csharp4-dlr-expression-node-types.md               .NET Fx 4.0+ (C# 4.0+) — BlockExpression/LoopExpression/TryExpression/SwitchExpression/DynamicExpression, ExpressionVisitor
+**`references/`** — version-gated core syntax, oldest to newest
 
+| File | Covers |
+| --- | --- |
+| `pre-csharp3-no-expression-trees.md` | .NET Fx 1.0+ (C# 1.0+) — no `Expression<TDelegate>` yet; Reflection.Emit or a hand-rolled node/interpreter hierarchy fill the gap |
+| `csharp3-expression-trees-fundamentals.md` | .NET Fx 3.5+ (C# 3.0+) — `Expression<TDelegate>`, tree-vs-delegate target typing, `IQueryable<T>` provider translation, single-expression manual construction |
+| `csharp4-dlr-expression-node-types.md` | .NET Fx 4.0+ (C# 4.0+) — BlockExpression/LoopExpression/TryExpression/SwitchExpression/DynamicExpression, ExpressionVisitor |
+
+```text
 specialized/                                      cross-cutting patterns, applicable across versions
   building-expression-trees-manually.md
   expression-visitor-and-tree-rewriting.md

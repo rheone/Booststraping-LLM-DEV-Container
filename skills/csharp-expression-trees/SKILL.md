@@ -4,7 +4,7 @@ description: Reference for C# expression trees — `Expression<TDelegate>` and t
 license: Apache-2.0
 user-invocable: true
 metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
+  author: Robert H. Engelhardt <rheone@gmail.com>
   version: 1.0.0
 ---
 
@@ -57,10 +57,3 @@ versions; the C# 4.0 tier above still applies unchanged.
 - [specialized/expression-visitor-and-tree-rewriting.md](specialized/expression-visitor-and-tree-rewriting.md) — subclassing `ExpressionVisitor`, rewriting vs. purely observing a tree, `node.Update(...)`, generic visitor-driven validators
 - [specialized/expression-tree-limitations-and-pitfalls.md](specialized/expression-tree-limitations-and-pitfalls.md) — the full, current "what can't appear in an expression tree" table with compiler error codes, `CompileToMethod`'s removal on .NET Core+, `Compile()` caching, `IQueryable<T>` translation failures at execution time
 - [specialized/testing-expression-trees.md](specialized/testing-expression-trees.md) — extracting a property name from `Expression<Func<T,TProperty>>` to avoid magic strings, expression-based mock argument matchers, structural tree-equality assertions
-
-<!--
-  Do not add a "Related skill" section naming a sibling unless this skill has a real, necessary
-  dependency on it. Per write-csharp-version-skill/references/portability-and-cross-referencing.md:
-  no dependency means no name — this skill inlines whatever lambda/LINQ/generics context it needs
-  rather than naming csharp-delegates-and-lambdas, csharp-linq, or csharp-generics.
--->

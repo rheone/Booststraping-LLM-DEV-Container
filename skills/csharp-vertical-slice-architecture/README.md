@@ -4,25 +4,18 @@ Guidance on Vertical Slice Architecture (VSA) as a C#/.NET code-organization pat
 feature/use-case, not by technical layer. The routing table (by situation) is in
 [SKILL.md](SKILL.md).
 
-```text
-references/                          one file per concern/topic, not per package version —
-                                      VSA is an architectural style with nothing to version-pin
-  philosophy-and-organization.md       core philosophy, "screaming architecture", slice contents,
-                                        folder/namespace conventions, contrast with layered/onion/
-                                        clean architecture
-  cqrs-relationship.md                 VSA (organization axis) vs. CQRS (read/write axis) —
-                                        precise, non-conflating treatment of how they compose
-  slice-anatomy.md                     generic request/handler/response shape, sizing a slice
-  cross-cutting-concerns.md            sharing validation/logging/persistence without re-layering;
-                                        minimal base abstractions and pipeline-style composition
-  data-access-patterns.md              query-object-per-slice vs. shared repository, tradeoffs
-  fit-and-adoption.md                  when VSA fits vs. doesn't; incremental adoption into an
-                                        existing layered codebase
-  pitfalls.md                          duplication vs. the wrong abstraction, inconsistent slice
-                                        granularity, shared-kernel creep
-  testing.md                           unit-testing handler logic vs. integration-testing a slice
-                                        end to end; test organization mirroring Features/
-```
+**`references/`** — one file per concern/topic, not per package version — VSA is an architectural style with nothing to version-pin
+
+| File | Covers |
+| --- | --- |
+| `philosophy-and-organization.md` | core philosophy, "screaming architecture", slice contents, folder/namespace conventions, contrast with layered/onion/clean architecture |
+| `cqrs-relationship.md` | VSA (organization axis) vs. CQRS (read/write axis) — precise, non-conflating treatment of how they compose |
+| `slice-anatomy.md` | generic request/handler/response shape, sizing a slice |
+| `cross-cutting-concerns.md` | sharing validation/logging/persistence without re-layering; minimal base abstractions and pipeline-style composition |
+| `data-access-patterns.md` | query-object-per-slice vs. shared repository, tradeoffs |
+| `fit-and-adoption.md` | when VSA fits vs. doesn't; incremental adoption into an existing layered codebase |
+| `pitfalls.md` | duplication vs. the wrong abstraction, inconsistent slice granularity, shared-kernel creep |
+| `testing.md` | unit-testing handler logic vs. integration-testing a slice end to end; test organization mirroring Features/ |
 
 ## Scope
 

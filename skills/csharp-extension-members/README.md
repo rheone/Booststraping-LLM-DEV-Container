@@ -6,14 +6,17 @@ operators (C# 14 / .NET 10), and extension indexers (C# 15 / .NET 11). Includes 
 fallback pattern for .NET Framework 1.0–2.0, generic extension members, and a reference on writing
 extension methods/members as test-authoring tools. The routing table is in [SKILL.md](SKILL.md).
 
-```text
-references/                       version-gated core syntax, oldest to newest
-  pre-csharp3-no-extensions.md      .NET Framework 1.0–2.0 — no extension mechanism (fallback pattern)
-  csharp3-extension-methods.md      .NET Framework 3.5 – .NET 9 (C# 3.0–13) — classic `this` syntax
-  csharp8-nullable-extensions.md    .NET Core 3.0+ (C# 8.0+) — nullable annotations
-  csharp14-extension-members.md     .NET 10 (C# 14) — extension blocks: properties, statics, operators
-  csharp15-extension-indexers.md    .NET 11 RC1+ (C# 15) — extension indexers
+**`references/`** — version-gated core syntax, oldest to newest
 
+| File | Covers |
+| --- | --- |
+| `pre-csharp3-no-extensions.md` | .NET Framework 1.0–2.0 — no extension mechanism (fallback pattern) |
+| `csharp3-extension-methods.md` | .NET Framework 3.5 – .NET 9 (C# 3.0–13) — classic `this` syntax |
+| `csharp8-nullable-extensions.md` | .NET Core 3.0+ (C# 8.0+) — nullable annotations |
+| `csharp14-extension-members.md` | .NET 10 (C# 14) — extension blocks: properties, statics, operators |
+| `csharp15-extension-indexers.md` | .NET 11 RC1+ (C# 15) — extension indexers |
+
+```text
 specialized/                      cross-cutting patterns, applicable across versions
   generic-extension-members.md
   extension-properties.md
