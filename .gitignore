@@ -963,3 +963,6 @@ Temporary Items
 
 
 .tmp
+.agents
+skills-lock.json
+/skills/humanizer
