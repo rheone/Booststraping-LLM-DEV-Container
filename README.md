@@ -64,7 +64,7 @@ skill in the catalog to this same standard.
 | Messaging, Background Work & Resilience | 8 | [`dotnet-mediatr`](skills/dotnet-mediatr), [`dotnet-masstransit`](skills/dotnet-masstransit), [`dotnet-polly`](skills/dotnet-polly) |
 | Observability & Logging | 3 | [`dotnet-serilog`](skills/dotnet-serilog), [`dotnet-opentelemetry`](skills/dotnet-opentelemetry) |
 | .NET/BCL Platform | 6 | [`dotnet-linq`](skills/dotnet-linq), [`dotnet-system-text-json`](skills/dotnet-system-text-json), [`dotnet-channels`](skills/dotnet-channels) |
-| Other Libraries & Tooling | 9 | [`dotnet-autofac`](skills/dotnet-autofac), [`dotnet-refit`](skills/dotnet-refit), [`dotnet-roslyn-analyzers`](skills/dotnet-roslyn-analyzers) |
+| Other Libraries & Tooling | 8 | [`dotnet-autofac`](skills/dotnet-autofac), [`dotnet-refit`](skills/dotnet-refit), [`dotnet-roslyn-analyzers`](skills/dotnet-roslyn-analyzers) |
 | Documentation, Diagrams & Refactoring | 6 | [`reverse-engineered-docs`](skills/reverse-engineered-docs), [`mermaid-diagram-generator`](skills/mermaid-diagram-generator), [`csharp-code-organization`](skills/csharp-code-organization) |
 | Test Suite Sweep (Orchestrator + 7 companions) | 8 | [`csharp-test-sweep`](skills/csharp-test-sweep) auto-detects the project's test framework and mocking library, then sweeps every class |
 
