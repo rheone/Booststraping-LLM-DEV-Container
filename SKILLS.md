@@ -193,7 +193,7 @@ flowchart TD
 | [`dotnet-humanizer`](skills/dotnet-humanizer) — [readme](skills/dotnet-humanizer/README.md) | Turning raw values into human-readable text with Humanizer. |
 | [`dotnet-markdig`](skills/dotnet-markdig) — [readme](skills/dotnet-markdig/README.md) | Parsing and rendering Markdown with Markdig's extensible pipeline. |
 | [`dotnet-nodatime`](skills/dotnet-nodatime) — [readme](skills/dotnet-nodatime/README.md) | Unambiguous date, time, and time zone handling with NodaTime. |
-| [`dotnet-nhibernate`](skills/dotnet-nhibernate) — [readme](skills/dotnet-nhibernate/README.md) | NHibernate mapping, session lifecycle, and query conventions. |
+| [`dotnet-nhibernate`](skills/dotnet-nhibernate) | NHibernate mapping, session lifecycle, and query conventions. |
 | [`dotnet-refit`](skills/dotnet-refit) — [readme](skills/dotnet-refit/README.md) | Declarative REST API clients with Refit. |
 | [`dotnet-roslyn-analyzers`](skills/dotnet-roslyn-analyzers) — [readme](skills/dotnet-roslyn-analyzers/README.md) | Authoring Roslyn diagnostic analyzers and paired code fixes. |
 | [`dotnet-yamldotnet`](skills/dotnet-yamldotnet) — [readme](skills/dotnet-yamldotnet/README.md) | Parsing and emitting YAML with YamlDotNet. |
@@ -202,8 +202,8 @@ flowchart TD
 
 | Skill | Summary |
 | --- | --- |
-| [`csharp-docs-and-comments`](skills/csharp-docs-and-comments) — [readme](skills/csharp-docs-and-comments/README.md) | Adds and improves XML doc comments and inline comments in C# code. |
-| [`reverse-engineered-docs`](skills/reverse-engineered-docs) — [readme](skills/reverse-engineered-docs/README.md) | Reverse-engineers source code into structured markdown docs with confidence annotations. |
+| [`csharp-docs-and-comments`](skills/csharp-docs-and-comments) | Adds and improves XML doc comments and inline comments in C# code. |
+| [`reverse-engineered-docs`](skills/reverse-engineered-docs) | Reverse-engineers source code into structured markdown docs with confidence annotations. |
 
 ### Diagrams
 
@@ -221,21 +221,21 @@ flowchart TD
 
 | Skill | Summary |
 | --- | --- |
-| [`csharp-code-organization`](skills/csharp-code-organization) — [readme](skills/csharp-code-organization/README.md) | Normalizes C# member ordering and file/type structure to the repo's own conventions. |
+| [`csharp-code-organization`](skills/csharp-code-organization) | Normalizes C# member ordering and file/type structure to the repo's own conventions. |
 | [`csharp-library-repo-structure`](skills/csharp-library-repo-structure) — [readme](skills/csharp-library-repo-structure/README.md) | Audits and bootstraps a .NET library's repo layout for NuGet publishing. |
-| [`csharp-split-type-to-partials`](skills/csharp-split-type-to-partials) — [readme](skills/csharp-split-type-to-partials/README.md) | Splits a C# type into partial files by interface or functional grouping. |
+| [`csharp-split-type-to-partials`](skills/csharp-split-type-to-partials) | Splits a C# type into partial files by interface or functional grouping. |
 
 ### Language Feature Reference
 
 | Skill | Summary |
 | --- | --- |
-| [`csharp-union`](skills/csharp-union) — [readme](skills/csharp-union/README.md) | Best practices for the C# `union` type — exhaustive switching and result-or-error returns. |
+| [`csharp-union`](skills/csharp-union) | Best practices for the C# `union` type — exhaustive switching and result-or-error returns. |
 
 ### Code Review & Remediation
 
 | Skill | Summary |
 | --- | --- |
-| [`audit-remediation-pipeline`](skills/audit-remediation-pipeline) — [readme](skills/audit-remediation-pipeline/README.md) | A multi-agent pipeline that carries an audit finding from research through verified fix. |
+| [`audit-remediation-pipeline`](skills/audit-remediation-pipeline) | A multi-agent pipeline that carries an audit finding from research through verified fix. |
 
 ### Test Suite Sweep (Orchestrator)
 
