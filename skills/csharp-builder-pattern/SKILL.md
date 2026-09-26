@@ -4,7 +4,7 @@ description: Reference for the Builder design pattern in C# — classic GoF buil
 license: Apache-2.0
 user-invocable: true
 metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
+  author: Robert H. Engelhardt <rheone@gmail.com>
   version: 1.0.0
 ---
 
@@ -78,12 +78,3 @@ unchanged.
 - [specialized/step-builders-and-build-order-type-state.md](specialized/step-builders-and-build-order-type-state.md) — enforcing construction order at compile time with a chain of narrow step interfaces (the type-state pattern), including a generic step-interface shape reusable across product hierarchies
 - [specialized/builder-vs-modern-alternatives.md](specialized/builder-vs-modern-alternatives.md) — the decision list for object initializer vs. `required`+`init` vs. record `with`-expression vs. an actual builder, plus the cross-field-validation case where a builder still wins
 - [specialized/testing-with-builders.md](specialized/testing-with-builders.md) — the builder pattern as a test-authoring tool: test-data builders and object mothers for fixture setup, a shared generic test-builder base, and composing builders for an aggregate root
-
-<!--
-  Do not add a "Related skill" section naming a sibling unless this skill has a real, necessary
-  dependency on it. Per write-csharp-version-skill/references/portability-and-cross-referencing.md:
-  no dependency means no name — this skill inlines whatever generics, delegates, records, or
-  required-members context it needs rather than naming csharp-generics,
-  csharp-delegates-and-lambdas, csharp-linq, csharp-async, csharp-reflection,
-  csharp-expression-trees, csharp-system-attributes, or csharp-extension-members.
--->

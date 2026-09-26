@@ -4,7 +4,7 @@ description: Systematic code audit remediation using a multi-agent review pipeli
 license: Apache-2.0
 user-invocable: true
 metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
+  author: Robert H. Engelhardt <rheone@gmail.com>
   version: 1.1.0
 ---
 

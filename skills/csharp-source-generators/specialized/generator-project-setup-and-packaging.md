@@ -55,12 +55,13 @@ convention inside the package:
 </PropertyGroup>
 ```
 
-```text
-<package root>/
-  analyzers/dotnet/cs/                     -- baseline build (oldest supported Roslyn/CS package version)
-  analyzers/dotnet/roslyn4.3/cs/           -- build compiled against Roslyn 4.3+ APIs (ForAttributeWithMetadataName available)
-  analyzers/dotnet/roslyn4.14/cs/          -- build compiled against Roslyn 4.14+ APIs (AddEmbeddedAttributeDefinition available)
-```
+**`<package root>/`**
+
+| Path | Build |
+| --- | --- |
+| `analyzers/dotnet/cs/` | baseline build (oldest supported Roslyn/CS package version) |
+| `analyzers/dotnet/roslyn4.3/cs/` | build compiled against Roslyn 4.3+ APIs (ForAttributeWithMetadataName available) |
+| `analyzers/dotnet/roslyn4.14/cs/` | build compiled against Roslyn 4.14+ APIs (AddEmbeddedAttributeDefinition available) |
 
 Each `roslyn{version}` folder is populated by a separate build of the generator project targeting
 that Roslyn package version — typically via multiple `<PackageReference Include="Microsoft.CodeAnalysis.CSharp">`

@@ -4,7 +4,7 @@ description: Reference for C# records and immutability — the `record` keyword,
 license: Apache-2.0
 user-invocable: true
 metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
+  author: Robert H. Engelhardt <rheone@gmail.com>
   version: 1.0.0
 ---
 

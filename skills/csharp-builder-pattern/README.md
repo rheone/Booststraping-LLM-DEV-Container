@@ -8,22 +8,26 @@ for simple cases (object initializers, init-only setters, records, required memb
 "the builder pattern shipped in C#N" claims; the pattern itself has been expressible since C# 1.0.
 The routing table is in [SKILL.md](SKILL.md).
 
-```text
-references/                                              version-gated core syntax, oldest to newest
-  pre-csharp2-classic-builder.md                            C# 1.0 — no generics; classic GoF builder + director, one non-generic class per product
-  csharp2-generic-builders.md                               C# 2.0 — generics enable Builder<TProduct>/Builder<TSelf,TProduct>; CRTP self-typed chaining
-  csharp3-object-initializers-and-fluent-extensions.md      C# 3.0 — object/collection initializers as an alternative; extension methods; lambda configuration
-  csharp6-readonly-autoprops-and-expression-bodied-members.md  C# 6.0 — read-only auto-properties for the product; expression-bodied fluent methods
-  csharp9-init-only-setters-and-records.md                  C# 9.0 — init-only setters and records/with narrow when a builder is needed; target-typed new
-  csharp11-required-members.md                              C# 11.0 — required forces mandatory fields without a builder
-  csharp12-primary-constructors.md                          C# 12.0 — primary constructors shrink product/builder boilerplate; collection expressions
+**`references/`** — version-gated core syntax, oldest to newest
 
-specialized/                                              cross-cutting patterns, applicable across versions
-  generic-self-typed-builder-base.md                        the CRTP Builder<TSelf,TProduct> pattern in depth
-  step-builders-and-build-order-type-state.md               compile-time-enforced construction order via step interfaces
-  builder-vs-modern-alternatives.md                         decision list: object initializer vs. required+init vs. with vs. builder
-  testing-with-builders.md                                  test-data builders and object mothers for fixture setup
-```
+| File | Covers |
+| --- | --- |
+| `pre-csharp2-classic-builder.md` | C# 1.0 — no generics; classic GoF builder + director, one non-generic class per product |
+| `csharp2-generic-builders.md` | C# 2.0 — generics enable `Builder<TProduct>`/`Builder<TSelf,TProduct>`; CRTP self-typed chaining |
+| `csharp3-object-initializers-and-fluent-extensions.md` | C# 3.0 — object/collection initializers as an alternative; extension methods; lambda configuration |
+| `csharp6-readonly-autoprops-and-expression-bodied-members.md` | C# 6.0 — read-only auto-properties for the product; expression-bodied fluent methods |
+| `csharp9-init-only-setters-and-records.md` | C# 9.0 — init-only setters and records/with narrow when a builder is needed; target-typed new |
+| `csharp11-required-members.md` | C# 11.0 — required forces mandatory fields without a builder |
+| `csharp12-primary-constructors.md` | C# 12.0 — primary constructors shrink product/builder boilerplate; collection expressions |
+
+**`specialized/`** — cross-cutting patterns, applicable across versions
+
+| File | Covers |
+| --- | --- |
+| `generic-self-typed-builder-base.md` | the CRTP Builder<TSelf,TProduct> pattern in depth |
+| `step-builders-and-build-order-type-state.md` | compile-time-enforced construction order via step interfaces |
+| `builder-vs-modern-alternatives.md` | decision list: object initializer vs. required+init vs. with vs. builder |
+| `testing-with-builders.md` | test-data builders and object mothers for fixture setup |
 
 ## Version coverage
 

@@ -4,7 +4,7 @@ description: Add and improve XML documentation and comments in C# code. Use when
 license: Apache-2.0
 user-invocable: true
 metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
+  author: Robert H. Engelhardt <rheone@gmail.com>
   version: 1.0.1
 ---
 

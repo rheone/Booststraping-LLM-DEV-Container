@@ -4,7 +4,7 @@ description: Reference for C# delegates and lambdas — the `delegate` keyword, 
 license: Apache-2.0
 user-invocable: true
 metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
+  author: Robert H. Engelhardt <rheone@gmail.com>
   version: 1.0.0
 ---
 
@@ -15,8 +15,7 @@ concisely (anonymous methods, then lambdas) or a way to *shape* one more richly 
 types, variance, natural typing) without retiring anything earlier. The invocation-list mechanics
 in [references/csharp1-delegates-and-multicast.md](references/csharp1-delegates-and-multicast.md)
 still underlie every lambda written under the newest tier below. Out of scope: `dynamic` typing, and
-the mechanics of `Expression<TDelegate>` (a lambda's *other* possible compiled form) — both belong
-to other skills.
+the mechanics of `Expression<TDelegate>` (a lambda's *other* possible compiled form).
 
 ## Quick start (works everywhere, C# 3.0+)
 

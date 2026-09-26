@@ -135,7 +135,7 @@ var name = pet switch
 ```
 
 | Pattern kind | Unwraps to `.Value`? | Notes |
-|---|---|---|
+| --- | --- | --- |
 | `var` | No | Captures the union itself. |
 | Type pattern (`Cat c`) | Yes | `p is Pet` is an **error** — match case types, never the union's own type name. |
 | Declaration pattern | Yes | Equivalent to `type and var designation`. |
@@ -251,7 +251,7 @@ public record class Result<T> : Result<T>.IUnionMembers
 Three distinct behaviors depending on the union's underlying kind:
 
 | Union kind | `null` pattern succeeds when |
-|---|---|
+| --- | --- |
 | Struct union | `.Value` is null (`default(SomeUnion)` has a null `Value`) |
 | Class union | the reference itself is null **or** `.Value` is null (`result is null` ≡ `result == null \|\| result.Value == null`) |
 | Nullable-wrapped struct union (`Pet?`) | the nullable wrapper has no value **or** the underlying union's `.Value` is null |
@@ -284,11 +284,13 @@ neither mentions STJ behavior. Design work exists only as GitHub proposals:
   design points quoted from its body:
   - **No discriminator/envelope on the wire** — unions serialize transparently using the
     case value's own JSON contract, no `$type` field:
+
     ```csharp
     union Result(int, string);
     JsonSerializer.Serialize<Result>(new Result(42));      // 42
     JsonSerializer.Serialize<Result>(new Result("hello")); // "hello"
     ```
+
     Rationale given: "Unions don't have a natural discriminator: any case can be picked by the
     union's constructors, and two distinct case constructors can produce equal values."
   - **Deserialization uses first-token dispatch** — the converter inspects the first JSON

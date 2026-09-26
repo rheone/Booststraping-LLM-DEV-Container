@@ -1,0 +1,47 @@
+---
+name: {{SKILL_NAME}}
+description: {{ONE_SENTENCE_WHAT}} — {{TIER_SUMMARY_OLDEST_TO_NEWEST}}. Use when {{TRIGGER_BRANCHES}}.
+license: Apache-2.0
+user-invocable: true
+metadata:
+  author: {{AUTHOR}}
+  version: 1.0.0
+---
+
+# {{SKILL_TITLE}}
+
+<!-- One paragraph: the throughline across every tier — what stayed the same, what each later
+     version added. Name the baseline tier's file. -->
+
+## Quick start (works everywhere, C# {{BASELINE_VERSION}}+)
+
+```csharp
+```
+
+## Pick your reference file
+
+<!-- One row per tier, oldest to newest. Each reference file states its own fallback, so this
+     table just needs to get the reader to the highest tier they need. -->
+
+| Target | C# language version | Reference file |
+| --- | --- | --- |
+| {{TARGET_1}} | {{CSHARP_1}} | [references/{{FILE_1}}](references/{{FILE_1}}) — {{ONE_LINE_1}} |
+
+## Specialized patterns
+
+<!-- One bullet per specialized/ file. -->
+
+- [specialized/{{PATTERN_FILE}}](specialized/{{PATTERN_FILE}}) — {{ONE_LINE}}
+
+<!--
+  Do not add a "Related skill" section naming a sibling unless this skill has a real, necessary
+  dependency on it. Per references/insularity.md: no dependency means no
+  name — inline what's needed or say nothing. A real dependency means naming it here plus a
+  presence check that halts and tells the user if it's missing, e.g.:
+
+  ## Requires
+
+  This skill depends on the {{REQUIRED_SKILL}} skill. Before proceeding, check it is installed
+  (e.g. `skills/{{REQUIRED_SKILL}}/SKILL.md` exists). If it is not, stop and tell the user this
+  skill requires {{REQUIRED_SKILL}} to be installed.
+-->
