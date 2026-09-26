@@ -1,0 +1,22 @@
+name: Link check
+
+on:
+  push:
+    branches-ignore: [main]
+  pull_request:
+
+jobs:
+  lychee:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check internal markdown links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >
+            --no-progress
+            --offline
+            --include-fragments
+            "**/*.md"
+          fail: true
