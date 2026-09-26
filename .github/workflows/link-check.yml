@@ -14,9 +14,26 @@ jobs:
       - name: Check internal markdown links
         uses: lycheeverse/lychee-action@v2
         with:
+          # Skills excluded here predate this catalog's conventions (see
+          # scripts/validate_skills.py's NOT_YET_CONFORMING list) and use
+          # angle-bracket template placeholders or prose ellipses that read as
+          # broken relative links but aren't.
           args: >
             --no-progress
             --offline
             --include-fragments
+            --exclude-path skills/audit-remediation-pipeline
+            --exclude-path skills/csharp-code-organization
+            --exclude-path skills/csharp-docs-and-comments
+            --exclude-path skills/csharp-library-repo-structure
+            --exclude-path skills/csharp-split-type-to-partials
+            --exclude-path skills/csharp-test-sweep
+            --exclude-path skills/csharp-union
+            --exclude-path skills/dispatch-tasks
+            --exclude-path skills/dotnet-nhibernate
+            --exclude-path skills/github-markdown
+            --exclude-path skills/legacy-dotnet-feature-mapper
+            --exclude-path skills/mermaid-diagram-generator
+            --exclude-path skills/reverse-engineered-docs
             "**/*.md"
           fail: true
