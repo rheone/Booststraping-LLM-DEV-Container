@@ -192,6 +192,7 @@ flowchart TD
 | [`dotnet-fluentvalidation`](skills/dotnet-fluentvalidation) — [readme](skills/dotnet-fluentvalidation/README.md) | Declarative validation rules for C# objects with FluentValidation. |
 | [`dotnet-humanizer`](skills/dotnet-humanizer) — [readme](skills/dotnet-humanizer/README.md) | Turning raw values into human-readable text with Humanizer. |
 | [`dotnet-markdig`](skills/dotnet-markdig) — [readme](skills/dotnet-markdig/README.md) | Parsing and rendering Markdown with Markdig's extensible pipeline. |
+| [`dotnet-nhibernate`](skills/dotnet-nhibernate) | NHibernate mapping, session lifecycle, and query conventions. |
 | [`dotnet-nodatime`](skills/dotnet-nodatime) — [readme](skills/dotnet-nodatime/README.md) | Unambiguous date, time, and time zone handling with NodaTime. |
 | [`dotnet-refit`](skills/dotnet-refit) — [readme](skills/dotnet-refit/README.md) | Declarative REST API clients with Refit. |
 | [`dotnet-roslyn-analyzers`](skills/dotnet-roslyn-analyzers) — [readme](skills/dotnet-roslyn-analyzers/README.md) | Authoring Roslyn diagnostic analyzers and paired code fixes. |

@@ -42,7 +42,7 @@ NOT_YET_CONFORMING = {
     "csharp-test-sweep",
     "csharp-union",
     "dispatch-tasks",
-    "dotnet-nhibernate",
+    "dotnet-nhibernate",  # no README.md yet; predates the current template
     "github-markdown",
     "legacy-dotnet-feature-mapper",
     "mermaid-diagram-generator",
