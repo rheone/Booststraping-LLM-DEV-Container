@@ -59,7 +59,7 @@ particular feature's validation *rules*) all pass this test.
   about the others or about any individual slice's business rules.
 
 Both mechanisms deliberately avoid a **shared "kernel" folder that grows into a de facto services
-layer** — see [pitfalls.md](pitfalls.md#shared-kernel-creep) for what that looks like in practice
+layer** — see [pitfalls.md](pitfalls.md#shared-kernel-creep-back-into-a-coupled-layer) for what that looks like in practice
 and how to catch it before it re-couples the whole codebase.
 
 ## A practical boundary test
