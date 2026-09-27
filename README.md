@@ -57,7 +57,8 @@ skill in the catalog to this same standard.
 | Category | Skill count | A few examples |
 | --- | --- | --- |
 | C# Language Features | 13 | [`csharp-generics`](skills/csharp-generics), [`csharp-pattern-matching`](skills/csharp-pattern-matching), [`csharp-async`](skills/csharp-async) |
-| Design Patterns | 14 | [`csharp-strategy-pattern`](skills/csharp-strategy-pattern), [`csharp-repository-pattern`](skills/csharp-repository-pattern), [`csharp-decorator-pattern`](skills/csharp-decorator-pattern) |
+| Design Patterns | 15 | [`csharp-strategy-pattern`](skills/csharp-strategy-pattern), [`csharp-repository-pattern`](skills/csharp-repository-pattern), [`csharp-decorator-pattern`](skills/csharp-decorator-pattern) |
+| Architecture | 2 | [`csharp-cqrs`](skills/csharp-cqrs), [`csharp-vertical-slice-architecture`](skills/csharp-vertical-slice-architecture) |
 | ASP.NET Core & Web | 8 | [`dotnet-minimal-apis`](skills/dotnet-minimal-apis), [`dotnet-aspnetcore-authentication`](skills/dotnet-aspnetcore-authentication), [`dotnet-openiddict`](skills/dotnet-openiddict) |
 | Data Access | 4 | [`dotnet-ef-core`](skills/dotnet-ef-core), [`dotnet-dapper`](skills/dotnet-dapper), [`dotnet-automapper`](skills/dotnet-automapper) |
 | Testing Tools | 7 | [`dotnet-xunit`](skills/dotnet-xunit), [`dotnet-nsubstitute`](skills/dotnet-nsubstitute), [`dotnet-testcontainers`](skills/dotnet-testcontainers) |

@@ -91,7 +91,7 @@ flowchart TD
 | [`csharp-records`](skills/csharp-records) — [readme](skills/csharp-records/README.md) | Record classes and record structs — value equality, `with`-expressions, hierarchies. |
 | [`csharp-source-generators`](skills/csharp-source-generators) — [readme](skills/csharp-source-generators/README.md) | Authoring Roslyn incremental and legacy source generators. |
 | [`csharp-span-and-memory`](skills/csharp-span-and-memory) — [readme](skills/csharp-span-and-memory/README.md) | `Span<T>`/`Memory<T>` as an allocation-avoiding, slice-based programming technique. |
-| [`csharp-system-attributes`](skills/csharp-system-attributes) — [readme](skills/csharp-system-attributes/README.md) | Proactive guidance on which BCL attribute to reach for and why. |
+| [`csharp-system-attributes`](skills/csharp-system-attributes) — [readme](skills/csharp-system-attributes/README.md) | Proactive guidance on which BCL attribute to reach for and why, including `StringSyntax` and trimming/Native AOT annotations. |
 
 ### Design Patterns
 
@@ -117,6 +117,7 @@ flowchart TD
 
 | Skill | Summary |
 | --- | --- |
+| [`csharp-cqrs`](skills/csharp-cqrs) — [readme](skills/csharp-cqrs/README.md) | Separating command (write) and query (read) models, at whatever level of segregation a feature needs. |
 | [`csharp-vertical-slice-architecture`](skills/csharp-vertical-slice-architecture) — [readme](skills/csharp-vertical-slice-architecture/README.md) | Organizing a codebase by feature slice instead of by technical layer. |
 
 ### ASP.NET Core & Web
