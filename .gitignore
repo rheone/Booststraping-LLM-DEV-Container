@@ -964,5 +964,6 @@ Temporary Items
 
 .tmp
 .agents
+.claude/skills
 skills-lock.json
 /skills/humanizer

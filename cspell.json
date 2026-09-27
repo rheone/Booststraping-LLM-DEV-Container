@@ -1,0 +1,30 @@
+{
+    "version": "0.2",
+    "language": "en-US",
+
+    "useGitignore": true,
+
+    "dictionaries": [
+        "csharp",
+        "dotnet"
+    ],
+
+    "words": [
+        "Arcus",
+        "CSharp",
+        "csproj",
+        "MSBuild",
+        "NuGet",
+        "Roslyn",
+        "xUnit"
+    ],
+
+    "ignoreWords": [],
+
+    "ignorePaths": [
+        "**/bin/**",
+        "**/obj/**",
+        "**/node_modules/**",
+        "**/.git/**"
+    ]
+}
