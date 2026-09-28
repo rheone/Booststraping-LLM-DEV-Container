@@ -8,7 +8,7 @@ in .csproj, sln, slnx, nuget.config. Also trigger for "set up a new C# library l
 structurally consistent.
 user-invocable: true
 metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
+  author: Robert H. Engelhardt <rheone@gmail.com>
   version: 1.0.0
 ---
 

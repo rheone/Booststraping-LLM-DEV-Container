@@ -1,0 +1,19 @@
+# Glossary
+
+Read this first if you're new to NHibernate, especially if your prior ORM experience is EF Core — several terms map to different concepts, not just different names.
+
+| Term | What it means | EF Core false-friend warning |
+|---|---|---|
+| `ISessionFactory` | Built once per application (expensive to create), thread-safe, produces sessions. Roughly analogous to a `DbContext` *factory*, not a `DbContext` itself. | Don't create one per request — that's the `DbContext`-per-request instinct and it's wrong here. |
+| `ISession` | Unit of work + first-level cache + identity map. Short-lived (typically per-request or per-business-transaction), NOT thread-safe. | This is the thing that's actually analogous to `DbContext`. |
+| `ITransaction` | Explicit transaction scope you open from a session. NHibernate does not auto-wrap operations in a transaction the way some `SaveChanges()` flows imply. | Forgetting to open one is a common source of "why didn't this commit" bugs. |
+| Persistent, transient, detached | Entity states. **Transient**: never saved, no identity in the DB. **Persistent**: attached to an open session, changes tracked. **Detached**: was persistent, but its session closed — it still has an identity but isn't tracked. | EF Core's "tracked/untracked" is close but the detached-reattachment rules (`Merge` vs `Update` vs `SaveOrUpdate`) are stricter and easier to get wrong in NHibernate. |
+| Proxy | A dynamically generated subclass NHibernate substitutes for lazy-loaded entities/collections. Accessing anything beyond the ID on an unloaded proxy triggers a DB hit — or throws if the session is closed. | This is why `is` checks, `GetType()`, and certain reflection patterns misbehave on NHibernate entities in ways they don't on POCOs. See `lazy-loading-and-fetching.md`. |
+| First-level cache | The identity map inside a single `ISession`. Guarantees you get the same object instance for the same ID within one session. Not configurable, always on. | Different from second-level cache (see below) — don't confuse the two when someone says "the cache" is stale. |
+| Second-level cache | Optional, shared across sessions, configured per-entity/collection. Off by default. | This is closer to what people mean by "distributed cache" in EF Core discussions, but it's entity-shaped, not query-shaped. |
+| `Inverse()` | Fluent mapping flag marking which side of a bidirectional relationship is *not* responsible for managing the foreign key. | Has no EF Core equivalent by that name; the closest concept is EF's navigation property configuration, but the failure mode (duplicate inserts, orphaned FKs) if you get `Inverse()` wrong on both/neither side is NHibernate-specific. See `cascade-and-relationships.md`. |
+| `Get` vs `Load` | `Get` hits the DB immediately and returns `null` if not found. `Load` returns a proxy lazily and throws `ObjectNotFoundException` on first real access if the row doesn't exist. | No direct EF Core equivalent — `Find`/`FirstOrDefault` behave more like `Get`. |
+| QueryOver / HQL / Criteria / LINQ provider | NHibernate ships with *four* different query APIs with overlapping but not identical capability. | EF Core developers expect "there's only LINQ" — here, picking the right one matters. See `query-strategy.md`. |
+| `StatelessSession` | A session variant with no first-level cache, no automatic dirty checking, no cascades. Used for bulk operations. | Nothing in EF Core maps to this directly; `ExecuteUpdate`/`ExecuteDelete` in newer EF Core covers some of the same use case but the mechanism is different. |
+
+If a term isn't here, check `common-exceptions.md` (it explains vocabulary in the context of the exception that surfaces it) before asking — a lot of NHibernate's vocabulary is best understood by the failure mode it's named after.

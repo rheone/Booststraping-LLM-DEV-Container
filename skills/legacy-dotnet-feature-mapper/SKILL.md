@@ -2,7 +2,7 @@
 name: legacy-dotnet-feature-mapper
 description: Reverse-engineers and documents a legacy .NET Framework 4.8 / .NET 5 WebForms + TSQL application into a faithful, citable feature-by-feature map (business rules, permissions, happy/failure paths, DB behavior, Mermaid diagrams) using static analysis only - never by running or compiling the code. Every generated doc is machine-verified against a template manifest before it can be marked complete. Use this whenever the user wants to document, map, reverse-engineer, inventory, or "understand" an old/legacy/undocumented .NET WebForms codebase before a rewrite or migration, wants a feature inventory of a solution, wants business rules extracted from stored procedures/triggers, or mentions preparing documentation as a reference for a future rewrite team. Also trigger for requests to run this process "AFK", unattended, or "until done."
 metadata: 
-  author: Robert Engelhardt <rheone@gmail.com>
+  author: Robert H. Engelhardt <rheone@gmail.com>
   version: 2.0.0
 license: Apache-2.0
 user-invocable: true

@@ -960,3 +960,10 @@ Temporary Items
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/visualbasic,visualstudio,visualstudiocode,python,powershell,aspnetcore,dotnetcore,csharp
+
+
+.tmp
+.agents
+.claude/skills
+skills-lock.json
+/skills/humanizer

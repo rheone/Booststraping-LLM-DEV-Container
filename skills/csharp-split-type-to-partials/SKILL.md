@@ -4,7 +4,7 @@ description: Refactors a C# type (class, record, struct) into partial files spli
 license: Apache-2.0
 user-invocable: true
 metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
+  author: Robert H. Engelhardt <rheone@gmail.com>
   version: 2.0.1
 ---
 

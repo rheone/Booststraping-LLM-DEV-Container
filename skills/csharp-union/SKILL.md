@@ -1,6 +1,12 @@
 ---
 name: csharp-union
-description: Best practices for C#'s `union` type, a C# 15 / .NET 11 preview language feature for closed, compiler-exhaustive sets of type alternatives (result-or-error returns, message dispatch, replacing marker interfaces). Use when declaring, consuming, or reviewing `union` declarations, switching/pattern-matching over a union's cases, hitting CS8509/CS8655, or designing MediatR/CQRS-style response types with unions.
+description: Best practices for C#'s `union` type, a C# 15 / .NET 11 preview language feature for closed, compiler-exhaustive sets of type alternatives.
+license: Apache-2.0
+user-invocable: true
+disable-model-invocation: true
+metadata:
+  author: Robert H. Engelhardt <rheone@gmail.com>
+  version: 1.0.0
 ---
 
 # C# union types
@@ -95,18 +101,6 @@ equality/cloning/deconstruction — it's a plain `struct`, never `record struct`
   case type overrides `Equals`, e.g. records — not otherwise). Inferred from the documented
   lowering in [REFERENCE.md](REFERENCE.md#declaration-syntax-and-lowering), not stated outright
   by any primary source — verify empirically if load-bearing.
-
-## Using unions as MediatR/CQRS response types
-
-This maps directly onto Microsoft's "result-or-error returns" and "replacing marker
-interfaces" scenarios above: a handler returns `union CreateProductResult(ProductDto,
-ValidationErrors, Error)` instead of throwing or returning a nullable/marker-interface type,
-and the caller's `switch` is exhaustive over every outcome the operation can produce. Keep
-case types meaning-free and reused across unions when case *identity* (e.g. commit vs.
-rollback) needs to differ per-union — decide that via a `static abstract` member on the union
-itself (e.g. `ShouldCommit(TResponse)`), not by trying to infer meaning from a shared case
-type. See [REFERENCE.md](REFERENCE.md#interop) for the `IUnion`/`IUnionMembers` mechanics this
-relies on.
 
 ## Reference
 

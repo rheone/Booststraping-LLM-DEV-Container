@@ -4,7 +4,7 @@ description: Sweep C# test classes one at a time, raising each to the quality ch
 license: Apache-2.0
 user-invocable: true
 metadata:
-  author: Robert Engelhardt <rheone@gmail.com>
+  author: Robert H. Engelhardt <rheone@gmail.com>
   version: 3.0.0
 ---
 
