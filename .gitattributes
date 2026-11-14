@@ -14,3 +14,6 @@
 
 # Markdown files
 *.md    text eol=lf
+# Eval fixtures are copied into Linux run directories (shebang scripts need LF) - keep LF
+evals/**/files/** text eol=lf
+scripts/*.cs text eol=lf

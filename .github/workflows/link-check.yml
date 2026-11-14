@@ -15,7 +15,7 @@ jobs:
         uses: lycheeverse/lychee-action@v2
         with:
           # Skills excluded here predate this catalog's conventions (see
-          # scripts/validate_skills.py's NOT_YET_CONFORMING list) and use
+          # scripts/validate_skills.cs's NOT_YET_CONFORMING list) and use
           # angle-bracket template placeholders or prose ellipses that read as
           # broken relative links but aren't.
           args: >
