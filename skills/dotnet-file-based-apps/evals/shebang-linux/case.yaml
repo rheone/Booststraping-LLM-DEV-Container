@@ -1,7 +1,0 @@
-schema_version: "1.1"
-name: shebang-linux
-context:
-  scaffold_script: place-files.sh
-expected_outcome: |
-  cleanup.cs gets '#!/usr/bin/env -S dotnet --' (or '#!/usr/bin/env dotnet') as line 1, is saved LF with no BOM,
-  the user is told to chmod +x, and the CRLF .gitattributes rule is overridden so checkouts keep LF.

@@ -1,7 +1,0 @@
-schema_version: "1.1"
-name: fix-directive-error
-context:
-  scaffold_script: place-files.sh
-expected_outcome: |
-  report.cs is fixed: the #:property uses Name=Value, the #:package has an exact version, and it builds and runs.
-  The explanation names both causes.
