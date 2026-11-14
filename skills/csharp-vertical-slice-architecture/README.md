@@ -52,8 +52,8 @@ packages unless you ask.
 | Code smells | [references/code-smells.md](references/code-smells.md) |
 | Testing and architecture tests | [references/testing.md](references/testing.md), [references/architecture-tests.md](references/architecture-tests.md) |
 
-The `research/` folder holds the sourced research notes and the design plan behind the skill. The skill
-itself does not load them.
+The `research/` folder holds the sourced research notes behind the skill. The skill itself does not load
+them.
 
 ## Example prompts
 

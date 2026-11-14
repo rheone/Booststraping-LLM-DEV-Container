@@ -1,4 +1,0 @@
-<Solution>
-  <Project Path="src/Depot/Depot.csproj" />
-  <Project Path="tests/Depot.Tests/Depot.Tests.csproj" />
-</Solution>

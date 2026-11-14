@@ -1,8 +1,7 @@
 # Vertical Slice Architecture in .NET — research notes
 
 Compiled 2026-11-13 to inform the rewrite of the local skill `skills/csharp-vertical-slice-architecture`
-(v1.0.0, tool-agnostic, 8 reference files). It also settles the `VERIFY` items in
-[skill-rewrite-plan.md](skill-rewrite-plan.md). Each claim cites its owner: Jimmy Bogard's own posts and
+(v1.0.0, tool-agnostic, 8 reference files). Each claim cites its owner: Jimmy Bogard's own posts and
 sample repo, Microsoft Learn, library repos and docs, and Evans / Martin / Brown for the vocabulary.
 Community writers (Milan Jovanović, Derek Comartin) appear only as labeled **community practice**.
 Anything not traced to a primary source is marked **unverified** or **community opinion**.
