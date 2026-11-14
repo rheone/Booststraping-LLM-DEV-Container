@@ -32,3 +32,12 @@ The fixtures stand in for existing repos. They intentionally do not follow the s
 
 The case layout follows the `claude plugin eval` format (`case.yaml`, `prompt.md`, `graders/*.md`).
 Point `--eval-dir` at this folder. `claude plugin eval --help` lists the options.
+
+## Known limits
+
+- `place-files.sh` stays bash (`cp -R`). `claude plugin eval` runs `scaffold_script` through bash. A `.cs`
+  file-based app fails there: the sandbox strips the environment and `dotnet` stops with
+  `Value cannot be null (Parameter 'path1')` on Windows. This is the one exception to the file-based-app rule.
+- `claude plugin eval` requires `--eval-dir` inside the plugin root. These evals sit outside the skill folder,
+  so you need a plugin root that holds both the skill and this folder. The repo root has no plugin manifest.
+  The 2.0.0 results below come from manual with-skill and old-skill runs, not from `claude plugin eval`.
