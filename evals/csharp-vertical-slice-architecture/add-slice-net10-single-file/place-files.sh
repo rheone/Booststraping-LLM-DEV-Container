@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
 set -eu
-cp -R "$(dirname "$0")/files/." .
-
+exec dotnet "$(dirname "$0")/../place-files.cs" -- "$(dirname "$0")"
