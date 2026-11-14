@@ -5,6 +5,25 @@ sliced project, add slices that stay independent, move a layered codebase over o
 and review a sliced codebase for the smells that pull it back toward layers. It targets .NET 10 and
 .NET 11, including C# 15 unions and closed hierarchies for handler outcomes.
 
+## The idea in one picture
+
+A layered codebase groups code by technical role, so one change touches every layer. A sliced codebase
+groups code by use case, so one change stays in one folder.
+
+```mermaid
+flowchart LR
+    subgraph Layered["Layered: a change cuts across layers"]
+        direction TB
+        LC["Controllers/OrdersController"] --> LS["Services/OrderService"] --> LR["Repositories/OrderRepository"]
+    end
+    subgraph Sliced["Sliced: a change stays in one slice"]
+        direction TB
+        S1["Features/Orders/CreateOrder<br/>endpoint, request, handler, validator"]
+        S2["Features/Orders/CancelOrder<br/>endpoint, request, handler, validator"]
+        S3["Features/Orders/GetOrder<br/>endpoint, request, handler"]
+    end
+```
+
 ## When to reach for it
 
 - You are adding an endpoint, command, query, message consumer, or job to a project with a `Features/` or
@@ -25,6 +44,18 @@ project layout. You can also call it with `/csharp-vertical-slice-architecture`.
 It follows your repository before it suggests anything. It reads your existing layout, libraries, error
 style, and tests, and asks you only about what the code does not answer. It does not add or swap
 packages unless you ask.
+
+The skill picks one of four workflows from what you ask for:
+
+```mermaid
+flowchart TD
+    Q["Your request"] --> A{"What are you doing?"}
+    A -->|"Starting a new project"| B["Bootstrap project"]
+    A -->|"Adding an endpoint, command, query, consumer, or job"| C["Add slice"]
+    A -->|"Moving a Controllers/Services/Repositories codebase"| D["Migrate"]
+    A -->|"Checking a sliced codebase"| E["Review"]
+    A -->|"Choosing an architecture or a pattern"| F["Answer from the references"]
+```
 
 ## What it covers
 
@@ -51,6 +82,34 @@ packages unless you ask.
 | VSA vs. other architectures | [references/comparisons.md](references/comparisons.md) |
 | Code smells | [references/code-smells.md](references/code-smells.md) |
 | Testing and architecture tests | [references/testing.md](references/testing.md), [references/architecture-tests.md](references/architecture-tests.md) |
+
+The default dependency rule (area-level sharing) in one picture. An arrow means "may depend on".
+[dependency-rules.md](references/dependency-rules.md) has the full matrix and the other two levels.
+
+```mermaid
+flowchart TD
+    Host["Host (composition root)"]
+    subgraph Area["Feature area"]
+        SA["Slice A"]
+        SB["Slice B"]
+        AS["Area Shared/"]
+    end
+    Domain["Domain"]
+    Infra["Shared infrastructure"]
+    Kernel["Shared kernel"]
+    Host -.->|"registers"| SA
+    Host -.->|"registers"| SB
+    SA --> AS
+    SB --> AS
+    SA --> Domain
+    SB --> Domain
+    SA --> Infra
+    SB --> Infra
+    AS --> Domain
+    Infra --> Domain
+    Domain --> Kernel
+    SA --x|"never"| SB
+```
 
 The `research/` folder holds the sourced research notes behind the skill. The skill itself does not load
 them.
