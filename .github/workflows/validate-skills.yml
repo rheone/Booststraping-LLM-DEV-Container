@@ -11,12 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-dotnet@v4
         with:
-          python-version: "3.12"
-
-      - name: Install dependencies
-        run: pip install --quiet pyyaml
+          dotnet-version: "10.0.x"
 
       - name: Validate skill structure and insularity
-        run: python3 scripts/validate_skills.py
+        run: dotnet scripts/validate_skills.cs

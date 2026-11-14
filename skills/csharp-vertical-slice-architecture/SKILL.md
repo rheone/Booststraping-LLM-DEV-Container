@@ -53,8 +53,9 @@ Apply these in every workflow and every answer.
 4. **Exceptions are for exceptional cases.** Model expected outcomes (validation failure, not found,
    conflict, forbidden) as results, or as the repo's established convention. Write no example that
    throws for an expected outcome.
-5. **Scripts are .NET file-based apps.** Any script you bundle or write for the user is a single
-   `.cs` file run with `dotnet run <file>.cs`, unless the user directs otherwise.
+5. **Write scripts as .NET file-based apps.** This skill bundles no scripts. When you write a helper
+   script for the user (scaffolding, a migration check, a one-off tool), write one `.cs` file and run it
+   with `dotnet <file>.cs`, unless the user directs otherwise.
 6. **Externally observable behavior is a contract.** Restructuring (moving code into slices, renaming
    folders, promoting shared code) keeps routes, request and response shapes, status codes, and side
    effects unchanged unless the user asks for a behavior change.
