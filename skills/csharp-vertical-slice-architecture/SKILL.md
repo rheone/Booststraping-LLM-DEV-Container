@@ -1,73 +1,145 @@
 ---
 name: csharp-vertical-slice-architecture
-description: 'Guidance on Vertical Slice Architecture (VSA) as a C#/.NET code-organization pattern — organizing by feature/use-case ("slice") instead of by technical layer (controllers/services/repositories). Covers slice anatomy (request/handler/response), folder and naming conventions (Features/CreateOrder/), the VSA-vs-CQRS relationship, cross-cutting concerns without re-layering, data-access tradeoffs (query-per-slice vs shared repository), when VSA fits vs. doesn''t, incremental adoption into an existing layered codebase, common pitfalls (premature abstraction, inconsistent granularity, shared-kernel creep), and testing slices in isolation. Use when deciding how to structure a new feature, evaluating whether to adopt VSA, reviewing a "Features/" folder layout, or explaining how VSA relates to CQRS/Clean/Onion architecture. Tool-agnostic: describes mechanisms generically and does not name or require any specific mediator, DI, validation, or ORM library.'
+description: 'Vertical Slice Architecture (VSA) for C#/.NET 10 and 11: organizing code by feature/use case ("slice") instead of by technical layer. Covers project and folder layouts, slice anatomy (request/response records, handler, endpoint), dependency rules between slices, shared infrastructure and domain, mediator/CQRS/pipeline/REPR patterns, results with C# 15 unions or closed hierarchies, validation, data access (DbContext, NHibernate ISession, unit of work, repository), cross-cutting concerns, messaging, AOT, testing, and architecture tests that enforce slice isolation. Includes step-by-step workflows to bootstrap a VSA project, add a slice, migrate a layered (Controllers/Services/Repositories) project to slices, and review a VSA codebase for smells. Use when adding a feature, endpoint, command, query, message consumer, or job to a project with a Features/ or Pages/ folder; when designing or restructuring a .NET project layout; when comparing VSA with Clean, Onion, Hexagonal, N-tier, or modular monolith; or when writing architecture tests for feature boundaries.'
 license: Apache-2.0
 user-invocable: true
 metadata:
   author: Robert H. Engelhardt <rheone@gmail.com>
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 # C# Vertical Slice Architecture
 
-Vertical Slice Architecture (VSA) is an **architectural style**, not a package — there is nothing
-to install and no version to pin. This skill documents the pattern itself: how to organize code by
-feature instead of by technical layer, what a slice contains, how VSA relates to (and differs
-from) CQRS, and where the pattern's tradeoffs actually bite. Guidance is cross-checked against
-Jimmy Bogard's original formulation of the pattern and current community practice, not a single
-opinionated source.
+Vertical Slice Architecture (VSA) is an architectural style, not a package. You organize code around
+distinct requests, one *slice* per use case, and you group everything that use case needs (input,
+logic, data access, output) in one place. The governing rule is Jimmy Bogard's: **minimize coupling
+between slices, and maximize coupling inside a slice**, along the axis of change.
 
-Everything below is described **tool-agnostically**: "a handler dispatch mechanism," "a validation
-pipeline," "a pattern often paired with X" — never a specific mediator, DI container, validation,
-or ORM library — because the pattern itself doesn't require any of them, and this skill needs to
-stay correct regardless of which libraries a given project uses.
+## Leading words
 
-## Pick your reference file by situation
+Each word below has one meaning across every file in this skill. The full definitions are in
+[references/core-principles.md](references/core-principles.md).
 
-| You're doing this... | Reference file |
+- **Slice**: one use case, end to end: request, handler, response, edge mapping, and tests.
+- **Area**: a group of related slices (`Orders`, `Billing`), one folder level above the slice.
+- **Edge**: where a request enters the app (HTTP endpoint, message consumer, job, page, gRPC method,
+  CLI command). The edge maps transport to the slice and the result back to transport.
+- **Shared infrastructure**: technical code every slice may use (persistence setup, pipeline steps,
+  clients). It knows no slice.
+- **Domain**: entities, value objects, invariants, and domain events shared by slices. It depends on
+  nothing in Features or infrastructure.
+- **Shared kernel**: Evans' meaning only: a small, explicitly bounded part of the domain model that two
+  modules or teams agree to share. It is not a utilities folder.
+- **Promotion**: moving code out of a slice into area-shared code, the domain, or shared infrastructure
+  after it has proven it is shared.
+
+## Standing rules
+
+Apply these in every workflow and every answer.
+
+1. **Follow the repo, else ask.** Before you design or write code, detect the target repo's existing
+   conventions: layout, dispatch style, data access, result/error style, slice isolation level, test
+   style, and libraries. Follow what you find. Ask the user only for what the repo does not answer, and
+   present the options from the relevant reference file when you ask. When the user cannot answer, choose
+   the option closest to the existing code (or the reference file's suggested default), and list every
+   such decision in your final report.
+2. **Keep existing dependencies.** When the project already has a suitable library (validator,
+   mediator, ORM, test framework, architecture-test library), use it. Add, replace, or remove a
+   dependency only when the user instructs it.
+3. **Unions need C# 15.** Use `union` types and `closed` classes only when the project's language
+   version is C# 15 or later (the default for `net11.0`). Below C# 15, use an abstract record with a
+   private constructor and nested sealed cases. See
+   [references/results-and-errors.md](references/results-and-errors.md).
+4. **Exceptions are for exceptional cases.** Model expected outcomes (validation failure, not found,
+   conflict, forbidden) as results, or as the repo's established convention. Write no example that
+   throws for an expected outcome.
+5. **Scripts are .NET file-based apps.** Any script you bundle or write for the user is a single
+   `.cs` file run with `dotnet run <file>.cs`, unless the user directs otherwise.
+6. **Externally observable behavior is a contract.** Restructuring (moving code into slices, renaming
+   folders, promoting shared code) keeps routes, request and response shapes, status codes, and side
+   effects unchanged unless the user asks for a behavior change.
+7. **Build only what was asked.** Add no required input, field, endpoint, or behavior that the request
+   does not name. A loan with no borrower is what the user asked for if they did not mention a borrower.
+   When you think something is missing, make it optional or leave it out, and list it in your final report
+   as a suggestion.
+8. **Async all the way, with a token.** I/O is async from the edge to the database. Every async method
+   that other code calls (handlers, area `Shared/`, domain services, infrastructure, repositories) takes
+   `CancellationToken ct = default` as its last parameter, and every caller passes on the token it
+   received instead of relying on the default. Every `await` in `src/` uses `.ConfigureAwait(false)`,
+   except in UI code that needs its context after the await; test code omits it. This rule overrides
+   rule 1 for code you write or change: apply it even when the existing slices do not, leave untouched code
+   alone unless the user asks, and name the gap in your report. Details and analyzer settings are in
+   [references/slice-anatomy.md](references/slice-anatomy.md#async-and-cancellation).
+
+## Dependency rules
+
+The suggested isolation level for a repo with no convention is **area-level sharing**. The full
+matrix, the strict and relaxed alternatives, and cross-slice communication options are in
+[references/dependency-rules.md](references/dependency-rules.md).
+
+| From | May depend on | Must not depend on |
+| --- | --- | --- |
+| Slice | its own types, its area's `Shared/`, domain, shared infrastructure | another slice, another area, the host |
+| Area `Shared/` | domain, shared infrastructure | any slice, another area |
+| Domain | the shared kernel, the BCL | Features, infrastructure, ASP.NET Core |
+| Shared infrastructure | domain | Features |
+| Host / composition root | everything (registration only) | — |
+
+## Workflows
+
+Each workflow is a numbered sequence with a completion criterion per step. Read the whole workflow
+file before you start step 1.
+
+| You are asked to... | Workflow |
 | --- | --- |
-| Deciding how to organize a new feature's code, or explaining "screaming architecture" / slice-vs-layer tradeoffs | [references/philosophy-and-organization.md](references/philosophy-and-organization.md) |
-| Figuring out how VSA and CQRS relate — is one required for the other? | [references/cqrs-relationship.md](references/cqrs-relationship.md) |
-| Writing or reviewing the shape of an individual slice (request/handler/response) | [references/slice-anatomy.md](references/slice-anatomy.md) |
-| Sharing validation, logging, or persistence setup across slices without re-layering | [references/cross-cutting-concerns.md](references/cross-cutting-concerns.md) |
-| Deciding query-object-per-slice vs. a shared repository for data access | [references/data-access-patterns.md](references/data-access-patterns.md) |
-| Deciding whether VSA fits a project, or introducing it feature-by-feature into an existing layered codebase | [references/fit-and-adoption.md](references/fit-and-adoption.md) |
-| Reviewing a VSA codebase for code smells (duplication, granularity, shared-kernel creep) | [references/pitfalls.md](references/pitfalls.md) |
-| Deciding how to test a slice — unit vs. integration, test folder structure | [references/testing.md](references/testing.md) |
+| Create a new project organized by slices | [workflows/workflow-bootstrap-project.md](workflows/workflow-bootstrap-project.md) |
+| Add a feature, endpoint, command, query, consumer, or job | [workflows/workflow-add-slice.md](workflows/workflow-add-slice.md) |
+| Move a layered project (Controllers/Services/Repositories) to slices | [workflows/workflow-migrate.md](workflows/workflow-migrate.md) |
+| Review or audit a VSA codebase, or check a slice for smells | [workflows/workflow-review.md](workflows/workflow-review.md) |
+
+## Reference files
+
+| You need... | Reference file |
+| --- | --- |
+| Definitions, the coupling rule, when VSA fits | [references/core-principles.md](references/core-principles.md) |
+| Folder and project layout options with trees | [references/project-layouts.md](references/project-layouts.md) |
+| Slices per edge: HTTP, consumers, jobs, UI, gRPC, CLI | [references/entry-points.md](references/entry-points.md) |
+| The parts of one slice and the request flow | [references/slice-anatomy.md](references/slice-anatomy.md) |
+| What may reference what; cross-slice communication | [references/dependency-rules.md](references/dependency-rules.md) |
+| Dispatch (direct, mediator), CQRS, pipelines, filters, REPR | [references/patterns.md](references/patterns.md) |
+| Result types, unions, closed hierarchies, exceptions, ProblemDetails | [references/results-and-errors.md](references/results-and-errors.md) |
+| Input validation and invariants | [references/validation.md](references/validation.md) |
+| Where domain, services, clients, and shared code live | [references/shared-logic.md](references/shared-logic.md) |
+| DbContext, NHibernate, unit of work, repository, specifications | [references/data-access.md](references/data-access.md) |
+| Logging, authorization, transactions, caching, observability | [references/cross-cutting-concerns.md](references/cross-cutting-concerns.md) |
+| Domain and integration events, outbox, idempotency, concurrency | [references/messaging-and-consistency.md](references/messaging-and-consistency.md) |
+| Native AOT, trimming, registration, migrations ownership | [references/platform-and-build.md](references/platform-and-build.md) |
+| Pagination, filtering, OpenAPI, versioning, multi-tenancy | [references/api-contracts.md](references/api-contracts.md) |
+| VSA vs. N-tier, Clean, Onion, Hexagonal, monoliths | [references/comparisons.md](references/comparisons.md) |
+| Smells, symptoms, and refactors | [references/code-smells.md](references/code-smells.md) |
+| Testing slices: integration, unit, test layout | [references/testing.md](references/testing.md) |
+| Architecture tests that enforce slice isolation | [references/architecture-tests.md](references/architecture-tests.md) |
+
+## Templates
+
+- [assets/templates/slice.cs.tmpl](assets/templates/slice.cs.tmpl): one HTTP slice in a single file.
+- [assets/templates/ArchitectureTests.cs.tmpl](assets/templates/ArchitectureTests.cs.tmpl): slice
+  isolation rules.
+- [assets/templates/ARCHITECTURE.md.tmpl](assets/templates/ARCHITECTURE.md.tmpl): the architecture
+  section you write into the target project.
 
 ## Quick start
 
-The one-line version of VSA: **stop grouping files by what they technically are
-(`Controllers/`, `Services/`, `Repositories/`) and start grouping them by what they do for a user
-(`Features/CreateOrder/`, `Features/GetOrderById/`)**. Each feature folder holds everything that
-feature needs — its input shape, its logic, its output shape, colocated — rather than scattering
-one feature's code across five layer-named folders.
-
 ```text
-# Layered (by technical role)               # Vertical slice (by feature)
-Controllers/                                 Features/
-  OrdersController.cs                          CreateOrder/
-Services/                                        CreateOrderRequest.cs
-  OrderService.cs                                CreateOrderHandler.cs
-Repositories/                                    CreateOrderResponse.cs
-  OrderRepository.cs                           GetOrderById/
-Models/                                          GetOrderByIdRequest.cs
-  Order.cs                                       GetOrderByIdHandler.cs
-  OrderDto.cs                                    GetOrderByIdResponse.cs
+# Layered (by technical role)          # Sliced (by use case)
+Controllers/OrdersController.cs         Features/
+Services/OrderService.cs                  Orders/
+Repositories/OrderRepository.cs             CreateOrder/CreateOrder.cs      # request, handler, response, endpoint
+Models/OrderDto.cs                          GetOrderById/GetOrderById.cs
+                                            Shared/OrderNumberFormatter.cs  # used by 2+ Orders slices
+                                        Domain/Order.cs
+                                        Infrastructure/Persistence/AppDbContext.cs
 ```
 
-Changing "create order" behavior in the layered version touches four folders. In the sliced
-version it touches one. That's the whole trade VSA is making — start with
-[references/philosophy-and-organization.md](references/philosophy-and-organization.md) for why
-that trade is usually worth it, and when it isn't.
-
-## Out of scope
-
-- Naming or depending on any specific mediator, DI, validation, or ORM library. Every mechanism
-  here (handler dispatch, validation pipelines, persistence) is described generically; apply it
-  with whatever libraries a given project already uses.
-- Domain-Driven Design tactical patterns (aggregates, value objects, domain events) — VSA is a
-  code-*organization* pattern and is compatible with DDD but doesn't require it; this skill covers
-  the slicing axis only.
-- Microservice/service-boundary decomposition — VSA is about organizing code *within* one
-  deployable unit, not about where to draw network boundaries between services.
+A change to "create order" touches four folders in the layered tree and one folder in the sliced
+tree. That locality is the trade VSA makes, for human readers and for agents.
