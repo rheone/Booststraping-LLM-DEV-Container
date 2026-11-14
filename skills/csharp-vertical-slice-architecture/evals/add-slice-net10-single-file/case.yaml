@@ -1,0 +1,10 @@
+schema_version: "1.1"
+name: add-slice-net10-single-file
+expected_outcome: |
+  A DeliverShipment slice that copies the repo's inferred conventions: one file per slice holding a static
+  class with Result, Handler, and Map; an abstract record result with a private constructor and nested
+  cases (the project is net10.0, so no union or closed); the state change through a Shipment domain method;
+  registration in ShipmentsFeature; tests for 204/404/409 that pass; no new packages.
+context:
+  scaffold_script: place-files.sh
+

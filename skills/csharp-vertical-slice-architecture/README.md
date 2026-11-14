@@ -1,40 +1,67 @@
 # Vertical Slice Architecture
 
-Guidance on organizing C#/.NET code by feature instead of by technical layer. It covers what a
-slice contains, how the pattern relates to CQRS, and where its tradeoffs (duplication,
-granularity, adoption cost) actually bite in a real codebase.
+Organize a C#/.NET application by use case instead of by technical layer. This skill helps you lay out a
+sliced project, add slices that stay independent, move a layered codebase over one use case at a time,
+and review a sliced codebase for the smells that pull it back toward layers. It targets .NET 10 and
+.NET 11, including C# 15 unions and closed hierarchies for handler outcomes.
 
 ## When to reach for it
 
-- You're deciding how to lay out a new feature's code and weighing a `Features/CreateOrder/`
-  folder against splitting it across `Controllers/`, `Services/`, and `Repositories/`.
-- You're reviewing an existing `Features/` folder and want to check its granularity or spot
-  shared-kernel creep.
-- You're deciding whether to introduce vertical slices into an existing layered codebase, one
-  feature at a time, and want to know where that adoption tends to get hard.
+- You are adding an endpoint, command, query, message consumer, or job to a project with a `Features/` or
+  `Pages/` folder, and want it to match the existing slices.
+- You are starting a new API or app and want a feature-first layout with tests and enforced boundaries
+  from day one.
+- You have a `Controllers/` → `Services/` → `Repositories/` codebase that is painful to change and want to
+  move it to slices without changing its behavior.
+- You want a review of a sliced codebase: cross-slice coupling, a `Shared/` folder that grew into a
+  service layer, handlers calling handlers, missing tests.
+- You need to explain or decide between VSA, Clean Architecture, Onion, N-tier, or a modular monolith.
 
 ## Using it
 
-This skill fires automatically when your request involves describing a feature layout, asking
-about slice-vs-layer tradeoffs, or asking how VSA relates to CQRS. You can also invoke it directly
-with `/csharp-vertical-slice-architecture`.
+The skill is model-invoked: it loads on its own when your request involves slices, feature folders, or
+project layout. You can also call it with `/csharp-vertical-slice-architecture`.
+
+It follows your repository before it suggests anything. It reads your existing layout, libraries, error
+style, and tests, and asks you only about what the code does not answer. It does not add or swap
+packages unless you ask.
 
 ## What it covers
 
-| Topic | Reference |
+| Topic | Where |
 | --- | --- |
-| Core philosophy, "screaming architecture," folder and naming conventions | [references/philosophy-and-organization.md](references/philosophy-and-organization.md) |
-| How VSA and CQRS relate, and where they don't require each other | [references/cqrs-relationship.md](references/cqrs-relationship.md) |
-| The shape of an individual slice: request, handler, response, sizing | [references/slice-anatomy.md](references/slice-anatomy.md) |
-| Sharing validation, logging, or persistence across slices without re-layering | [references/cross-cutting-concerns.md](references/cross-cutting-concerns.md) |
-| Query-object-per-slice vs. a shared repository for data access | [references/data-access-patterns.md](references/data-access-patterns.md) |
-| Whether VSA fits a project, and introducing it incrementally | [references/fit-and-adoption.md](references/fit-and-adoption.md) |
-| Code smells: duplication vs. premature abstraction, inconsistent granularity, shared-kernel creep | [references/pitfalls.md](references/pitfalls.md) |
-| Testing a slice: unit vs. integration, test folder structure | [references/testing.md](references/testing.md) |
+| Bootstrap a new sliced project | [workflows/workflow-bootstrap-project.md](workflows/workflow-bootstrap-project.md) |
+| Add one slice | [workflows/workflow-add-slice.md](workflows/workflow-add-slice.md) |
+| Migrate a layered project | [workflows/workflow-migrate.md](workflows/workflow-migrate.md) |
+| Review a sliced codebase | [workflows/workflow-review.md](workflows/workflow-review.md) |
+| Principles, vocabulary, when VSA fits | [references/core-principles.md](references/core-principles.md) |
+| Layout options with folder trees | [references/project-layouts.md](references/project-layouts.md) |
+| HTTP, Razor Pages, Blazor, consumers, jobs, gRPC, CLI as slices | [references/entry-points.md](references/entry-points.md) |
+| The parts of a slice and the request flow | [references/slice-anatomy.md](references/slice-anatomy.md) |
+| What may depend on what | [references/dependency-rules.md](references/dependency-rules.md) |
+| Mediator, CQRS, pipelines, REPR | [references/patterns.md](references/patterns.md) |
+| Unions, closed hierarchies, results vs. exceptions | [references/results-and-errors.md](references/results-and-errors.md) |
+| Validation | [references/validation.md](references/validation.md) |
+| Where domain, services, and shared code live | [references/shared-logic.md](references/shared-logic.md) |
+| EF Core, NHibernate, unit of work, repositories | [references/data-access.md](references/data-access.md) |
+| Auth, logging, observability, caching, feature flags | [references/cross-cutting-concerns.md](references/cross-cutting-concerns.md) |
+| Events, outbox, idempotency, concurrency | [references/messaging-and-consistency.md](references/messaging-and-consistency.md) |
+| AOT, registration, migrations | [references/platform-and-build.md](references/platform-and-build.md) |
+| Paging, OpenAPI, versioning, multi-tenancy | [references/api-contracts.md](references/api-contracts.md) |
+| VSA vs. other architectures | [references/comparisons.md](references/comparisons.md) |
+| Code smells | [references/code-smells.md](references/code-smells.md) |
+| Testing and architecture tests | [references/testing.md](references/testing.md), [references/architecture-tests.md](references/architecture-tests.md) |
+
+The `research/` folder holds the sourced research notes and the design plan behind the skill. The skill
+itself does not load them.
 
 ## Example prompts
 
-- "I'm starting a new 'cancel order' feature. Should this live in its own folder or spread
-  across Controllers/Services/Repositories?"
-- "How does Vertical Slice Architecture relate to CQRS? Do I need a mediator library for either?"
-- "Review this Features/CreateOrder folder and tell me if it's grown too many responsibilities."
+- "Add a cancel-order endpoint to the Orders feature. It should return 409 if the order already shipped."
+- "Start a new .NET 11 API for a library-loans system, organized by vertical slices, with Postgres and
+  architecture tests."
+- "Our OrdersController calls OrderService which calls OrderRepository. Move the order endpoints to
+  vertical slices without breaking the API."
+- "Review src/Features for coupling between slices and anything that looks like a service layer coming
+  back."
+- "Should a slice handler use the DbContext directly or go through a repository?"

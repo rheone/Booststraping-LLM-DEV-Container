@@ -1,0 +1,119 @@
+// Architecture tests for a vertical-slice project (area-level sharing).
+// Placeholders: {{ROOT}} = root namespace (e.g. MyApp), {{ANCHOR_TYPE}} = a type in the app assembly
+// (e.g. Program). Swap [Fact] and Assert for the repo's test framework. Library: TngTech.ArchUnitNET
+// (+ the package for the repo's test framework). Use the repo's existing architecture-test library
+// instead, if it has one.
+using ArchUnitNET.Domain;
+using ArchUnitNET.Loader;
+using ArchUnitNET.xUnit;
+using static ArchUnitNET.Fluent.ArchRuleDefinition;
+
+namespace {{ROOT}}.ArchitectureTests;
+
+public sealed class SliceIsolationTests
+{
+    private const string Root = "{{ROOT}}";
+    private const string FeaturesRoot = Root + ".Features";
+    private const string DomainRoot = Root + ".Domain";
+    private const string InfrastructureRoot = Root + ".Infrastructure";
+    private const string SharedFolder = "Shared";
+
+    private static readonly System.Reflection.Assembly AppAssembly = typeof({{ANCHOR_TYPE}}).Assembly;
+    private static readonly Architecture Architecture = new ArchLoader().LoadAssemblies(AppAssembly).Build();
+
+    // Rule 1: a slice does not depend on another slice (in its own area or any other).
+    [Fact]
+    public void Slices_do_not_depend_on_each_other()
+    {
+        string[] slices = Slices();
+        foreach (string from in slices)
+        {
+            foreach (string to in slices.Where(s => s != from))
+            {
+                Types().That().ResideInNamespaceOrBelow(from)
+                    .Should().NotDependOnAny(Types().That().ResideInNamespaceOrBelow(to))
+                    .Because($"slice {from} must not use slice {to}")
+                    .Check(Architecture);
+            }
+        }
+    }
+
+    // Rule 2: an area does not depend on another area (including its Shared folder).
+    [Fact]
+    public void Areas_do_not_depend_on_each_other()
+    {
+        string[] areas = Areas();
+        foreach (string from in areas)
+        {
+            foreach (string to in areas.Where(a => a != from))
+            {
+                Types().That().ResideInNamespaceOrBelow(from)
+                    .Should().NotDependOnAny(Types().That().ResideInNamespaceOrBelow(to))
+                    .Because($"area {from} must not use area {to}; share through the domain or an event")
+                    .Check(Architecture);
+            }
+        }
+    }
+
+    // Rule 3: an area's Shared folder does not depend on any slice.
+    [Fact]
+    public void Area_shared_code_does_not_depend_on_slices()
+    {
+        foreach (string area in Areas())
+        {
+            string shared = $"{area}.{SharedFolder}";
+            if (!NamespaceExists(shared))
+            {
+                continue;
+            }
+
+            foreach (string slice in Slices().Where(s => s.StartsWith(area + ".", StringComparison.Ordinal)))
+            {
+                Types().That().ResideInNamespaceOrBelow(shared)
+                    .Should().NotDependOnAny(Types().That().ResideInNamespaceOrBelow(slice))
+                    .Because($"{shared} must not use slice {slice}")
+                    .Check(Architecture);
+            }
+        }
+    }
+
+    // Rule 4: the domain depends on nothing in Features or Infrastructure.
+    [Fact]
+    public void Domain_does_not_depend_on_features_or_infrastructure() =>
+        Types().That().ResideInNamespaceOrBelow(DomainRoot)
+            .Should().NotDependOnAny(Types().That().ResideInNamespaceOrBelow(FeaturesRoot))
+            .AndShould().NotDependOnAny(Types().That().ResideInNamespaceOrBelow(InfrastructureRoot))
+            .Check(Architecture);
+
+    // Rule 5: shared infrastructure knows no slice.
+    [Fact]
+    public void Infrastructure_does_not_depend_on_features() =>
+        Types().That().ResideInNamespaceOrBelow(InfrastructureRoot)
+            .Should().NotDependOnAny(Types().That().ResideInNamespaceOrBelow(FeaturesRoot))
+            .Check(Architecture);
+
+    // Guard: the discovery found something. A rename of the root namespace must not turn every rule green.
+    [Fact]
+    public void Slices_are_discovered() =>
+        Assert.NotEmpty(Slices());
+
+    private static string[] Areas() =>
+        [.. NamespacesUnderFeatures().Select(p => p.Split('.')[0]).Distinct().Select(a => $"{FeaturesRoot}.{a}")];
+
+    private static string[] Slices() =>
+        [.. NamespacesUnderFeatures()
+            .Select(p => p.Split('.'))
+            .Where(p => p.Length >= 2 && p[1] != SharedFolder)
+            .Select(p => $"{FeaturesRoot}.{p[0]}.{p[1]}")
+            .Distinct()];
+
+    private static bool NamespaceExists(string ns) =>
+        AppAssembly.GetTypes().Any(t => t.Namespace == ns || (t.Namespace?.StartsWith(ns + ".", StringComparison.Ordinal) ?? false));
+
+    private static IEnumerable<string> NamespacesUnderFeatures() =>
+        AppAssembly.GetTypes()
+            .Select(t => t.Namespace)
+            .OfType<string>()
+            .Where(ns => ns.StartsWith(FeaturesRoot + ".", StringComparison.Ordinal))
+            .Select(ns => ns[(FeaturesRoot.Length + 1)..]);
+}
