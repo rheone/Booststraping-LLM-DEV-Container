@@ -1,0 +1,9 @@
+schema_version: "1.1"
+name: dbcontext-vs-repository
+expected_outcome: |
+  The answer explains that DbContext already combines unit of work and repository, lays out the options
+  with trade-offs (direct DbContext, repository per aggregate, unit of work, specifications), names the
+  concrete reasons a repository earns its place (test doubles, multiple stores, complex aggregate loading),
+  corrects the claim that soft delete and tenancy require repositories by pointing to EF Core global query
+  filters (named filters in EF Core 10), and recommends integration tests against real Postgres (for example
+  in a container) over the in-memory provider or mocked DbSet.

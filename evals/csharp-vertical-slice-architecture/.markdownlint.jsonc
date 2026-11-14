@@ -1,0 +1,6 @@
+// Eval case files (prompt.md, graders/*.md) follow the `claude plugin eval` format: a front-matter
+// block followed by plain text, with no heading.
+{
+   "MD013": false,
+   "MD041": false
+}
