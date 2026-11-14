@@ -1,0 +1,10 @@
+schema_version: "1.1"
+name: bootstrap-library-api
+expected_outcome: |
+  A net10.0 solution organized as Features/<Area>/<UseCase> with three slices (add book, list available,
+  borrow), no Controllers/Services/Repositories layers, outcome types instead of exceptions for 404/409,
+  input validation for add-book, integration tests per slice against SQLite (not the EF in-memory provider),
+  an ARCHITECTURE.md that matches the code, architecture tests added or explicitly offered, a final report of
+  the decisions taken, and a passing build and test run. Requests take only the named inputs (no borrower),
+  and async code takes and forwards a CancellationToken with ConfigureAwait(false), enforced by analyzers.
+

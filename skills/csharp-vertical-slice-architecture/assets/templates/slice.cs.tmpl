@@ -1,0 +1,68 @@
+// One HTTP command slice in a single file (Layout B). For Layout A, split each nested type into its own
+// file in Features/{{AREA}}/{{SLICE}}/ and drop the static wrapper class.
+// Placeholders: {{ROOT}}, {{AREA}} (plural noun), {{SLICE}} (verb + noun), {{ROUTE}} (relative to the
+// area group), {{SUCCESS}} (domain-named success case), {{FAILURE}} (domain-named failure case).
+// Requires C# 15 for `union`. Below C# 15, replace the union with the abstract-record block at the end.
+// Replace AppDbContext with the repo's data access (ISession, IUnitOfWork, repository) per its convention.
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Http.HttpResults;
+
+namespace {{ROOT}}.Features.{{AREA}};
+
+public static class {{SLICE}}
+{
+    // Input. Shape rules as attributes on the parameters (built-in validation), or in a Validator type
+    // when the repo uses a validator library.
+    public sealed record Request(
+        [Required] Guid? Id);
+
+    // Outcomes. Name cases after the domain, never after HTTP results.
+    public sealed record {{SUCCESS}}(Guid Id);
+    public sealed record {{FAILURE}}(Guid Id);
+
+    public union Result({{SUCCESS}}, {{FAILURE}});
+
+    internal sealed class Handler(AppDbContext db, TimeProvider clock)
+    {
+        public async Task<Result> HandleAsync(Request request, CancellationToken ct = default)
+        {
+            // Load what this use case needs, decide, change through domain methods, save once.
+            await Task.CompletedTask.ConfigureAwait(false);
+            _ = (db, clock);
+            return new {{SUCCESS}}(request.Id!.Value);
+        }
+    }
+
+    // Edge: bind, call, map. No business logic here.
+    public static RouteHandlerBuilder Map(RouteGroupBuilder group) =>
+        group.MapPost("{{ROUTE}}", HandleAsync)
+            .WithName(nameof({{SLICE}}))
+            .WithSummary("{{SLICE}}");
+
+    private static async Task<Results<Ok<{{SUCCESS}}>, NotFound>> HandleAsync(
+        Request request, Handler handler, CancellationToken ct)
+    {
+        Result result = await handler.HandleAsync(request, ct).ConfigureAwait(false);
+        return result switch
+        {
+            {{SUCCESS}} success => TypedResults.Ok(success),
+            {{FAILURE}} => TypedResults.NotFound(),
+            null => throw new UnreachableException($"{nameof({{SLICE}})} returned a default result."),
+        };
+    }
+
+    // Registration: call from the area's Add{{AREA}}Feature() extension.
+    internal static IServiceCollection Add(IServiceCollection services) =>
+        services.AddScoped<Handler>();
+}
+
+// Below C# 15: replace `public union Result(...)` and the two case records with this block, and replace
+// the switch's `null` arm with `_ => throw new UnreachableException(...)`.
+//
+// public abstract record Result
+// {
+//     private Result() { }
+//     public sealed record {{SUCCESS}}(Guid Id) : Result;
+//     public sealed record {{FAILURE}}(Guid Id) : Result;
+// }

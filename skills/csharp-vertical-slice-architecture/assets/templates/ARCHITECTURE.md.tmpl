@@ -1,0 +1,59 @@
+# Architecture
+
+<!-- Written by the bootstrap or migration workflow. Fill every {{PLACEHOLDER}}; delete rows that do not
+     apply. Keep this file short: it is the map a new contributor (human or agent) reads first. -->
+
+This application uses **Vertical Slice Architecture**. Code is organized by use case: each slice holds
+its request, handler, response, and edge mapping in one place. Slices are independent of each other.
+
+## Layout
+
+{{LAYOUT_NAME}} <!-- e.g. "Single project, folder per slice, file per type" -->
+
+```text
+{{TREE}}
+```
+
+## Conventions
+
+| Topic | Convention in this repo |
+| --- | --- |
+| Slice naming | Verb + noun (`CreateOrder`), folder `Features/<Area>/<Slice>/` |
+| Dispatch | {{DISPATCH}} <!-- direct handler injection / hand-rolled mediator / library name --> |
+| Data access | {{DATA_ACCESS}} <!-- DbContext in handlers / ISession / IUnitOfWork / repositories --> |
+| Transaction boundary | {{TRANSACTIONS}} <!-- one SaveChanges per handler / filter / unit of work --> |
+| Expected outcomes | {{RESULTS}} <!-- union / closed hierarchy / abstract record / exceptions mapped to ProblemDetails --> |
+| Validation | {{VALIDATION}} |
+| Async | Async I/O only; `CancellationToken ct = default` last on every async method, always passed on; `ConfigureAwait(false)` on every await in `src/` (CA1068, CA2016, CA2007 in `.editorconfig`) |
+| Tests | {{TESTS}} <!-- integration-first against <database> in a container; mirrored folders --> |
+
+## Dependency rules
+
+Isolation level: **{{ISOLATION}}** <!-- strict / area-level sharing / relaxed -->
+
+| From | May depend on | Must not depend on |
+| --- | --- | --- |
+| Slice | its own types, its area's `Shared/`, Domain, Infrastructure | another slice, another area |
+| Area `Shared/` | Domain, Infrastructure | any slice, another area |
+| Domain | nothing outside Domain | Features, Infrastructure, ASP.NET Core |
+| Infrastructure | Domain | Features |
+
+Enforced by: {{ENFORCEMENT}} <!-- architecture tests in tests/X.ArchitectureTests / NsDepCop / none -->
+
+## Where things go
+
+| Thing | Location |
+| --- | --- |
+| A new use case | `Features/<Area>/<Slice>/` |
+| Code two slices in one area share | `Features/<Area>/Shared/` |
+| Entities, invariants, domain events | `Domain/` |
+| Persistence, clients, pipeline steps | `Infrastructure/` |
+| Schema migrations | {{MIGRATIONS_PATH}} |
+
+## Adding a slice
+
+1. Create `Features/<Area>/<Slice>/` with request, outcome, handler, and edge.
+2. Register it in `Features/<Area>/<Area>Registration.cs` and map it in `<Area>Endpoints.cs`.
+3. Add tests in `tests/{{INTEGRATION_TEST_PROJECT}}/Features/<Area>/<Slice>/`: success, each failure
+   outcome, invalid input.
+4. Run `dotnet test`; architecture tests must pass.
