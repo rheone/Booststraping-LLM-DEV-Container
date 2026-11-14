@@ -21,11 +21,7 @@ Each case folder holds:
 - `prompt.md`: the user request.
 - `case.yaml`: the expected outcome and the scaffold script.
 - `graders/`: one file per check.
-- `files/` and `place-files.sh`: the fixture repo and a launcher that copies it into the run directory.
-
-The copy logic is one .NET file-based app, `place-files.cs`, shared by all cases. `claude plugin eval` runs
-`scaffold_script` through bash and cannot run a `.cs` file directly, so each `place-files.sh` only calls
-`dotnet place-files.cs`. It needs the .NET 10 SDK or later.
+- `files/` and `place-files.sh`: the fixture repo and the script that copies it into the run directory.
 
 ## Fixtures
 
