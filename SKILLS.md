@@ -192,6 +192,7 @@ flowchart TD
 | Skill | Summary |
 | --- | --- |
 | [`dotnet-autofac`](skills/dotnet-autofac) — [readme](skills/dotnet-autofac/README.md) | The Autofac IoC container — registration, lifetime scopes, modules. |
+| [`dotnet-file-based-apps`](skills/dotnet-file-based-apps) — [readme](skills/dotnet-file-based-apps/README.md) | Single-file C# apps run with `dotnet app.cs` — directives, shebang scripts, and converting to a project. |
 | [`dotnet-fluentvalidation`](skills/dotnet-fluentvalidation) — [readme](skills/dotnet-fluentvalidation/README.md) | Declarative validation rules for C# objects with FluentValidation. |
 | [`dotnet-humanizer`](skills/dotnet-humanizer) — [readme](skills/dotnet-humanizer/README.md) | Turning raw values into human-readable text with Humanizer. |
 | [`dotnet-markdig`](skills/dotnet-markdig) — [readme](skills/dotnet-markdig/README.md) | Parsing and rendering Markdown with Markdig's extensible pipeline. |
