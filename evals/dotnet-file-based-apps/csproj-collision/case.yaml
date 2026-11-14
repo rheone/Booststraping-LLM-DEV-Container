@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: csproj-collision
+context:
+  scaffold_script: place-files.sh
+expected_outcome: |
+  Explains that dotnet run uses the project in the current directory and passes seed.cs to it as an argument,
+  and gives 'dotnet seed.cs' or 'dotnet run --file seed.cs' as the fix (moving the script to its own folder is a bonus).

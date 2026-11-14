@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: script-with-package
+expected_outcome: |
+  A single linecount.cs file-based app (no .csproj) with a #:package CsvHelper directive pinned to an exact
+  version. It builds and prints the row count and column names for a CSV path given as an argument.
