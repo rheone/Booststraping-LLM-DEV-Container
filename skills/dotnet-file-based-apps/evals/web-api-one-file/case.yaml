@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: web-api-one-file
+expected_outcome: |
+  todo.cs uses '#:sdk Microsoft.NET.Sdk.Web' with no .csproj, and both endpoints return the right JSON and status
+  codes when run on SDK 10.0 and 11.0. AOT is on by default, so JSON needs a source-generated context or an AOT opt-out.

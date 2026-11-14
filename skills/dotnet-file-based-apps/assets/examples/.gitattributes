@@ -1,0 +1,2 @@
+# File-based app samples run as shebang scripts on Unix: they need LF and no BOM.
+*.cs text eol=lf

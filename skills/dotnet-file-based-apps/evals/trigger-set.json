@@ -1,0 +1,22 @@
+[
+  {"query": "can you write me a little C# script that walks docs/ and prints the 10 biggest markdown files? dont want a whole project for it, just something i can dotnet run", "should_trigger": true},
+  {"query": "dotnet run tools/seed.cs is starting my API instead of running the seed script. the folder has Api.csproj in it. whats going on", "should_trigger": true},
+  {"query": "I get 'The directive should contain a name without special characters and an optional value separated by '=' like '#:property Name=Value'' when I run my script. line 2 is #:property LangVersion preview", "should_trigger": true},
+  {"query": "make a one-file minimal API (todo.cs) with GET /todos and GET /todos/{id}, runnable with just the dotnet cli, no csproj", "should_trigger": true},
+  {"query": "our release.cs helper needs to run on the linux build agents as ./release.cs --tag v1.2. how do I make that work? we're on .NET 10", "should_trigger": true},
+  {"query": "report.cs started out small but now its 900 lines. should I split it with #:include or just turn it into a real project? we have SDK 10.0.204 pinned in global.json", "should_trigger": true},
+  {"query": "#:package Spectre.Console fails restore with NU1015 in my single-file app, i thought leaving out the version meant latest??", "should_trigger": true},
+  {"query": "my file-based web app builds with zero warnings but every endpoint returns 500 'JsonTypeInfo metadata for type Order was not provided'. it's run with dotnet api.cs", "should_trigger": true},
+  {"query": "convert scripts/migrate.cs into a normal console project so we can add xunit tests for it", "should_trigger": true},
+  {"query": "how do I reference our Shared.csproj class library from a .cs file I run with dotnet run app.cs? also want to pull in Serilog", "should_trigger": true},
+  {"query": "add a new console project to our solution called Acme.Tools.Importer targeting net10.0 and reference Acme.Core", "should_trigger": false},
+  {"query": "I have a bunch of .csx files we run with dotnet-script; dotnet-script throws 'Could not load file or assembly' after upgrading. help me debug", "should_trigger": false},
+  {"query": "Program.cs in our WebApi project uses top-level statements; how do I move the endpoint mappings into separate extension methods?", "should_trigger": false},
+  {"query": "write a PowerShell script that deletes bin and obj folders recursively under src/", "should_trigger": false},
+  {"query": "our Directory.Packages.props has Serilog 3.1.1 and one project needs 4.0 - how do I override the central version for just that csproj?", "should_trigger": false},
+  {"query": "set up dotnet format and csharpier in our pre-commit hooks for the solution", "should_trigger": false},
+  {"query": "publish our existing Worker.csproj as native AOT for linux-x64, we get IL2026 warnings from Newtonsoft", "should_trigger": false},
+  {"query": "what's the difference between C# Interactive in visual studio and Polyglot Notebooks for trying out LINQ queries?", "should_trigger": false},
+  {"query": "write a bash script that runs dotnet test for every test project and merges the coverage reports", "should_trigger": false},
+  {"query": "create a dotnet new template for our team's standard webapi project with serilog and health checks", "should_trigger": false}
+]

@@ -13,9 +13,12 @@
         "Arcus",
         "CSharp",
         "csproj",
+        "ILCompiler",
         "MSBuild",
         "NuGet",
         "Roslyn",
+        "runfile",
+        "shebang",
         "xUnit"
     ],
 
