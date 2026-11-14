@@ -16,6 +16,7 @@
         "MSBuild",
         "NuGet",
         "Roslyn",
+        "skus",
         "xUnit"
     ],
 
