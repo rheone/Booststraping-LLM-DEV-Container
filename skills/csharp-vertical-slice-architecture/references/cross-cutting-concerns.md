@@ -1,71 +1,94 @@
-# Cross-cutting concerns without re-layering
+# Cross-cutting concerns
 
-Slices maximize independence, but no real application wants every slice to reinvent validation,
-logging, error handling, and persistence access from scratch. VSA handles this without collapsing
-back into a shared service layer that every feature is forced to route through — the goal is
-sharing *infrastructure*, not sharing *business logic*.
+Share the mechanism, keep the rules in the slice. A cross-cutting step knows nothing about orders or
+invoices and never branches on which slice called it. Mechanisms by scope are in
+[patterns.md](patterns.md#pipelines-filters-and-decorators).
 
-## The distinction that keeps VSA from becoming layered again
+## Where each concern goes
 
-The failure mode to avoid is recreating a `Services/` layer under a different name: a "shared"
-folder that accumulates business rules multiple slices are forced to call through, re-coupling
-slices to each other via that shared code. The pattern below keeps sharing scoped to genuinely
-cross-cutting, feature-agnostic concerns — the kind of thing every slice needs but none of them
-should have an opinion about — while leaving business logic in the slice that owns it.
+| Concern | Mechanism (framework-native first) | Slice's part |
+| --- | --- | --- |
+| Exception handling | `UseExceptionHandler` + `IExceptionHandler` + `AddProblemDetails` | None; see [results-and-errors.md](results-and-errors.md) |
+| Validation | Built-in validation filter, validator filter, or mediator step | Its rules; see [validation.md](validation.md) |
+| Authentication | Middleware | None |
+| Authorization (role/policy) | `RequireAuthorization("Policy")` on the area's `MapGroup` or the endpoint; `[Authorize]` on pages/controllers | Choose the policy; `AllowAnonymous()` to opt out |
+| Authorization (resource) | `IAuthorizationService.AuthorizeAsync(user, resource, policy)` inside the handler, after loading the resource | Returns a `Forbidden` outcome |
+| Logging and timing | Endpoint filter or mediator step; structured logging scope with the slice name | Slice-specific log messages only |
+| Tracing and metrics | One `ActivitySource` and `Meter` per app or component | Activity name and tags per slice |
+| Transactions | Per-handler save, a transaction filter/step, or a unit of work; see [data-access.md](data-access.md) | Follow the repo's boundary |
+| Output caching | `CacheOutput(policy)` per endpoint or group; tag eviction | Choose the policy; evict tags on writes |
+| Rate limiting, CORS | Middleware + endpoint metadata (`RequireRateLimiting`, `RequireCors`) | Choose the policy |
+| Idempotency | Filter or step keyed by an idempotency header; see [messaging-and-consistency.md](messaging-and-consistency.md) | Opt in for commands that need it |
+| Current user, tenant, clock | Injected services (`ICurrentUser`, `ITenantContext`, `TimeProvider`) | Use them; never read `HttpContext` in the handler |
 
-Signals a piece of code is genuinely cross-cutting (safe to share): it doesn't know what a
-"customer" or an "order" is, and it never contains an `if` branch driven by which feature is
-calling it. A retry policy, a timing/logging wrapper, and a validation *engine* (as opposed to a
-particular feature's validation *rules*) all pass this test.
+Sources: <https://learn.microsoft.com/aspnet/core/fundamentals/minimal-apis#authorization>,
+<https://learn.microsoft.com/aspnet/core/performance/caching/output>. Output caching caches only GET and
+HEAD 200 responses by default, and skips authenticated responses.
 
-## Common cross-cutting concerns and how they're typically shared
+## Authorization per slice
 
-- **Validation** — the *rules* for one request type live in that slice (`CreateOrderRequest`'s
-  validation rules belong in `CreateOrder/`, not in a shared file). The *mechanism* that runs
-  validation before a handler executes — discovering the right validator for a request type and
-  invoking it — is shared infrastructure. This is often implemented as a small pipeline step that
-  wraps handler invocation: run validation, short-circuit with an error response on failure,
-  otherwise call the handler.
-- **Logging / telemetry** — wrapping every handler invocation with timing and structured logging
-  is pure cross-cutting concern: it doesn't need to know anything about what a given slice does,
-  just that it started, finished, and how long it took. Implemented once, applied to every slice
-  uniformly.
-- **Error handling / result shaping** — converting a thrown exception or a failure result into a
-  consistent HTTP response shape is another concern no individual slice should reimplement.
-  Handled once, at the boundary between the dispatch mechanism (or the entry point) and the
-  outside world.
-- **Persistence context** — the `DbContext`/connection/unit-of-work object itself is shared
-  infrastructure (there's one database), but *how* a given slice queries or writes through it is
-  the slice's own business — see [data-access-patterns.md](data-access-patterns.md) for the
-  query-object-vs-repository tradeoff this raises.
-- **Cross-slice domain invariants** — rules that must hold regardless of which slice is mutating an
-  entity (e.g., "an order's total can never be negative") belong on the domain type itself
-  (`Order.Create(...)`, `Order.AddLine(...)`) rather than duplicated into every slice's handler.
-  This isn't really "cross-cutting infrastructure" so much as recognizing that the domain model is
-  legitimately shared — slices share the entities they operate on; they don't have to share the
-  code that orchestrates each use case around those entities.
+- Put the coarse rule on the area group: `app.MapGroup("/orders").RequireAuthorization()`.
+- Put the use-case rule on the endpoint: `.RequireAuthorization("orders:cancel")`. Name policies after
+  permissions, not roles.
+- Put the resource rule in the handler, because only the handler has the resource:
 
-## Two structural mechanisms for sharing
+```csharp
+Order? order = await db.Orders.FindAsync([orderId], ct).ConfigureAwait(false);
+if (order is null)
+{
+    return new OrderNotFound(orderId);
+}
 
-- **Minimal shared base abstractions** — small, narrow interfaces or base types that a handler
-  optionally implements to opt into shared behavior (for example, an interface a request type
-  implements to mark itself as validatable, which a shared pipeline step checks for). Kept
-  intentionally thin: a marker interface or a one-method contract, not a base class with virtual
-  methods every handler is expected to override.
-- **Pipeline-style composition** — cross-cutting behavior expressed as a chain of steps that wrap
-  the handler invocation (validate → log → invoke handler → log result), where each step is
-  independent of any specific slice and slices opt in simply by having a request type. This mirrors
-  middleware-style composition generically: each concern is one small piece that knows nothing
-  about the others or about any individual slice's business rules.
+AuthorizationResult allowed = await authorization.AuthorizeAsync(user.Principal, order, "OrderOwner")
+    .ConfigureAwait(false);
+if (!allowed.Succeeded)
+{
+    return new CancelForbidden(orderId);
+}
+```
 
-Both mechanisms deliberately avoid a **shared "kernel" folder that grows into a de facto services
-layer** — see [pitfalls.md](pitfalls.md#shared-kernel-creep-back-into-a-coupled-layer) for what that looks like in practice
-and how to catch it before it re-couples the whole codebase.
+- Every slice has a test for its unauthorized and forbidden paths.
+- Message consumers and jobs run as the system. Record the original user on the message when an audit
+  trail needs it; do not re-run user policies.
 
-## A practical boundary test
+## Observability per slice
 
-Before adding something to shared/cross-cutting code, ask: *if every slice that currently calls
-this were deleted except one, would this code still make sense on its own, with zero changes?* A
-validation pipeline step passes (it doesn't know or care which slice invoked it). A method named
-`ProcessOrder` that branches on an order's status fails (it's really one slice's logic wearing a
-shared name) and belongs back inside the slice that needs it.
+```csharp
+internal static class AppTelemetry
+{
+    public const string Name = "MyApp";
+    public static readonly ActivitySource Source = new(Name);
+    public static readonly Meter Meter = new(Name);
+}
+
+// In an endpoint filter or mediator step, generic over requests:
+using Activity? activity = AppTelemetry.Source.StartActivity($"slice {sliceName}");
+activity?.SetTag("app.slice", sliceName);
+activity?.SetTag("app.area", areaName);
+```
+
+- Create sources and meters once, statically, and register them with `AddSource(AppTelemetry.Name)` /
+  `AddMeter(AppTelemetry.Name)`
+  (<https://learn.microsoft.com/dotnet/core/diagnostics/distributed-tracing-instrumentation-walkthroughs>).
+- Derive the slice name once (the endpoint name from `.WithName(...)`, or the request type name) so logs,
+  traces, and metrics share one key. Per-slice naming is community practice.
+- Add a logging scope with the slice name so every log line inside the handler carries it.
+- Keep tag values bounded (slice names, outcome case names). Never tag with IDs or user input.
+
+## Feature flags
+
+A flag on a whole slice belongs at the edge: `.AddEndpointFilter<FeatureGateFilter>()` or the flag
+library's endpoint extension, returning 404 when off. A flag inside a slice that switches between two
+behaviors is a temporary second slice; remove the losing branch when the flag retires.
+
+## Ownership
+
+Feature folders map to owners. Add `CODEOWNERS` entries per area (`/src/MyApp/Features/Billing/
+@billing-team`) when the repo uses code owners. Shared infrastructure and the domain need an explicit owner
+too, because every team changes them.
+
+## Boundary test
+
+Before adding a step to shared infrastructure, delete every caller but one in your head. If the step
+still makes sense unchanged, it is cross-cutting. If it branches on a request type or a domain state, it
+belongs in a slice.

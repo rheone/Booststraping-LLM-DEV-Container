@@ -118,7 +118,7 @@ flowchart TD
 | Skill | Summary |
 | --- | --- |
 | [`csharp-cqrs`](skills/csharp-cqrs) — [readme](skills/csharp-cqrs/README.md) | Separating command (write) and query (read) models, at whatever level of segregation a feature needs. |
-| [`csharp-vertical-slice-architecture`](skills/csharp-vertical-slice-architecture) — [readme](skills/csharp-vertical-slice-architecture/README.md) | Organizing a codebase by feature slice instead of by technical layer. |
+| [`csharp-vertical-slice-architecture`](skills/csharp-vertical-slice-architecture) — [readme](skills/csharp-vertical-slice-architecture/README.md) | Organizing a .NET codebase by feature slice instead of by technical layer, with workflows to bootstrap, add a slice, migrate a layered project, and review. |
 
 ### ASP.NET Core & Web
 
