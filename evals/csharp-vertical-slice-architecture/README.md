@@ -40,4 +40,4 @@ Point `--eval-dir` at this folder. `claude plugin eval --help` lists the options
   `Value cannot be null (Parameter 'path1')` on Windows. This is the one exception to the file-based-app rule.
 - `claude plugin eval` requires `--eval-dir` inside the plugin root. These evals sit outside the skill folder,
   so you need a plugin root that holds both the skill and this folder. The repo root has no plugin manifest.
-  The 2.0.0 results below come from manual with-skill and old-skill runs, not from `claude plugin eval`.
+  The 2.0.0 results in the PR that added these evals come from manual with-skill and old-skill runs, not from `claude plugin eval`.
